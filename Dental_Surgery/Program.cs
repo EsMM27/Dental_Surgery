@@ -1,9 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using Dental.DataAccess;
+using Dental.DataAccess.Repo;
+using System;
+using Dental.Service;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
 var app = builder.Build();
+
+builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
