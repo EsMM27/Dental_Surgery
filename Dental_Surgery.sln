@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dental.Model", "Dental.Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dental.Service", "Dental.Service\Dental.Service.csproj", "{BCE88940-01AD-4FC7-89EC-379647C9A19D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.DataAcess", "Dental.DataAcess\Dental.DataAcess.csproj", "{8CB5970D-E7BA-4C32-A308-387B93D1F63B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.DataAccess", "Dental.DataAcess\Dental.DataAccess.csproj", "{8CB5970D-E7BA-4C32-A308-387B93D1F63B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

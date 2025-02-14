@@ -8,10 +8,10 @@ namespace Dental.DataAccess.Repo
 {
     public interface IRepository<T> where T : class
     {
-        void Add(T obj);
-        void Update(T obj);
-        void Delete(T obj);
-        IEnumerable<T> GetAll();
-        T? Get(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
+        Task AddAsync(T entity);
+        void Update(T entity);
+        void Delete(T entity);
     }
 }

@@ -1,11 +1,7 @@
-﻿using Dental.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dental.DataAccess.Repo;
+using Dental.Model;
 
-namespace Dental.DataAccess.Repo
+namespace Dental.Service
 {
     public interface IPatientRepo : IRepository<Patient>
     {

@@ -1,10 +1,8 @@
 ﻿using Dental.DataAccess;
 using Dental.DataAccess.Repo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dental.DataAcess.Repo;
+using Dental.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dental.Service
 {
@@ -12,21 +10,25 @@ namespace Dental.Service
     {
         private readonly AppDBContext _appDBContext;
 
-        public IAppointmentRepo appointmentRepo { get; private set; }
-        public IDentistRepo dentistRepo { get; private set; }
-        public IPatientRepo patientRepo { get; private set; }
+        private IRepository<Dentist> _dentists;
+        private IRepository<Patient> _patients;
+        private IRepository<Treatment> _treatments;
+        private IRepository<Appointment> _appointments;
+
 
         public UnitOfWork(AppDBContext appDBContext) 
         {
             _appDBContext = appDBContext;
-            appointmentRepo = new AppointmentRepo(_appDBContext);
-            dentistRepo = new DentistRepo(_appDBContext);
-            patientRepo = new PatientRepo(_appDBContext);
         }
 
-        public async Task Save()
-        { 
-        await _appDBContext.SaveChangesAsync();
+        public IRepository<Dentist> Dentists => _dentists ??= new Repository<Dentist>(_appDBContext);
+        public IRepository<Patient> Patients => _patients ??= new Repository<Patient>(_appDBContext);
+        public IRepository<Treatment> Treatments => _treatments ??= new Repository<Treatment>(_appDBContext);
+        public IRepository<Appointment> Appointments => _appointments ??= new Repository<Appointment>(_appDBContext);
+
+        public async Task<int> SaveAsync()
+        {
+            return await _appDBContext.SaveChangesAsync();
         }
 
         public void Dispose()
@@ -36,4 +38,5 @@ namespace Dental.Service
 
 
     }
+
 }

@@ -1,15 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.DataAccess.Repo;
-using System;
 using Dental.Service;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-var app = builder.Build();
+builder.Services.AddServerSideBlazor();
 
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseSqlServer(
@@ -17,7 +15,10 @@ builder.Services.AddDbContext<AppDBContext>(options =>
         sqlServerOptions => sqlServerOptions.MigrationsAssembly("Dental_Surgery") // Specify migrations assembly
     ));
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -35,5 +36,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapBlazorHub();
 
 app.Run();

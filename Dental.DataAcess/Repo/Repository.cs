@@ -7,40 +7,38 @@ namespace Dental.DataAccess.Repo
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDBContext _context;
-        internal DbSet<T> dbSet;
+        private readonly DbSet<T> _dbSet;
+
         public Repository(AppDBContext context)
         {
             _context = context;
-            dbSet = _context.Set<T>();
+            _dbSet = _context.Set<T>();
         }
 
-        public void Add(T obj)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            dbSet.Add(obj);
+            return await _dbSet.ToListAsync();
         }
-        public void Delete(T obj)
+
+        public async Task<T> GetByIdAsync(int id)
         {
-            dbSet.Remove(obj);
+            return await _dbSet.FindAsync(id);
         }
-        public IEnumerable<T> GetAll()
+
+        public async Task AddAsync(T entity)
         {
-            IQueryable<T> query = dbSet;
-            return query.ToList();
+            await _dbSet.AddAsync(entity);
         }
-        public T? Get(int id)
+
+        public void Update(T entity)
         {
-            if (id == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return dbSet.Find(id);
-            }
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
-        public void Update(T obj)
+
+        public void Delete(T entity)
         {
-            dbSet.Update(obj);
+            _dbSet.Remove(entity);
         }
     }
 }

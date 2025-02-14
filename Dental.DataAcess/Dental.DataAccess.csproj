@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repo\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Dental.Model\Dental.Model.csproj" />
   </ItemGroup>
 

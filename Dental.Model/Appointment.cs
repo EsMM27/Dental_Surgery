@@ -11,22 +11,18 @@ namespace Dental.Model
 {
     public class Appointment
     {
-        [Key]
-        public int AppointmentNo { get; set; }
-        //foreign key to link to patient table
-        [ForeignKey("Patient")] //need to tell ef core that this is the foreign key
-        //panics and creates a whole new column 'PatientPPS' otherwise
-        public string PPS { get; set; }
-        public Patient Patient { get; set; }
-        //foreign key to link to doctor table
-        public int DoctorId { get; set; }
-        public Dentist Doctor { get; set; }
-        //foreign key to link to treatment table
-        public int TreatmentNo { get; set; }
-        public Treatment treatment { get; set; }
-        public bool Attended { get; set; }
-        public double AppointmentCost { get; set; }
+        public int AppointmentId { get; set; }
+        public DateTime AppointmentDate { get; set; }
+        public string Notes { get; set; }
 
-        public DateTime AppDate { get; set; }
+        // Foreign keys
+        public int DentistId { get; set; }
+        public int PatientId { get; set; }
+        public int TreatmentId { get; set; }
+
+        // Navigation properties
+        public Dentist? Dentist { get; set; }
+        public Patient? Patient { get; set; }
+        public Treatment? Treatment { get; set; }
     }
 }
