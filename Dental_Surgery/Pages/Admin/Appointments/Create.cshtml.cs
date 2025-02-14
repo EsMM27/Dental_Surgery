@@ -21,11 +21,23 @@ namespace Dental_Surgery.Pages.Admin.Appointments
 
         public IActionResult OnGet()
         {
-        ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "ContactNumber");
-        ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "Address");
-        ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Description");
+            ViewData["DentistId"] = new SelectList(
+                _context.Dentists.Select(d => new { d.DentistId, FullName = d.FirstName + " " + d.LastName }),
+                "DentistId", "FullName"
+            );
+
+            ViewData["PatientId"] = new SelectList(
+                _context.Patients.Select(p => new { p.PatientId, FullName = p.FirstName + " " + p.LastName }),
+                "PatientId", "FullName"
+            );
+
+            ViewData["TreatmentId"] = new SelectList(
+                _context.Treatments, "TreatmentId", "Name"
+            );
+
             return Page();
         }
+        //a way to dispaly the data on the page
 
         [BindProperty]
         public Appointment Appointment { get; set; } = default!;
