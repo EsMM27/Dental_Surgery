@@ -1,4 +1,5 @@
-﻿using Dental.Model;
+﻿
+using Dental.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -9,11 +10,11 @@ namespace Dental.DataAccess
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
         }
-        public DbSet<Dentist> Categories { get; set; }
+        public DbSet<Dentist> Dentists { get; set; }
 
-        public DbSet<Appointment> Products { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
-        public DbSet<Patient> Items { get; set; }
+        public DbSet<Patient> Patients { get; set; }
 
     }
 

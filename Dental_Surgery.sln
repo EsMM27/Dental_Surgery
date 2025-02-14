@@ -5,11 +5,11 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dental_Surgery", "Dental_Surgery\Dental_Surgery.csproj", "{C5C3C8A0-2C01-4D3A-A683-6F159B492250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.Model", "Dental.Model\Dental.Model.csproj", "{47038765-76D3-4D73-A667-500AE1BC8D18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dental.Model", "Dental.Model\Dental.Model.csproj", "{47038765-76D3-4D73-A667-500AE1BC8D18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.Service", "Dental.Service\Dental.Service.csproj", "{BCE88940-01AD-4FC7-89EC-379647C9A19D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dental.Service", "Dental.Service\Dental.Service.csproj", "{BCE88940-01AD-4FC7-89EC-379647C9A19D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.DataAccess", "Dental.DataAccess\Dental.DataAccess.csproj", "{B38FFD1A-79E4-498C-A40C-6F263F2AB705}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dental.DataAcess", "Dental.DataAcess\Dental.DataAcess.csproj", "{8CB5970D-E7BA-4C32-A308-387B93D1F63B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{BCE88940-01AD-4FC7-89EC-379647C9A19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE88940-01AD-4FC7-89EC-379647C9A19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE88940-01AD-4FC7-89EC-379647C9A19D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B38FFD1A-79E4-498C-A40C-6F263F2AB705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B38FFD1A-79E4-498C-A40C-6F263F2AB705}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B38FFD1A-79E4-498C-A40C-6F263F2AB705}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B38FFD1A-79E4-498C-A40C-6F263F2AB705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB5970D-E7BA-4C32-A308-387B93D1F63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB5970D-E7BA-4C32-A308-387B93D1F63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB5970D-E7BA-4C32-A308-387B93D1F63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB5970D-E7BA-4C32-A308-387B93D1F63B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
