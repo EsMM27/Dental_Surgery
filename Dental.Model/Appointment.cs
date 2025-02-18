@@ -14,6 +14,7 @@ namespace Dental.Model
         public int AppointmentId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Notes { get; set; }
+        public bool attend { get; set; }
 
         // Foreign keys
         public int DentistId { get; set; }

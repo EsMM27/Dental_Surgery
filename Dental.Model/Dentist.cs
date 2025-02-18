@@ -7,9 +7,15 @@ namespace Dental.Model
         public int DentistId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        //degree
         public string Specialization { get; set; }
+        //place they got degree
+        public string AwardingBody { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
+        //image of the doctor 
+        public string Image {  get; set; }
 
         // Navigation property for Appointments
         public ICollection<Appointment>? Appointments { get; set; }
