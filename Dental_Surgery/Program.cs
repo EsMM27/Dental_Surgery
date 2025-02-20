@@ -36,7 +36,7 @@ else
     Console.WriteLine($"Using Azure Key Vault at: {keyVaultUrl}");
 
     var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-    var secret = await client.GetSecretAsync("dentalsecret");
+    var secret = await client.GetSecretAsync("dentalconnection");
     connectionString = secret.Value.Value;
 
     Console.WriteLine("Using Azure SQL Database from Key Vault.");
