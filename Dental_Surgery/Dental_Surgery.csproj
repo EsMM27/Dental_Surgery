@@ -20,10 +20,4 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Dental.DataAcess\Dental.DataAccess.csproj" />
-    <ProjectReference Include="..\Dental.Model\Dental.Model.csproj" />
-    <ProjectReference Include="..\Dental.Service\Dental.Service.csproj" />
-  </ItemGroup>
-
 </Project>
