@@ -21,9 +21,9 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 
         public IActionResult OnGet()
         {
-        ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "AwardingBody");
-        ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "Address");
-        ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Description");
+        ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "FirstName");
+        ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "FirstName");
+        ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
             return Page();
         }
 
