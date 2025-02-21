@@ -17,6 +17,8 @@ namespace Dental.Model
         public string ContactNumber { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
 
         // Navigation property for Appointments
