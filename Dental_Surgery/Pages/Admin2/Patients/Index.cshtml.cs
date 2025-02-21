@@ -21,9 +21,19 @@ namespace Dental_Surgery.Pages.Admin2.Patients
 
         public IList<Patient> Patient { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        [BindProperty(SupportsGet = true)]
+        public string? SearchString { get; set; }
+            public async Task OnGetAsync()
         {
-            Patient = await _context.Patients.ToListAsync();
+            IQueryable<Patient> patientQuery = _context.Patients;
+            if(!string.IsNullOrEmpty(SearchString))
+            {
+                patientQuery = patientQuery.Where(p =>
+                p.FirstName.Contains(SearchString) ||
+				p.LastName.Contains(SearchString) ||
+                p.PPS.Contains(SearchString));
+            }
+            Patient = await patientQuery.ToListAsync();
         }
     }
 }

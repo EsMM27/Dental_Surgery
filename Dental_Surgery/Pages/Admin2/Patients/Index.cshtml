@@ -5,10 +5,15 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
+<h1>Patients</h1>
+<br />
+<form method="get" class="col-3">
+        <input type="text" placeholder="Search..." class="form-control me-sm-2" name="searchString" value="@Model.SearchString" />
+        <input type="submit" value="Search" class="btn btn-outline-primary form-control" style="width:200px" />
+        <a asp-page="./Index" class="btn btn-outline-secondary"> Clear</a>
+    </form>
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Add new patient</a>
 </p>
 <table class="table">
     <thead>
