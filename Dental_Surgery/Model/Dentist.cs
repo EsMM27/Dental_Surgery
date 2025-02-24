@@ -15,7 +15,7 @@ namespace Dental.Model
         public string ContactNumber { get; set; }
         public string Email { get; set; }
         //image of the doctor 
-        public string Image {  get; set; }
+        public string? Image {  get; set; }
 
         // Navigation property for Appointments
         public ICollection<Appointment>? Appointments { get; set; }
