@@ -1,0 +1,275 @@
+﻿@page
+@model Dental_Surgery.Pages.Receptionist.IndexModel
+@{
+}
+
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    /* Container for two columns */
+        .container {
+            display: flex;
+            gap: 100px;
+            margin: 0 auto; /* center the container */
+            background-color: #ffffff; /* optional if you want a white card-like background */
+            border-radius: 8px;
+        }
+
+
+    /* Left Column: Appointment Form */
+        .left-column {
+            flex: 0 0 300px; /* fixed width of 300px (change as needed) */
+            /* or width: 40%; if you want a percentage-based approach */
+            margin-right: 20px; /* optional if you want spacing */
+        }
+
+        .right-column {
+            flex: 1; /* Let this column fill remaining space */
+            min-width: 250px; /* to keep it from squishing too small */
+        }
+
+    /* Common Form Styles */
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    /* Hover / Focus States for Inputs */
+    input:hover,
+    select:hover,
+    textarea:hover {
+      border-color: #47c1b2; /* Teal highlight on hover */
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #47c1b2;
+      box-shadow: 0 0 5px rgba(71, 193, 178, 0.2);
+    }
+
+    /* Submit Button */
+    button[type="submit"] {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      background: #47c1b2; /* Teal color */
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background: #399f94;
+    }
+
+    /* Availability Section Styles */
+    .availability-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .time-slots {
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 10px;
+      margin-top: 10px;
+    }
+
+    .slot {
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #f7f7f7;
+      border-left: 4px solid #47c1b2; /* A little color marker */
+    }
+    .slot span {
+      font-weight: bold;
+    }
+
+    .no-availability {
+      text-align: center;
+      margin-top: 20px;
+      color: #999;
+    }
+
+    }
+  </style>
+</head>
+<body>
+    <h1>Dental Appointment</h1>
+
+    <div class="container">
+        <!-- Left Column: Appointment Form -->
+        <div class="left-column">
+            <form id="appointmentForm">
+                <!-- Dentist Selection -->
+                <label for="dentistSelect">Dentist:</label>
+                <select id="dentistSelect" name="dentist" required>
+                    <option value="">-- Select Dentist --</option>
+                    <option value="DrSmith">Dr. Smith</option>
+                    <option value="DrJohnson">Dr. Johnson</option>
+                    <option value="DrWilliams">Dr. Williams</option>
+                </select>
+
+
+                <!-- Date -->
+                <label for="appointmentDate">Date:</label>
+                <input type="date"
+                       id="appointmentDate"
+                       name="appointmentDate"
+                       required />
+
+                <!-- Patient Info -->
+                <label for="patientName">Patient Name:</label>
+                <input type="text"
+                       id="patientName"
+                       name="patientName"
+                       placeholder="Enter patient name"
+                       required />
+
+                <label for="patientID">Patient ID:</label>
+                <input type="text"
+                       id="patientID"
+                       name="patientID"
+                       placeholder="Enter patient ID"
+                       required />
+
+                <!-- Treatment Selection -->
+                <label for="treatment">Treatment Type:</label>
+                <select id="treatment" name="treatment" required>
+                    <option value="">-- Select Treatment --</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Filling">Filling</option>
+                    <option value="Root Canal">Root Canal</option>
+                    <option value="Extraction">Extraction</option>
+                </select>
+
+
+                <!-- Notes -->
+                <label for="notes">Notes/Comments:</label>
+                <textarea id="notes"
+                          name="notes"
+                          rows="3"
+                          placeholder="e.g., patient requires antibiotic premedication"></textarea>
+
+                <!-- Submit -->
+                <button type="submit">Create Appointment</button>
+            </form>
+        </div>
+
+        <!-- Right Column: Availability -->
+        <div class="right-column">
+            <div class="availability-title">Dentist Availability</div>
+            <div class="time-slots" id="timeSlots">
+                <!-- Time slots appear here -->
+            </div>
+            <div class="no-availability" id="noAvailabilityMessage" style="display: none;">
+                No availability found for this date.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /***********************************************************************
+         * 2. Example Availability Data
+         *    Keyed by dentistName -> date -> array of time slots
+         ***********************************************************************/
+        const dentistAvailabilityData = {
+            "DrSmith": {
+                "2025-03-01": ["9:00 - 9:30", "10:00 - 10:30", "11:30 - 12:00", "2:00 - 2:30"],
+                "2025-03-02": ["9:30 - 10:00", "10:30 - 11:00", "1:00 - 1:30"],
+            },
+            "DrJohnson": {
+                "2025-03-01": ["9:00 - 9:30", "1:30 - 2:00", "3:00 - 3:30"],
+                "2025-03-03": ["10:00 - 10:30", "2:00 - 2:30", "4:00 - 4:30"],
+            },
+            "DrWilliams": {
+                "2025-03-02": ["9:00 - 9:30", "9:30 - 10:00", "2:00 - 2:30", "4:30 - 5:00"],
+                "2025-03-03": ["9:00 - 9:30", "10:00 - 10:30"],
+            }
+        };
+
+        /***********************************************************************
+         * 3. Get references to elements
+         ***********************************************************************/
+        const dentistSelect = document.getElementById("dentistSelect");
+        const appointmentDate = document.getElementById("appointmentDate");
+        const timeSlotsContainer = document.getElementById("timeSlots");
+        const noAvailabilityMsg = document.getElementById("noAvailabilityMessage");
+
+        /***********************************************************************
+         * 4. Availability Rendering Function
+         ***********************************************************************/
+        function renderAvailability() {
+            // 1) Get the selected dentist
+            const dentist = dentistSelect.value;
+            // 2) Get the selected date
+            const date = appointmentDate.value;  // format: YYYY-MM-DD
+
+            // Clear previous slots
+            timeSlotsContainer.innerHTML = "";
+
+            // Check if dentist or date are missing
+            if (!dentist || !date) {
+                // If either is missing, no need to show anything
+                noAvailabilityMsg.style.display = "none";
+                return;
+            }
+
+            // Attempt to read availability data
+            const dentistData = dentistAvailabilityData[dentist];
+            if (!dentistData) {
+                // No data at all for this dentist
+                noAvailabilityMsg.style.display = "block";
+                noAvailabilityMsg.textContent = "No availability found for this dentist.";
+                return;
+            }
+
+            const slotsForDate = dentistData[date] || [];
+
+            if (slotsForDate.length === 0) {
+                // If no slots found for this date
+                noAvailabilityMsg.style.display = "block";
+                noAvailabilityMsg.textContent = "No availability found for this date.";
+            } else {
+                // Render each slot
+                noAvailabilityMsg.style.display = "none";
+                slotsForDate.forEach((slot) => {
+                    const slotDiv = document.createElement("div");
+                    slotDiv.className = "slot";
+                    slotDiv.textContent = slot + " – Available";
+                    timeSlotsContainer.appendChild(slotDiv);
+                });
+            }
+        }
+
+        /***********************************************************************
+         * 5. Attach event listeners to dentistSelect & appointmentDate
+         ***********************************************************************/
+        dentistSelect.addEventListener("change", renderAvailability);
+        appointmentDate.addEventListener("change", renderAvailability);
+
+        // Optionally, call `renderAvailability()` on page load if you want
+        // to show something by default. Right now it does nothing until
+        // the user chooses both a dentist and date.
+    </script>
+</body>
