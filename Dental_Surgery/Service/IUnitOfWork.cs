@@ -16,7 +16,7 @@ namespace Dental.Service
         IRepository<Dentist> Dentists { get; }
         IRepository<Patient> Patients { get; }
         IRepository<Treatment> Treatments { get; }
-        IRepository<Appointment> Appointments { get; }
+        IAppointmentRepo Appointments { get; }
         Task<int> SaveAsync();
     }
 }

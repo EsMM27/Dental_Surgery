@@ -6,6 +6,25 @@
 <head>
   <meta charset="UTF-8" />
   <style>
+        .slot {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .available {
+            background-color: lightgreen;
+        }
+
+        .booked {
+            background-color: lightcoral;
+        }
+
+        .no-availability {
+            color: gray;
+            font-style: italic;
+        }
     /* Container for two columns */
         .container {
             display: flex;
@@ -88,188 +107,143 @@
       text-align: center;
     }
 
-    .time-slots {
-      display: grid;
-      grid-template-columns: 1fr;
-      row-gap: 10px;
-      margin-top: 10px;
-    }
+        /* Style the date picker */
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
 
-    .slot {
-      padding: 10px;
-      border-radius: 4px;
-      background-color: #f7f7f7;
-      border-left: 4px solid #47c1b2; /* A little color marker */
-    }
-    .slot span {
-      font-weight: bold;
-    }
+        /* Style the selected date display */
+        .selected-date {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
 
-    .no-availability {
-      text-align: center;
-      margin-top: 20px;
-      color: #999;
-    }
+        .today-indicator {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+        }
 
-    }
+        /* Style for available time slots */
+        .slot.available {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+            background-color: lightgreen;
+            cursor: pointer;
+        }
+
+        /* Style for booked time slots */
+        .slot.booked {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+            background-color: lightcoral;
+            cursor: not-allowed;
+        }
+
+        /* Style for selected time slot */
+        .slot.selected {
+            box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.8); /* Glow effect */
+            border: 2px solid #007bff;
+        }
+    
   </style>
 </head>
 <body>
     <h1>Dental Appointment</h1>
 
     <div class="container">
-        <!-- Left Column: Appointment Form -->
+        <!-- Left Column: Dentist Selection -->
         <div class="left-column">
-            <form id="appointmentForm">
+            <form method="post" asp-page-handler="FetchAvailability">
                 <!-- Dentist Selection -->
                 <label for="dentistSelect">Dentist:</label>
-                <select id="dentistSelect" name="dentist" required>
+                <select id="dentistSelect" name="Appointment.DentistId" asp-for="Appointment.DentistId" onchange="this.form.submit()" required>
                     <option value="">-- Select Dentist --</option>
-                    <option value="DrSmith">Dr. Smith</option>
-                    <option value="DrJohnson">Dr. Johnson</option>
-                    <option value="DrWilliams">Dr. Williams</option>
+                    @foreach (var dentist in Model.Dentists)
+                    {
+                        <option value="@dentist.DentistId">@dentist.FirstName</option>
+                    }
                 </select>
 
-
-                <!-- Date -->
+                <!-- Date Selection -->
                 <label for="appointmentDate">Date:</label>
-                <input type="date"
-                       id="appointmentDate"
-                       name="appointmentDate"
-                       required />
+                <input type="date" id="appointmentDate" name="Appointment.AppointmentDate" asp-for="Appointment.AppointmentDate" value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")" onchange="this.form.submit()" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
 
-                <!-- Patient Info -->
-                <label for="patientName">Patient Name:</label>
-                <input type="text"
-                       id="patientName"
-                       name="patientName"
-                       placeholder="Enter patient name"
-                       required />
-
-                <label for="patientID">Patient ID:</label>
-                <input type="text"
-                       id="patientID"
-                       name="patientID"
-                       placeholder="Enter patient ID"
-                       required />
-
-                <!-- Treatment Selection -->
-                <label for="treatment">Treatment Type:</label>
-                <select id="treatment" name="treatment" required>
-                    <option value="">-- Select Treatment --</option>
-                    <option value="Cleaning">Cleaning</option>
-                    <option value="Filling">Filling</option>
-                    <option value="Root Canal">Root Canal</option>
-                    <option value="Extraction">Extraction</option>
-                </select>
-
-
-                <!-- Notes -->
-                <label for="notes">Notes/Comments:</label>
-                <textarea id="notes"
-                          name="notes"
-                          rows="3"
-                          placeholder="e.g., patient requires antibiotic premedication"></textarea>
-
-                <!-- Submit -->
+                <!-- Hidden Input to Store Date (Automatically Assigned) -->
+                <input type="hidden" asp-for="Appointment.AppointmentDate"/>
+                
                 <button type="submit">Create Appointment</button>
             </form>
         </div>
 
-        <!-- Right Column: Availability -->
+        <!-- Right Column: Time Slots -->
         <div class="right-column">
-            <div class="availability-title">Dentist Availability</div>
-            <div class="time-slots" id="timeSlots">
-                <!-- Time slots appear here -->
+            <!-- Selected Date -->
+            <div class="selected-date">
+                <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
+                @if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
+                {
+                    <span class="today-indicator">(Today)</span>
+                }
             </div>
-            <div class="no-availability" id="noAvailabilityMessage" style="display: none;">
-                No availability found for this date.
+
+            <!-- Time Slots Section -->
+            <div class="time-slots">
+                @if (Model.TimeSlotsWithAvailability != null && Model.TimeSlotsWithAvailability.Any())
+                {
+                    @foreach (var slot in Model.TimeSlotsWithAvailability)
+                    {
+                        <div class="slot @(slot.IsBooked ? "booked" : "available")"
+                             data-time="@slot.TimeSlot">
+                            <!-- Ensure this line is correct -->
+                            @slot.TimeSlot - @(slot.IsBooked ? "Booked" : "Available")
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-availability">No availability data found.</div>
+                }
             </div>
+            <!-- Hidden Input to Store Selected Time -->
+            <input type="hidden" id="selectedTime" name="SelectedTime" asp-for="SelectedTime" />
         </div>
     </div>
 
     <script>
-        /***********************************************************************
-         * 2. Example Availability Data
-         *    Keyed by dentistName -> date -> array of time slots
-         ***********************************************************************/
-        const dentistAvailabilityData = {
-            "DrSmith": {
-                "2025-03-01": ["9:00 - 9:30", "10:00 - 10:30", "11:30 - 12:00", "2:00 - 2:30"],
-                "2025-03-02": ["9:30 - 10:00", "10:30 - 11:00", "1:00 - 1:30"],
-            },
-            "DrJohnson": {
-                "2025-03-01": ["9:00 - 9:30", "1:30 - 2:00", "3:00 - 3:30"],
-                "2025-03-03": ["10:00 - 10:30", "2:00 - 2:30", "4:00 - 4:30"],
-            },
-            "DrWilliams": {
-                "2025-03-02": ["9:00 - 9:30", "9:30 - 10:00", "2:00 - 2:30", "4:30 - 5:00"],
-                "2025-03-03": ["9:00 - 9:30", "10:00 - 10:30"],
-            }
-        };
+            document.addEventListener("DOMContentLoaded", function () {
+            const timeSlots = document.querySelectorAll(".slot.available");
+            const selectedTimeInput = document.getElementById("selectedTime");
 
-        /***********************************************************************
-         * 3. Get references to elements
-         ***********************************************************************/
-        const dentistSelect = document.getElementById("dentistSelect");
-        const appointmentDate = document.getElementById("appointmentDate");
-        const timeSlotsContainer = document.getElementById("timeSlots");
-        const noAvailabilityMsg = document.getElementById("noAvailabilityMessage");
+            timeSlots.forEach(slot => {
+                slot.addEventListener("click", function () {
+                    // Remove glow from all slots
+                    timeSlots.forEach(s => s.classList.remove("selected"));
 
-        /***********************************************************************
-         * 4. Availability Rendering Function
-         ***********************************************************************/
-        function renderAvailability() {
-            // 1) Get the selected dentist
-            const dentist = dentistSelect.value;
-            // 2) Get the selected date
-            const date = appointmentDate.value;  // format: YYYY-MM-DD
+                    // Add glow to the clicked slot
+                    this.classList.add("selected");
 
-            // Clear previous slots
-            timeSlotsContainer.innerHTML = "";
+                    // Update hidden input
+                    selectedTimeInput.value = this.getAttribute("data-time");
 
-            // Check if dentist or date are missing
-            if (!dentist || !date) {
-                // If either is missing, no need to show anything
-                noAvailabilityMsg.style.display = "none";
-                return;
-            }
-
-            // Attempt to read availability data
-            const dentistData = dentistAvailabilityData[dentist];
-            if (!dentistData) {
-                // No data at all for this dentist
-                noAvailabilityMsg.style.display = "block";
-                noAvailabilityMsg.textContent = "No availability found for this dentist.";
-                return;
-            }
-
-            const slotsForDate = dentistData[date] || [];
-
-            if (slotsForDate.length === 0) {
-                // If no slots found for this date
-                noAvailabilityMsg.style.display = "block";
-                noAvailabilityMsg.textContent = "No availability found for this date.";
-            } else {
-                // Render each slot
-                noAvailabilityMsg.style.display = "none";
-                slotsForDate.forEach((slot) => {
-                    const slotDiv = document.createElement("div");
-                    slotDiv.className = "slot";
-                    slotDiv.textContent = slot + " – Available";
-                    timeSlotsContainer.appendChild(slotDiv);
+                    console.log("Selected Time (via data-time):", selectedTime.value);
                 });
-            }
-        }
-
-        /***********************************************************************
-         * 5. Attach event listeners to dentistSelect & appointmentDate
-         ***********************************************************************/
-        dentistSelect.addEventListener("change", renderAvailability);
-        appointmentDate.addEventListener("change", renderAvailability);
-
-        // Optionally, call `renderAvailability()` on page load if you want
-        // to show something by default. Right now it does nothing until
-        // the user chooses both a dentist and date.
+            });
+        });
     </script>
+    <div class="debug-section">
+        <h3>Debug Information</h3>
+        <p><strong>Selected Date:</strong> <span id="debugDate">@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span></p>
+        <p><strong>Selected Time:</strong> <span id="debugTime">None</span></p>
+        <p><strong>Combined DateTime:</strong> <span id="debugDateTime">None</span></p>
+    </div>
 </body>
