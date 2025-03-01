@@ -32,22 +32,19 @@ namespace Dental_Surgery.Pages.Receptionist
             }
 
             [BindProperty]
-            public Appointment Appointment { get; set; }
+            public Appointment Appointment { get; set; } = new Appointment { AppointmentDate = DateTime.Today };
 
             [BindProperty]
             public string SelectedTime { get; set; }
 
-            public List<Dentist> Dentists { get; set; } = new List<Dentist>();
-            public List<(string TimeSlot, bool IsBooked)> TimeSlotsWithAvailability { get; set; } = new List<(string, bool)>();
+            public List<Dentist> Dentists { get; set; } = new();
+            public List<(string TimeSlot, bool IsBooked)> TimeSlotsWithAvailability { get; set; } = new();
+            public List<Patient> Patients { get; set; } = new();
+            public List<Treatment> Treatments { get; set; } = new();
 
             public async Task<IActionResult> OnGetAsync()
             {
-                Dentists = (List<Dentist>)await _unitOfWork.Dentists.GetAllAsync();
-
-                if (Appointment == null)
-                {
-                    Appointment = new Appointment { AppointmentDate = DateTime.Today };
-                }
+                await LoadDataAsync();
 
                 if (Appointment.DentistId > 0)
                 {
@@ -62,7 +59,7 @@ namespace Dental_Surgery.Pages.Receptionist
 
             public async Task<IActionResult> OnPostFetchAvailabilityAsync()
             {
-                Dentists = (List<Dentist>)await _unitOfWork.Dentists.GetAllAsync();
+                await LoadDataAsync();
 
                 if (Appointment.DentistId <= 0)
                 {
@@ -80,43 +77,62 @@ namespace Dental_Surgery.Pages.Receptionist
 
             public async Task<IActionResult> OnPostCreateAppointmentAsync()
             {
-                if (!ModelState.IsValid)
+                if (!ValidateAppointment())
                 {
                     return Page();
+                }
+
+                var timeParts = SelectedTime.Split(':');
+                Appointment.AppointmentDate = new DateTime(
+                    Appointment.AppointmentDate.Year,
+                    Appointment.AppointmentDate.Month,
+                    Appointment.AppointmentDate.Day,
+                    int.Parse(timeParts[0]),
+                    int.Parse(timeParts[1]),
+                    0
+                );
+
+                await _unitOfWork.Appointments.AddAsync(Appointment);
+                await _unitOfWork.SaveAsync();
+
+                TempData["SuccessMessage"] = "Appointment created successfully.";
+                return Page();
+            }
+
+            private async Task LoadDataAsync()
+            {
+                Dentists = (List<Dentist>)await _unitOfWork.Dentists.GetAllAsync();
+                Patients = (List<Patient>)await _unitOfWork.Patients.GetAllAsync();
+                Treatments = (List<Treatment>)await _unitOfWork.Treatments.GetAllAsync();
+            }
+
+            private bool ValidateAppointment()
+            {
+                if (Appointment.DentistId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Please select a dentist.";
+                    return false;
+                }
+
+                if (Appointment.PatientId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Please select a patient.";
+                    return false;
+                }
+
+                if (Appointment.TreatmentId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Please select a treatment.";
+                    return false;
                 }
 
                 if (string.IsNullOrEmpty(SelectedTime))
                 {
-                    ModelState.AddModelError("SelectedTime", "Please select a time slot.");
-                    return Page();
+                    TempData["ErrorMessage"] = "Please select a time.";
+                    return false;
                 }
 
-                try
-                {
-                    var time = TimeSpan.Parse(SelectedTime);
-                    Appointment.AppointmentDate = Appointment.AppointmentDate.Date + time;
-                }
-                catch (FormatException ex)
-                {
-                    _logger.LogError(ex, "Invalid time format");
-                    ModelState.AddModelError("SelectedTime", "Invalid time format.");
-                    return Page();
-                }
-
-                try
-                {
-                    await _unitOfWork.Appointments.AddAsync(Appointment);
-                    await _unitOfWork.SaveAsync();
-
-                    TempData["SuccessMessage"] = "Appointment created successfully!";
-                    return RedirectToPage();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error creating appointment");
-                    TempData["ErrorMessage"] = "Error creating appointment: " + ex.Message;
-                    return Page();
-                }
+                return true;
             }
         }
     }

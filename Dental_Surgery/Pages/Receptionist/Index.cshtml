@@ -161,12 +161,15 @@
     <h1>Dental Appointment</h1>
 
     <div class="container">
-        <!-- Left Column: Dentist Selection -->
+        <!-- Left Column: Form Inputs -->
         <div class="left-column">
-            <form method="post" asp-page-handler="FetchAvailability">
+            <form method="post" id="mainForm">
                 <!-- Dentist Selection -->
                 <label for="dentistSelect">Dentist:</label>
-                <select id="dentistSelect" name="Appointment.DentistId" asp-for="Appointment.DentistId" onchange="this.form.submit()" required>
+                <select id="dentistSelect" name="Appointment.DentistId"
+                        asp-for="Appointment.DentistId"
+                        onchange="document.getElementById('fetchAvailabilityBtn').click()"
+                        required>
                     <option value="">-- Select Dentist --</option>
                     @foreach (var dentist in Model.Dentists)
                     {
@@ -176,12 +179,68 @@
 
                 <!-- Date Selection -->
                 <label for="appointmentDate">Date:</label>
-                <input type="date" id="appointmentDate" name="Appointment.AppointmentDate" asp-for="Appointment.AppointmentDate" value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")" onchange="this.form.submit()" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                <input type="date" id="appointmentDate"
+                       name="Appointment.AppointmentDate"
+                       asp-for="Appointment.AppointmentDate"
+                       value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")"
+                       onchange="document.getElementById('fetchAvailabilityBtn').click()"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                       required />
 
-                <!-- Hidden Input to Store Date (Automatically Assigned) -->
-                <input type="hidden" asp-for="Appointment.AppointmentDate"/>
-                
-                <button type="submit">Create Appointment</button>
+                <!-- Patient Selection -->
+                <label for="patientSelect">Patient:</label>
+                <select id="patientSelect" name="Appointment.PatientId"
+                        asp-for="Appointment.PatientId"
+                        required>
+                    <option value="">-- Select Patient --</option>
+                    @foreach (var patient in Model.Patients)
+                    {
+                        <option value="@patient.PatientId">@patient.FirstName @patient.LastName</option>
+                    }
+                </select>
+
+                <!-- Treatment Selection -->
+                <label for="treatmentSelect">Treatment:</label>
+                <select id="treatmentSelect" name="Appointment.TreatmentId"
+                        asp-for="Appointment.TreatmentId"
+                        required>
+                    <option value="">-- Select Treatment --</option>
+                    @foreach (var treatment in Model.Treatments)
+                    {
+                        <option value="@treatment.TreatmentId">@treatment.Name</option>
+                    }
+                </select>
+
+                <!-- Notes -->
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="Appointment.Notes"
+                          asp-for="Appointment.Notes"
+                          rows="3"></textarea>
+
+                <!-- Attendance -->
+                <label class="checkbox-label">
+                    <input type="checkbox" id="attend"
+                           name="Appointment.attend"
+                           asp-for="Appointment.attend" />
+                    Patient Attended?
+                </label>
+
+                <!-- Hidden Time Slot -->
+                <input type="hidden" id="selectedTime"
+                       name="SelectedTime"
+                       asp-for="SelectedTime" />
+
+                <!-- Buttons -->
+                <button type="submit" asp-page-handler="FetchAvailability"
+                        id="fetchAvailabilityBtn"
+                        style="display: none;">
+                    Refresh Slots
+                </button>
+
+                <button type="submit" asp-page-handler="CreateAppointment"
+                        class="submit-button">
+                    Create Appointment
+                </button>
             </form>
         </div>
 

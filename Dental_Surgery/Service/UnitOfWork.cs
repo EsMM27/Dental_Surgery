@@ -27,9 +27,9 @@ namespace Dental.Service
         public IRepository<Treatment> Treatments => _treatments ??= new Repository<Treatment>(_appDBContext);
         public IAppointmentRepo Appointments => _appointments;
 
-        public async Task<int> SaveAsync()
+        public async Task SaveAsync()
         {
-            return await _appDBContext.SaveChangesAsync();
+            await _appDBContext.SaveChangesAsync();
         }
 
         public void Dispose()
