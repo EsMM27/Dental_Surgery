@@ -7,33 +7,44 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Patients
 {
     public class IndexModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        public IEnumerable<Patient> Patients;
 
-        public IndexModel(Dental.DataAccess.AppDBContext context)
+        public IndexModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
-
-        public IList<Patient> Patient { get;set; } = default!;
 
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
-            public async Task OnGetAsync()
+        public void OnGet()
         {
-            IQueryable<Patient> patientQuery = _context.Patients;
-            if(!string.IsNullOrEmpty(SearchString))
-            {
-                patientQuery = patientQuery.Where(p =>
-                p.FirstName.Contains(SearchString) ||
-				p.LastName.Contains(SearchString) ||
-                p.PPS.Contains(SearchString));
-            }
-            Patient = await patientQuery.ToListAsync();
+            //var patientQuery = _unitOfWork.PatientRepo.GetAll().AsQueryable(); // Ensure it's IQueryable
+
+            //if (!string.IsNullOrEmpty(SearchString))
+            //{
+            //    patientQuery = patientQuery.Where(p =>
+            //        EF.Functions.Like(p.FirstName, $"%{SearchString}%") ||
+            //        EF.Functions.Like(p.LastName, $"%{SearchString}%") ||
+            //        EF.Functions.Like(p.PPS, $"%{SearchString}%"));  // Using LIKE for case-insensitive search
+            //}
+
+            //Patients = patientQuery.ToList(); // Execute query
+            Patients = _unitOfWork.PatientRepo.GetAll();
         }
+
+
+
+
+        //public void OnGet()
+        //{
+        //    Patients = _unitOfWork.PatientRepo.GetAll();
+        //}
     }
 }

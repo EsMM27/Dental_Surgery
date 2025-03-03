@@ -6,5 +6,7 @@ namespace Dental.Service
     public interface IPatientRepo : IRepository<Patient>
     {
         public void Update(Patient patient);
+
+        void SaveAll();
     }
 }

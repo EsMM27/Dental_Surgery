@@ -10,5 +10,6 @@ namespace Dental.DataAccess.Repo
     public interface IDentistRepo : IRepository<Dentist>
     {
         public void Update(Dentist dentist);
+        void SaveAll();
     }
 }

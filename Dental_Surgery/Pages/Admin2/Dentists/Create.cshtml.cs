@@ -8,32 +8,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
 using Microsoft.Extensions.Hosting;
+using Dental.Service;
+using System.Numerics;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
     public class CreateModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _environment;
+        public IEnumerable<Dentist> Dentists;
 
-        public CreateModel(Dental.DataAccess.AppDBContext context, IWebHostEnvironment webHostEnvironment)
+        public CreateModel(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _environment = webHostEnvironment;
-        }
-
-        public IActionResult OnGet()
-        {
-            return Page();
         }
 
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
-
-        
+        public void OnGet()
+        {
+            Dentists = _unitOfWork.DentistRepo.GetAll();
+        }
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost(Dentist dentist)
         {
 
             if (!ModelState.IsValid)
@@ -57,22 +57,22 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(fileStream);
+                    file.CopyTo(fileStream);
                 }
 
                 Dentist.Image = Path.Combine("Images", "Dentist", fileName).Replace("\\", "/");
             }
             else
             {
-                Console.WriteLine("No file uploaded.");
+                //Console.WriteLine("No file uploaded.");
+                Dentist.Image = "Images/Dentist/default.png";
             }
 
-           
-
-            _context.Dentists.Add(Dentist);
-            await _context.SaveChangesAsync();
+            _unitOfWork.DentistRepo.Add(Dentist);
+            _unitOfWork.Save();
 
             return RedirectToPage("./Index");
         }
+
     }
 }

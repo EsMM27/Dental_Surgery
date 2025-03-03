@@ -14,31 +14,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].FirstName)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].LastName)
+                Last Name 
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Specialization)
+                Specialization
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].AwardingBody)
+                Awarding Body
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].ContactNumber)
+                Contact Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Image)
+                Image
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Dentist) {
+@foreach (var item in Model.Dentists) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)

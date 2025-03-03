@@ -11,5 +11,6 @@ namespace Dental.DataAcess.Repo
     public interface ITreatmentRepo : IRepository<Treatment>
     {
         public void Update(Treatment treatment);
+        void SaveAll();
     }
 }

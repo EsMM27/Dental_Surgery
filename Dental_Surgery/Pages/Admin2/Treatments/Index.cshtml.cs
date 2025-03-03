@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Treatments
 {
     public class IndexModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        public IEnumerable<Treatment> Treatments;
 
-        public IndexModel(Dental.DataAccess.AppDBContext context)
+        public IndexModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public IList<Treatment> Treatment { get;set; } = default!;
-
-        public async Task OnGetAsync()
+        public void OnGet()
         {
-            Treatment = await _context.Treatments.ToListAsync();
+            Treatments = _unitOfWork.TreatmentRepo.GetAll();
         }
     }
 }

@@ -7,57 +7,35 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class DeleteModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
-
-        public DeleteModel(Dental.DataAccess.AppDBContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
         public Appointment Appointment { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
-
-            if (appointment == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Appointment = appointment;
-            }
-            return Page();
+            Appointment = _unitOfWork.AppointmentRepo.Get(id);
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPost(Appointment appointment)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var appointment = await _context.Appointments.FindAsync(id);
-            if (appointment != null)
+            if (ModelState.IsValid)
             {
-                Appointment = appointment;
-                _context.Appointments.Remove(Appointment);
-                await _context.SaveChangesAsync();
+                _unitOfWork.AppointmentRepo.Delete(appointment);
+                _unitOfWork.Save();
             }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
     }
 }

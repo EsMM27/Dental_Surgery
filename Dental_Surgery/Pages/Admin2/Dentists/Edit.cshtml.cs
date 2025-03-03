@@ -8,70 +8,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
     public class EditModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(Dental.DataAccess.AppDBContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dentist =  await _context.Dentists.FirstOrDefaultAsync(m => m.DentistId == id);
-            if (dentist == null)
-            {
-                return NotFound();
-            }
-            Dentist = dentist;
-            return Page();
+            Dentist = _unitOfWork.DentistRepo.Get(id);
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost(Dentist dentist)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return Page();
+                _unitOfWork.DentistRepo.Update(dentist);
+                _unitOfWork.Save();
             }
-
-            _context.Attach(Dentist).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DentistExists(Dentist.DentistId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
 
-        private bool DentistExists(int id)
-        {
-            return _context.Dentists.Any(e => e.DentistId == id);
-        }
+        //    private bool DentistExists(int id)
+        //{
+        //    return _unitOfWork.DentistRepo.Any(e => e.DentistId == id);
+        //}
     }
 }

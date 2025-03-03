@@ -16,5 +16,10 @@ namespace Dental.DataAcess.Repo
         {
             _context = context;
         }
+
+        public void SaveAll()
+        {
+            _context.SaveChanges();
+        }
     }
 }

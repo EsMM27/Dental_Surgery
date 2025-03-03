@@ -7,37 +7,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Patients
 {
     public class DetailsModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DetailsModel(Dental.DataAccess.AppDBContext context)
+        public DetailsModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public Patient Patient { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var patient = await _context.Patients.FirstOrDefaultAsync(m => m.PatientId == id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Patient = patient;
-            }
-            return Page();
+            Patient = _unitOfWork.PatientRepo.Get(id);
         }
     }
 }

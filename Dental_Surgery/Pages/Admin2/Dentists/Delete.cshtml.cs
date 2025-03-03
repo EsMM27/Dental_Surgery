@@ -7,57 +7,37 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
+using System.Numerics;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
     public class DeleteModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteModel(Dental.DataAccess.AppDBContext context)
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
         public Dentist Dentist { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dentist = await _context.Dentists.FirstOrDefaultAsync(m => m.DentistId == id);
-
-            if (dentist == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Dentist = dentist;
-            }
-            return Page();
+            Dentist = _unitOfWork.DentistRepo.Get(id);
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPost(Dentist dentist)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var dentist = await _context.Dentists.FindAsync(id);
-            if (dentist != null)
+            if (ModelState.IsValid)
             {
-                Dentist = dentist;
-                _context.Dentists.Remove(Dentist);
-                await _context.SaveChangesAsync();
+                _unitOfWork.DentistRepo.Delete(dentist);
+                _unitOfWork.Save();
             }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
     }
 }

@@ -8,70 +8,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Treatments
 {
     public class EditModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EditModel(Dental.DataAccess.AppDBContext context)
+        public EditModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
         public Treatment Treatment { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var treatment =  await _context.Treatments.FirstOrDefaultAsync(m => m.TreatmentId == id);
-            if (treatment == null)
-            {
-                return NotFound();
-            }
-            Treatment = treatment;
-            return Page();
+            Treatment = _unitOfWork.TreatmentRepo.Get(id);
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost(Treatment treatment)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return Page();
+                _unitOfWork.TreatmentRepo.Update(treatment);
+                _unitOfWork.Save();
             }
-
-            _context.Attach(Treatment).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TreatmentExists(Treatment.TreatmentId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
 
-        private bool TreatmentExists(int id)
-        {
-            return _context.Treatments.Any(e => e.TreatmentId == id);
-        }
+        //private bool TreatmentExists(int id)
+        //{
+        //    return _context.Treatments.Any(e => e.TreatmentId == id);
+        //}
     }
 }

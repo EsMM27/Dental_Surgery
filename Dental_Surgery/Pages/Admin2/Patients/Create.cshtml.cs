@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
+using Microsoft.Extensions.Hosting;
 
 namespace Dental_Surgery.Pages.Admin2.Patients
 {
     public class CreateModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateModel(Dental.DataAccess.AppDBContext context)
+        public CreateModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult OnGet()
@@ -28,16 +30,13 @@ namespace Dental_Surgery.Pages.Admin2.Patients
         public Patient Patient { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return Page();
+                _unitOfWork.PatientRepo.Add(Patient);
+                _unitOfWork.Save();
             }
-
-            _context.Patients.Add(Patient);
-            await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
     }

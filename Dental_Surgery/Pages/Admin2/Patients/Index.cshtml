@@ -19,31 +19,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].PPS)
+                PPS
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].FirstName)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].LastName)
+                Last Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].ContactNumber)
+                ContactNumber
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].Address)
+                Address
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient[0].DateOfBirth)
+                Date Of Birth
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Patient) {
+@foreach (var item in Model.Patients) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.PPS)

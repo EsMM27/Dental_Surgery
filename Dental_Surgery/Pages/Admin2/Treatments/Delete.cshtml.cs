@@ -7,57 +7,36 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Treatments
 {
     public class DeleteModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteModel(Dental.DataAccess.AppDBContext context)
+        public DeleteModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
         public Treatment Treatment { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public void OnGet(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var treatment = await _context.Treatments.FirstOrDefaultAsync(m => m.TreatmentId == id);
-
-            if (treatment == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Treatment = treatment;
-            }
-            return Page();
+            Treatment = _unitOfWork.TreatmentRepo.Get(id);
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPost(Treatment treatment)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var treatment = await _context.Treatments.FindAsync(id);
-            if (treatment != null)
+            if (ModelState.IsValid)
             {
-                Treatment = treatment;
-                _context.Treatments.Remove(Treatment);
-                await _context.SaveChangesAsync();
+                _unitOfWork.TreatmentRepo.Delete(treatment);
+                _unitOfWork.Save();
             }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
     }
 }

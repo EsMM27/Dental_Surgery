@@ -7,23 +7,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class CreateModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
-
-        public CreateModel(Dental.DataAccess.AppDBContext context)
+        
+        private readonly IUnitOfWork _unitOfWork;
+        public CreateModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "FirstName");
-        ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "FirstName");
-        ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
+            //ViewData["DentistId"] = new SelectList(_unitOfWork.Dentist, "DentistId", "FirstName");
+            //ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "FirstName");
+            //ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
             return Page();
         }
 
@@ -38,8 +39,8 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                 return Page();
             }
 
-            _context.Appointments.Add(Appointment);
-            await _context.SaveChangesAsync();
+            _unitOfWork.AppointmentRepo.Add(Appointment);
+            _unitOfWork.Save();
 
             return RedirectToPage("./Index");
         }
