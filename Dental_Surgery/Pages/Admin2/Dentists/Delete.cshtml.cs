@@ -29,12 +29,12 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
             Dentist = _unitOfWork.DentistRepo.Get(id);
         }
 
-        public IActionResult OnPost(Dentist dentist)
+        public IActionResult OnPost(Dentist Dentist)
         {
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.DentistRepo.Delete(dentist);
+                _unitOfWork.DentistRepo.Delete(Dentist);
                 _unitOfWork.Save();
             }
             return RedirectToPage("Index");
