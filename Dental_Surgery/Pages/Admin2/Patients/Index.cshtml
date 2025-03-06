@@ -2,76 +2,82 @@
 @model Dental_Surgery.Pages.Admin2.Patients.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Patients";
 }
 
 <h1>Patients</h1>
-<br />
+
 <form method="get" class="col-3">
-        <input type="text" placeholder="Search..." class="form-control me-sm-2" name="searchString" value="@Model.SearchString" />
-        <input type="submit" value="Search" class="btn btn-outline-primary form-control" style="width:200px" />
-        <a asp-page="./Index" class="btn btn-outline-secondary"> Clear</a>
-    </form>
+    <input type="text" id="searchBox" placeholder="Search..." class="form-control me-sm-2" />
+</form>
+
 <p>
     <a asp-page="Create">Add new patient</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                PPS
-            </th>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                ContactNumber
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-                Date Of Birth
-            </th>
+            <th>PPS</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>ContactNumber</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Date Of Birth</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model.Patients) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PPS)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.PatientId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.PatientId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.PatientId">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="patientsTableBody">
+        @foreach (var item in Model.Patients)
+        {
+            <tr>
+                <td>@item.PPS</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.ContactNumber</td>
+                <td>@item.Email</td>
+                <td>@item.Address</td>
+                <td>@item.DateOfBirth.ToShortDateString()</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.PatientId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.PatientId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.PatientId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.getElementById("searchBox").addEventListener("input", function () {
+            let searchValue = this.value;
+
+            fetch(`/Admin2/Patients/Index?handler=PatientsJson&searchString=${searchValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById("patientsTableBody");
+                    tableBody.innerHTML = ""; // Clear previous results
+
+                    data.forEach(patient => {
+                        let row = `<tr>
+                            <td>${patient.pps}</td>
+                            <td>${patient.firstName}</td>
+                            <td>${patient.lastName}</td>
+                            <td>${patient.contactNumber}</td>
+                            <td>${patient.email}</td>
+                            <td>${patient.address}</td>
+                            <td>${new Date(patient.dateOfBirth).toLocaleDateString()}</td>
+                            <td>
+                                <a href="/Admin2/Patients/Edit?id=${patient.patientId}">Edit</a> |
+                                <a href="/Admin2/Patients/Details?id=${patient.patientId}">Details</a> |
+                                <a href="/Admin2/Patients/Delete?id=${patient.patientId}">Delete</a>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                });
+        });
+    </script>
+}

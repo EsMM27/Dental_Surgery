@@ -28,15 +28,19 @@ namespace Dental_Surgery.Pages.Admin2.Patients
             Patient = _unitOfWork.PatientRepo.Get(id);
         }
 
-        public IActionResult OnPost(Patient patient)
-        {
+		public IActionResult OnPost()
+		{
 
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.PatientRepo.Delete(patient);
-                _unitOfWork.Save();
-            }
-            return RedirectToPage("Index");
-        }
-    }
+			var patientInDb = _unitOfWork.PatientRepo.Get(Patient.PatientId);
+			if (patientInDb == null)
+			{
+				return NotFound();
+			}
+
+			_unitOfWork.PatientRepo.Delete(patientInDb);
+			_unitOfWork.Save();
+
+			return RedirectToPage("Index");
+		}
+	}
 }

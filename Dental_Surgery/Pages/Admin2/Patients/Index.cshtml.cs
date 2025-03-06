@@ -14,37 +14,57 @@ namespace Dental_Surgery.Pages.Admin2.Patients
     public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
-        public IEnumerable<Patient> Patients;
+        public IEnumerable<Patient> Patients { get; set; } = new List<Patient>();
 
-        public IndexModel(IUnitOfWork unitOfWork)
+		public IndexModel(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SearchString { get; set; }
-        public void OnGet()
-        {
-            //var patientQuery = _unitOfWork.PatientRepo.GetAll().AsQueryable(); // Ensure it's IQueryable
+		public void OnGet(string? searchString)
+		{
+			if (!string.IsNullOrEmpty(searchString))
+			{
+				Patients = _unitOfWork.PatientRepo
+					.GetAll()
+					.Where(p => p.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+								p.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+								p.PPS.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+					.ToList();
+			}
+			else
+			{
+				Patients = _unitOfWork.PatientRepo.GetAll();
+			}
+		}
 
-            //if (!string.IsNullOrEmpty(SearchString))
-            //{
-            //    patientQuery = patientQuery.Where(p =>
-            //        EF.Functions.Like(p.FirstName, $"%{SearchString}%") ||
-            //        EF.Functions.Like(p.LastName, $"%{SearchString}%") ||
-            //        EF.Functions.Like(p.PPS, $"%{SearchString}%"));  // Using LIKE for case-insensitive search
-            //}
+		public JsonResult OnGetPatientsJson(string searchString)
+		{
+			var patients = _unitOfWork.PatientRepo
+				.GetAll()
+				.Where(p => string.IsNullOrEmpty(searchString) ||
+							p.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+							p.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+							p.PPS.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+				.Select(p => new {
+					p.PatientId,
+					p.PPS,
+					p.FirstName,
+					p.LastName,
+					p.ContactNumber,
+					p.Email,
+					p.Address,
+					p.DateOfBirth
+				})
+				.ToList();
 
-            //Patients = patientQuery.ToList(); // Execute query
-            Patients = _unitOfWork.PatientRepo.GetAll();
-        }
+			return new JsonResult(patients);
+		}
+	}
 
-
-
-
-        //public void OnGet()
-        //{
-        //    Patients = _unitOfWork.PatientRepo.GetAll();
-        //}
-    }
+	//public void OnGet()
+	//{
+	//    Patients = _unitOfWork.PatientRepo.GetAll();
+	//}
 }
+
