@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
@@ -12,25 +12,23 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class CreateModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly AppDBContext _context;
 
-        public CreateModel(Dental.DataAccess.AppDBContext context)
+        public CreateModel(AppDBContext context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "FirstName");
-        ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "FirstName");
-        ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
+            ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "FirstName");
+            ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
             return Page();
         }
 
         [BindProperty]
         public Appointment Appointment { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -42,6 +40,20 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+
+        // AJAX endpoint to search patients
+        public async Task<JsonResult> OnGetSearchPatients(string searchString)
+        {
+            var patients = await _context.Patients
+                .Where(p => string.IsNullOrEmpty(searchString) ||
+                            p.FirstName.Contains(searchString) ||
+                            p.LastName.Contains(searchString) ||
+                            p.PPS.Contains(searchString))
+                .Select(p => new { p.PatientId, p.FirstName, p.LastName, p.PPS })
+                .ToListAsync();
+
+            return new JsonResult(patients);
         }
     }
 }

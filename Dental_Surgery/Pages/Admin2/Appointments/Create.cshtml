@@ -30,15 +30,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="Appointment.DentistId" class="control-label"></label>
-                <select asp-for="Appointment.DentistId" class ="form-control" asp-items="ViewBag.DentistId"></select>
+                <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
             </div>
+
+            <!-- Patient Search Input -->
             <div class="form-group">
-                <label asp-for="Appointment.PatientId" class="control-label"></label>
-                <select asp-for="Appointment.PatientId" class ="form-control" asp-items="ViewBag.PatientId"></select>
+                <label>Search for Patient:</label>
+                <input type="text" id="searchPatient" class="form-control" placeholder="Type patient name or PPS..." />
+                <ul id="patientResults" class="list-group mt-2" style="position:absolute; z-index:1000;"></ul>
+                <input type="hidden" asp-for="Appointment.PatientId" id="selectedPatientId" />
             </div>
+
             <div class="form-group">
                 <label asp-for="Appointment.TreatmentId" class="control-label"></label>
-                <select asp-for="Appointment.TreatmentId" class ="form-control" asp-items="ViewBag.TreatmentId"></select>
+                <select asp-for="Appointment.TreatmentId" class="form-control" asp-items="ViewBag.TreatmentId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -52,5 +57,48 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById("searchPatient").addEventListener("input", function () {
+            let searchValue = this.value;
+
+            if (searchValue.length < 2) {
+                document.getElementById("patientResults").innerHTML = "";
+                return;
+            }
+
+            fetch(`/Admin2/Appointments/Create?handler=SearchPatients&searchString=${searchValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsList = document.getElementById("patientResults");
+                    resultsList.innerHTML = "";
+
+                    data.forEach(patient => {
+                        let listItem = document.createElement("li");
+                        listItem.classList.add("list-group-item", "list-group-item-action");
+                        listItem.textContent = `${patient.firstName} ${patient.lastName} (PPS: ${patient.pps})`;
+                        listItem.dataset.patientId = patient.patientId;
+
+                        listItem.addEventListener("click", function () {
+                            document.getElementById("searchPatient").value = this.textContent;
+                            document.getElementById("selectedPatientId").value = this.dataset.patientId;
+                            resultsList.innerHTML = "";
+                        });
+
+                        resultsList.appendChild(listItem);
+                    });
+                });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            let resultsList = document.getElementById("patientResults");
+            if (!event.target.closest("#searchPatient")) {
+                resultsList.innerHTML = "";
+            }
+        });
+    </script>
 }
