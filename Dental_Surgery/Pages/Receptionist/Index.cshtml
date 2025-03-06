@@ -31,8 +31,9 @@
             gap: 100px;
             margin: 0 auto; /* center the container */
             background-color: #ffffff; /* optional if you want a white card-like background */
-            border-radius: 8px;
+            border-radius: 8px;     
         }
+
 
 
     /* Left Column: Appointment Form */
@@ -131,28 +132,46 @@
 
         /* Style for available time slots */
         .slot.available {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
             text-align: center;
-            background-color: lightgreen;
+            background: linear-gradient(135deg, #a8e063, #56ab2f); /* Gradient background */
+            color: white;
+            font-weight: bold;
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        /* Style for booked time slots */
+            .slot.available:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
         .slot.booked {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
             text-align: center;
-            background-color: lightcoral;
+            background: linear-gradient(135deg, #ff6b6b, #c31432); /* Gradient background */
+            color: white;
+            font-weight: bold;
             cursor: not-allowed;
+            opacity: 0.7;
         }
 
-        /* Style for selected time slot */
         .slot.selected {
-            box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.8); /* Glow effect */
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient background */
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.8); /* Glow effect */
             border: 2px solid #007bff;
+            transform: scale(1.1);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
     
   </style>
