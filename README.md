@@ -28,6 +28,11 @@ Post Initial setup changes to be made through the creation of new branches and m
 You can open this repository from github "Open in Visual Studio"
 
 ## Release History
+* 0.1.3
+    * Added creation of appointments for receptionists
+* 0.1.2
+    * Added Login screen 
+    * Added search function for patients
 * 0.1.1
     * Azure Web server, SQL implemented
 * 0.1.0
