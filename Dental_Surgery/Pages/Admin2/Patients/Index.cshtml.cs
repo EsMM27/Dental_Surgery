@@ -23,17 +23,40 @@ namespace Dental_Surgery.Pages.Admin2.Patients
 
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
-            public async Task OnGetAsync()
+        public async Task OnGetAsync()
         {
             IQueryable<Patient> patientQuery = _context.Patients;
-            if(!string.IsNullOrEmpty(SearchString))
+
+            if (!string.IsNullOrEmpty(SearchString))
             {
                 patientQuery = patientQuery.Where(p =>
-                p.FirstName.Contains(SearchString) ||
-				p.LastName.Contains(SearchString) ||
-                p.PPS.Contains(SearchString));
+                    p.FirstName.Contains(SearchString) ||
+                    p.LastName.Contains(SearchString) ||
+                    p.PPS.Contains(SearchString));
             }
+
             Patient = await patientQuery.ToListAsync();
+        }
+        public async Task<JsonResult> OnGetSearchPatients(string searchString)
+        {
+            var patients = await _context.Patients
+                .Where(p => string.IsNullOrEmpty(searchString) ||
+                            p.FirstName.Contains(searchString) ||
+                            p.LastName.Contains(searchString) ||
+                            p.PPS.Contains(searchString))
+                .Select(p => new {
+                    p.PatientId,
+                    p.FirstName,
+                    p.LastName,
+                    p.PPS,
+                    p.ContactNumber,
+                    p.Email,
+                    p.Address,
+                    DateOfBirth = p.DateOfBirth.ToString("yyyy-MM-dd")
+                })
+                .ToListAsync();
+
+            return new JsonResult(patients);
         }
     }
 }
