@@ -37,47 +37,39 @@ namespace Dental_Surgery.Pages.Receptionist
         public async Task<IActionResult> OnGetAsync()
         {
             await LoadDataAsync();
-
-            if (Appointment.DentistId > 0)
-            {
-                TimeSlotsWithAvailability = await _unitOfWork.Appointments.GetTimeSlotsWithAvailabilityAsync(
-                    Appointment.DentistId,
-                    Appointment.AppointmentDate
-                );
-
-                // Filter available time slots
-                var availableTimeSlots = TimeSlots.GetAvailableTimeSlots(Appointment.AppointmentDate);
-                TimeSlotsWithAvailability = TimeSlotsWithAvailability
-                    .Where(ts => availableTimeSlots.Contains(ts.TimeSlot))
-                    .ToList();
-            }
-
+            await LoadWeeklyAvailabilityAsync();
             return Page();
         }
 
         public async Task<IActionResult> OnPostFetchAvailabilityAsync()
         {
             await LoadDataAsync();
-
-            if (Appointment.DentistId <= 0)
-            {
-                TempData["ErrorMessage"] = "Please select a dentist.";
-                return Page();
-            }
-
-            TimeSlotsWithAvailability = await _unitOfWork.Appointments.GetTimeSlotsWithAvailabilityAsync(
-                Appointment.DentistId,
-                Appointment.AppointmentDate
-            );
-
-            // Filter available time slots
-            var availableTimeSlots = TimeSlots.GetAvailableTimeSlots(Appointment.AppointmentDate);
-            TimeSlotsWithAvailability = TimeSlotsWithAvailability
-                .Where(ts => availableTimeSlots.Contains(ts.TimeSlot))
-                .ToList();
-
-            return Page();
+            await LoadWeeklyAvailabilityAsync();
+            return Page();  
         }
+
+        private async Task LoadWeeklyAvailabilityAsync()
+        {
+            if (Appointment.DentistId > 0)
+            {
+                var startOfWeek = Appointment.AppointmentDate.StartOfWeek(DayOfWeek.Monday);
+                var endOfWeek = startOfWeek.AddDays(4); // Monday to Friday
+
+                TimeSlotsWithAvailability = new List<(string TimeSlot, bool IsBooked)>();
+
+                for (var date = startOfWeek; date <= endOfWeek; date = date.AddDays(1))
+                {
+                    var dailySlots = await _unitOfWork.Appointments.GetTimeSlotsWithAvailabilityAsync(Appointment.DentistId, date);
+                    var availableTimeSlots = TimeSlots.GetAvailableTimeSlots(date);
+
+                    TimeSlotsWithAvailability.AddRange(dailySlots
+                        .Where(ts => availableTimeSlots.Contains(ts.TimeSlot))
+                        .Select(ts => (TimeSlot: $"{date:yyyy-MM-dd} {ts.TimeSlot}", ts.IsBooked)));
+                }
+            }
+        }
+
+        
 
         public async Task<IActionResult> OnPostCreateAppointmentAsync()
         {
@@ -140,3 +132,11 @@ namespace Dental_Surgery.Pages.Receptionist
         }
     }
     }
+public static class DateTimeExtensions
+{
+    public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+    {
+        int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+        return dt.AddDays(-1 * diff).Date;
+    }
+}

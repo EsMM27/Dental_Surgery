@@ -206,6 +206,23 @@
                        min="@DateTime.Today.ToString("yyyy-MM-dd")"
                        required />
 
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const appointmentDateInput = document.getElementById("appointmentDate");
+
+                        appointmentDateInput.addEventListener("input", function () {
+                            const selectedDate = new Date(this.value);
+                            const day = selectedDate.getUTCDay();
+
+                            // If the selected day is Saturday (6) or Sunday (0), clear the input
+                            if (day === 6 || day === 0) {
+                                this.value = "";
+                                alert("Saturdays and Sundays are not selectable. Please choose a weekday.");
+                            }
+                        });
+                    });
+                </script>
+
                 <!-- Patient Selection -->
                 <label for="patientSelect">Patient:</label>
                 <select id="patientSelect" name="Appointment.PatientId"
@@ -274,28 +291,47 @@
                 }
             </div>
 
-            <!-- Time Slots Section -->
-            <div class="time-slots">
-                @if (Model.TimeSlotsWithAvailability != null && Model.TimeSlotsWithAvailability.Any())
-                {
-                    @foreach (var slot in Model.TimeSlotsWithAvailability)
+            <!-- Right Column: Time Slots -->
+            <div class="right-column">
+                <!-- Selected Date -->
+                <div class="selected-date">
+                    <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
+                    @if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
                     {
-                        <div class="slot @(slot.IsBooked ? "booked" : "available")"
-                             data-time="@slot.TimeSlot">
-                            <!-- Ensure this line is correct -->
-                            @slot.TimeSlot - @(slot.IsBooked ? "Booked" : "Available")
-                        </div>
+                        <span class="today-indicator">(Today)</span>
                     }
-                }
-                else
-                {
-                    <div class="no-availability">No availability data found.</div>
-                }
+                </div>
+
+                <!-- Time Slots Section -->
+                <div class="time-slots">
+                    @if (Model.TimeSlotsWithAvailability != null && Model.TimeSlotsWithAvailability.Any())
+                    {
+                        var groupedSlots = Model.TimeSlotsWithAvailability
+                        .GroupBy(ts => DateTime.Parse(ts.TimeSlot.Split(' ')[0]))
+                        .OrderBy(g => g.Key);
+
+                        foreach (var group in groupedSlots)
+                        {
+                            <div class="day-slots">
+                                <h3>@group.Key.ToString("dddd, MMMM dd")</h3>
+                                @foreach (var slot in group)
+                                {
+                                    <div class="slot @(slot.IsBooked ? "booked" : "available")"
+                                         data-time="@slot.TimeSlot">
+                                        @slot.TimeSlot.Split(' ')[1] - @(slot.IsBooked ? "Booked" : "Available")
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-availability">No availability data found.</div>
+                    }
+                </div>
+                <!-- Hidden Input to Store Selected Time -->
+                <input type="hidden" id="selectedTime" name="SelectedTime" asp-for="SelectedTime" />
             </div>
-            <!-- Hidden Input to Store Selected Time -->
-            <input type="hidden" id="selectedTime" name="SelectedTime" asp-for="SelectedTime" />
-        </div>
-    </div>
 
     <script>
             document.addEventListener("DOMContentLoaded", function () {
