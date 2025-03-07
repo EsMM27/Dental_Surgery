@@ -4,324 +4,384 @@
 }
 
 <head>
-  <meta charset="UTF-8" />
-  <style>
-        .slot {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            text-align: center;
-        }
+	<meta charset="UTF-8" />
+	<style>
+		.suggestion-box {
+			position: absolute;
+			background: white;
+			border: 1px solid #ccc;
+			max-height: 200px;
+			overflow-y: auto;
+			width: 250px;
+			display: none;
+			z-index: 1000;
+		}
 
-        .available {
-            background-color: lightgreen;
-        }
+		.suggestion-item {
+			padding: 10px;
+			cursor: pointer;
+		}
 
-        .booked {
-            background-color: lightcoral;
-        }
+			.suggestion-item:hover {
+				background-color: #f0f0f0;
+			}
 
-        .no-availability {
-            color: gray;
-            font-style: italic;
-        }
-    /* Container for two columns */
-        .container {
-            display: flex;
-            gap: 100px;
-            margin: 0 auto; /* center the container */
-            background-color: #ffffff; /* optional if you want a white card-like background */
-            border-radius: 8px;     
-        }
+		.slot {
+			padding: 10px;
+			margin: 5px;
+			border-radius: 5px;
+			text-align: center;
+		}
+
+		.available {
+			background-color: lightgreen;
+		}
+
+		.booked {
+			background-color: lightcoral;
+		}
+
+		.no-availability {
+			color: gray;
+			font-style: italic;
+		}
+		/* Container for two columns */
+		.container {
+			display: flex;
+			gap: 100px;
+			margin: 0 auto; /* center the container */
+			background-color: #ffffff; /* optional if you want a white card-like background */
+			border-radius: 8px;
+		}
 
 
 
-    /* Left Column: Appointment Form */
-        .left-column {
-            flex: 0 0 300px; /* fixed width of 300px (change as needed) */
-            /* or width: 40%; if you want a percentage-based approach */
-            margin-right: 20px; /* optional if you want spacing */
-        }
+		/* Left Column: Appointment Form */
+		.left-column {
+			flex: 0 0 300px; /* fixed width of 300px (change as needed) */
+			/* or width: 40%; if you want a percentage-based approach */
+			margin-right: 20px; /* optional if you want spacing */
+		}
 
-        .right-column {
-            flex: 1; /* Let this column fill remaining space */
-            min-width: 250px; /* to keep it from squishing too small */
-        }
+		.right-column {
+			flex: 1; /* Let this column fill remaining space */
+			min-width: 250px; /* to keep it from squishing too small */
+		}
 
-    /* Common Form Styles */
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-    }
+		/* Common Form Styles */
+		label {
+			display: block;
+			margin-top: 15px;
+			font-weight: 600;
+		}
 
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
+		input[type="text"],
+		input[type="date"],
+		input[type="time"],
+		select,
+		textarea {
+			width: 100%;
+			padding: 10px;
+			margin-top: 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 1rem;
+			outline: none;
+			transition: border-color 0.3s ease;
+		}
 
-    /* Hover / Focus States for Inputs */
-    input:hover,
-    select:hover,
-    textarea:hover {
-      border-color: #47c1b2; /* Teal highlight on hover */
-    }
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #47c1b2;
-      box-shadow: 0 0 5px rgba(71, 193, 178, 0.2);
-    }
+			/* Hover / Focus States for Inputs */
+			input:hover,
+			select:hover,
+			textarea:hover {
+				border-color: #47c1b2; /* Teal highlight on hover */
+			}
 
-    /* Submit Button */
-    button[type="submit"] {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      background: #47c1b2; /* Teal color */
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button[type="submit"]:hover {
-      background: #399f94;
-    }
+			input:focus,
+			select:focus,
+			textarea:focus {
+				border-color: #47c1b2;
+				box-shadow: 0 0 5px rgba(71, 193, 178, 0.2);
+			}
 
-    /* Availability Section Styles */
-    .availability-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-      text-align: center;
-    }
+		/* Submit Button */
+		button[type="submit"] {
+			display: inline-block;
+			margin-top: 20px;
+			padding: 12px 20px;
+			font-size: 1rem;
+			background: #47c1b2; /* Teal color */
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: background 0.3s ease;
+		}
 
-        /* Style the date picker */
-        input[type="date"] {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
-        }
+			button[type="submit"]:hover {
+				background: #399f94;
+			}
 
-        /* Style the selected date display */
-        .selected-date {
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-        }
+		/* Availability Section Styles */
+		.availability-title {
+			font-size: 1.2rem;
+			font-weight: 600;
+			margin-bottom: 15px;
+			text-align: center;
+		}
 
-        .today-indicator {
-            color: green;
-            font-weight: bold;
-            margin-left: 10px;
-        }
+		/* Style the date picker */
+		input[type="date"] {
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 1em;
+		}
 
-        /* Style for available time slots */
-        .slot.available {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #a8e063, #56ab2f); /* Gradient background */
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+		/* Style the selected date display */
+		.selected-date {
+			margin-bottom: 20px;
+			font-size: 1.2em;
+			font-weight: bold;
+			color: #333;
+		}
 
-            .slot.available:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            }
+		.today-indicator {
+			color: green;
+			font-weight: bold;
+			margin-left: 10px;
+		}
 
-        .slot.booked {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #ff6b6b, #c31432); /* Gradient background */
-            color: white;
-            font-weight: bold;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+		/* Style for available time slots */
+		.slot.available {
+			padding: 15px;
+			margin: 10px;
+			border-radius: 10px;
+			text-align: center;
+			background: linear-gradient(135deg, #a8e063, #56ab2f); /* Gradient background */
+			color: white;
+			font-weight: bold;
+			cursor: pointer;
+			transition: transform 0.3s, box-shadow 0.3s;
+		}
 
-        .slot.selected {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient background */
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.8); /* Glow effect */
-            border: 2px solid #007bff;
-            transform: scale(1.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-    
-  </style>
+			.slot.available:hover {
+				transform: scale(1.05);
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			}
+
+		.slot.booked {
+			padding: 15px;
+			margin: 10px;
+			border-radius: 10px;
+			text-align: center;
+			background: linear-gradient(135deg, #ff6b6b, #c31432); /* Gradient background */
+			color: white;
+			font-weight: bold;
+			cursor: not-allowed;
+			opacity: 0.7;
+		}
+
+		.slot.selected {
+			padding: 15px;
+			margin: 10px;
+			border-radius: 10px;
+			text-align: center;
+			background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient background */
+			color: white;
+			font-weight: bold;
+			box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.8); /* Glow effect */
+			border: 2px solid #007bff;
+			transform: scale(1.1);
+			transition: transform 0.3s, box-shadow 0.3s;
+		}
+	</style>
 </head>
 <body>
-    <h1>Dental Appointment</h1>
+	<h1>Dental Appointment</h1>
 
-    <div class="container">
-        <!-- Left Column: Form Inputs -->
-        <div class="left-column">
-            <form method="post" id="mainForm">
-                <!-- Dentist Selection -->
-                <label for="dentistSelect">Dentist:</label>
-                <select id="dentistSelect" name="Appointment.DentistId"
-                        asp-for="Appointment.DentistId"
-                        onchange="document.getElementById('fetchAvailabilityBtn').click()"
-                        required>
-                    <option value="">-- Select Dentist --</option>
-                    @foreach (var dentist in Model.Dentists)
-                    {
-                        <option value="@dentist.DentistId">@dentist.FirstName</option>
-                    }
-                </select>
+	<div class="container">
+		<!-- Left Column: Form Inputs -->
+		<div class="left-column">
+			<form method="post" id="mainForm">
+				<!-- Dentist Selection -->
+				<label for="dentistSelect">Dentist:</label>
+				<select id="dentistSelect" name="Appointment.DentistId"
+						asp-for="Appointment.DentistId"
+						onchange="document.getElementById('fetchAvailabilityBtn').click()"
+						required>
+					<option value="">-- Select Dentist --</option>
+					@foreach (var dentist in Model.Dentists)
+					{
+						<option value="@dentist.DentistId">@dentist.FirstName</option>
+					}
+				</select>
 
-                <!-- Date Selection -->
-                <label for="appointmentDate">Date:</label>
-                <input type="date" id="appointmentDate"
-                       name="Appointment.AppointmentDate"
-                       asp-for="Appointment.AppointmentDate"
-                       value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")"
-                       onchange="document.getElementById('fetchAvailabilityBtn').click()"
-                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                       required />
+				<!-- Date Selection -->
+				<label for="appointmentDate">Date:</label>
+				<input type="date" id="appointmentDate"
+					   name="Appointment.AppointmentDate"
+					   asp-for="Appointment.AppointmentDate"
+					   value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")"
+					   onchange="document.getElementById('fetchAvailabilityBtn').click()"
+					   min="@DateTime.Today.ToString("yyyy-MM-dd")"
+					   required />
 
-                <!-- Patient Selection -->
-                <label for="patientSelect">Patient:</label>
-                <select id="patientSelect" name="Appointment.PatientId"
-                        asp-for="Appointment.PatientId"
-                        required>
-                    <option value="">-- Select Patient --</option>
-                    @foreach (var patient in Model.Patients)
-                    {
-                        <option value="@patient.PatientId">@patient.FirstName @patient.LastName</option>
-                    }
-                </select>
+				<!-- Patient Selection -->
+				<label for="patientSearch">Patient:</label>
+				<input type="text" id="patientSearch" placeholder="Enter name or PPS" onkeyup="searchPatients()" autocomplete="off" />
+				<input type="hidden" id="patientId" name="Appointment.PatientId" required /> <!-- Stores selected patient ID -->
+				<div id="suggestions" class="suggestion-box"></div>
 
-                <!-- Treatment Selection -->
-                <label for="treatmentSelect">Treatment:</label>
-                <select id="treatmentSelect" name="Appointment.TreatmentId"
-                        asp-for="Appointment.TreatmentId"
-                        required>
-                    <option value="">-- Select Treatment --</option>
-                    @foreach (var treatment in Model.Treatments)
-                    {
-                        <option value="@treatment.TreatmentId">@treatment.Name</option>
-                    }
-                </select>
+				<!-- Treatment Selection -->
+				<label for="treatmentSelect">Treatment:</label>
+				<select id="treatmentSelect" name="Appointment.TreatmentId"
+						asp-for="Appointment.TreatmentId"
+						required>
+					<option value="">-- Select Treatment --</option>
+					@foreach (var treatment in Model.Treatments)
+					{
+						<option value="@treatment.TreatmentId">@treatment.Name</option>
+					}
+				</select>
 
-                <!-- Notes -->
-                <label for="notes">Notes:</label>
-                <textarea id="notes" name="Appointment.Notes"
-                          asp-for="Appointment.Notes"
-                          rows="3"></textarea>
+				<!-- Notes -->
+				<label for="notes">Notes:</label>
+				<textarea id="notes" name="Appointment.Notes"
+						  asp-for="Appointment.Notes"
+						  rows="3"></textarea>
 
-                <!-- Attendance -->
-                <label class="checkbox-label">
-                    <input type="checkbox" id="attend"
-                           name="Appointment.attend"
-                           asp-for="Appointment.attend" />
-                    Patient Attended?
-                </label>
+				<!-- Attendance -->
+				<label class="checkbox-label">
+					<input type="checkbox" id="attend"
+						   name="Appointment.attend"
+						   asp-for="Appointment.attend" />
+					Patient Attended?
+				</label>
 
-                <!-- Hidden Time Slot -->
-                <input type="hidden" id="selectedTime"
-                       name="SelectedTime"
-                       asp-for="SelectedTime" />
+				<!-- Hidden Time Slot -->
+				<input type="hidden" id="selectedTime"
+					   name="SelectedTime"
+					   asp-for="SelectedTime" />
 
-                <!-- Buttons -->
-                <button type="submit" asp-page-handler="FetchAvailability"
-                        id="fetchAvailabilityBtn"
-                        style="display: none;">
-                    Refresh Slots
-                </button>
+				<!-- Buttons -->
+				<button type="submit" asp-page-handler="FetchAvailability"
+						id="fetchAvailabilityBtn"
+						style="display: none;">
+					Refresh Slots
+				</button>
 
-                <button type="submit" asp-page-handler="CreateAppointment"
-                        class="submit-button">
-                    Create Appointment
-                </button>
-            </form>
-        </div>
+				<button type="submit" asp-page-handler="CreateAppointment"
+						class="submit-button">
+					Create Appointment
+				</button>
+			</form>
+		</div>
 
-        <!-- Right Column: Time Slots -->
-        <div class="right-column">
-            <!-- Selected Date -->
-            <div class="selected-date">
-                <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
-                @if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
-                {
-                    <span class="today-indicator">(Today)</span>
-                }
-            </div>
+		<!-- Right Column: Time Slots -->
+		<div class="right-column">
+			<!-- Selected Date -->
+			<div class="selected-date">
+				<span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
+				@if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
+				{
+					<span class="today-indicator">(Today)</span>
+				}
+			</div>
 
-            <!-- Time Slots Section -->
-            <div class="time-slots">
-                @if (Model.TimeSlotsWithAvailability != null && Model.TimeSlotsWithAvailability.Any())
-                {
-                    @foreach (var slot in Model.TimeSlotsWithAvailability)
-                    {
-                        <div class="slot @(slot.IsBooked ? "booked" : "available")"
-                             data-time="@slot.TimeSlot">
-                            <!-- Ensure this line is correct -->
-                            @slot.TimeSlot - @(slot.IsBooked ? "Booked" : "Available")
-                        </div>
-                    }
-                }
-                else
-                {
-                    <div class="no-availability">No availability data found.</div>
-                }
-            </div>
-            <!-- Hidden Input to Store Selected Time -->
-            <input type="hidden" id="selectedTime" name="SelectedTime" asp-for="SelectedTime" />
-        </div>
-    </div>
+			<!-- Time Slots Section -->
+			<div class="time-slots">
+				@if (Model.TimeSlotsWithAvailability != null && Model.TimeSlotsWithAvailability.Any())
+				{
+					@foreach (var slot in Model.TimeSlotsWithAvailability)
+					{
+						<div class="slot @(slot.IsBooked ? "booked" : "available")"
+							 data-time="@slot.TimeSlot">
+							<!-- Ensure this line is correct -->
+							@slot.TimeSlot - @(slot.IsBooked ? "Booked" : "Available")
+						</div>
+					}
+				}
+				else
+				{
+					<div class="no-availability">No availability data found.</div>
+				}
+			</div>
+			<!-- Hidden Input to Store Selected Time -->
+			<input type="hidden" id="selectedTime" name="SelectedTime" asp-for="SelectedTime" />
+		</div>
+	</div>
 
-    <script>
-            document.addEventListener("DOMContentLoaded", function () {
-            const timeSlots = document.querySelectorAll(".slot.available");
-            const selectedTimeInput = document.getElementById("selectedTime");
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const timeSlots = document.querySelectorAll(".slot.available");
+			const selectedTimeInput = document.getElementById("selectedTime");
 
-            timeSlots.forEach(slot => {
-                slot.addEventListener("click", function () {
-                    // Remove glow from all slots
-                    timeSlots.forEach(s => s.classList.remove("selected"));
+			timeSlots.forEach(slot => {
+				slot.addEventListener("click", function () {
+					// Remove glow from all slots
+					timeSlots.forEach(s => s.classList.remove("selected"));
 
-                    // Add glow to the clicked slot
-                    this.classList.add("selected");
+					// Add glow to the clicked slot
+					this.classList.add("selected");
 
-                    // Update hidden input
-                    selectedTimeInput.value = this.getAttribute("data-time");
+					// Update hidden input
+					selectedTimeInput.value = this.getAttribute("data-time");
 
-                    console.log("Selected Time (via data-time):", selectedTime.value);
-                });
-            });
-        });
-    </script>
-    <div class="debug-section">
-        <h3>Debug Information</h3>
-        <p><strong>Selected Date:</strong> <span id="debugDate">@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span></p>
-        <p><strong>Selected Time:</strong> <span id="debugTime">None</span></p>
-        <p><strong>Combined DateTime:</strong> <span id="debugDateTime">None</span></p>
-    </div>
+					console.log("Selected Time (via data-time):", selectedTime.value);
+				});
+			});
+		});
+
+		async function searchPatients() {
+			let query = document.getElementById("patientSearch").value;
+			let suggestionsBox = document.getElementById("suggestions");
+
+			if (query.length < 1) {
+				suggestionsBox.style.display = "none";
+				return;
+			}
+
+			// Fetch matching patients
+			let response = await fetch(`/Receptionist/Index?handler=SearchPatients&query=${query}`);
+			let patients = await response.json();
+
+			// Clear previous suggestions
+			suggestionsBox.innerHTML = "";
+			suggestionsBox.style.display = patients.length > 0 ? "block" : "none";
+
+			// Populate suggestions
+			patients.forEach(patient => {
+				let div = document.createElement("div");
+				div.classList.add("suggestion-item");
+				div.textContent = `${patient.firstName} ${patient.lastName} (${patient.pps})`;
+				div.onclick = () => selectPatient(patient.patientId, div.textContent);
+				suggestionsBox.appendChild(div);
+			});
+		}
+
+		function selectPatient(id, text) {
+			document.getElementById("patientSearch").value = text;
+			document.getElementById("patientId").value = id;
+			document.getElementById("suggestions").style.display = "none";
+		}
+
+		document.addEventListener("click", function (event) {
+			let suggestionsBox = document.getElementById("suggestions");
+			if (!document.getElementById("patientSearch").contains(event.target) && !suggestionsBox.contains(event.target)) {
+				suggestionsBox.style.display = "none";
+			}
+		});
+
+
+
+
+
+	</script>
+	<div class="debug-section">
+		<h3>Debug Information</h3>
+		<p><strong>Selected Date:</strong> <span id="debugDate">@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span></p>
+		<p><strong>Selected Time:</strong> <span id="debugTime">None</span></p>
+		<p><strong>Combined DateTime:</strong> <span id="debugDateTime">None</span></p>
+	</div>
 </body>
