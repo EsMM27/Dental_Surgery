@@ -5,7 +5,83 @@
 
 <head>
     <meta charset="UTF-8" />
-    <style>
+   <style>
+       
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(to right, #00C9FF, #92FE9D);
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container for the Appointment Form and Time Slots */
+        .appointment-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Left Column: Form Inputs */
+        .form-column {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+            .form-column label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: bold;
+                color: #555;
+            }
+
+            .form-column input[type="text"]
+            {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 1em;
+                transition: border-color 0.3s ease;
+            }
+
+            .form-column input[type="date"],
+            .form-column select,
+            .form-column textarea {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 1em;
+                transition: border-color 0.3s ease;
+            }
+
+                .form-column input[type="text"]:focus,
+                .form-column input[type="date"]:focus,
+                .form-column select:focus,
+                .form-column textarea:focus {
+                    border-color: #3498db;
+                    outline: none;
+                }
+
+            .form-column textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+        /* Patient Search Suggestions */
         .suggestion-box {
             position: absolute;
             background: white;
@@ -26,251 +102,128 @@
                 background-color: #f0f0f0;
             }
 
-        .slot {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .available {
-            background-color: lightgreen;
-        }
-
-        .booked {
-            background-color: lightcoral;
-        }
-
-        .no-availability {
-            color: gray;
-            font-style: italic;
-        }
-
-        .container {
-            display: flex;
-            gap: 100px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-        }
-
-        .left-column {
-            flex: 0 0 300px;
-            margin-right: 20px;
-        }
-
-        .right-column {
+        /* Right Column: Time Slots */
+        .slots-column {
             flex: 1;
-            min-width: 250px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 600;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="time"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-            input:hover,
-            select:hover,
-            textarea:hover {
-                border-color: #47c1b2;
-            }
-
-            input:focus,
-            select:focus,
-            textarea:focus {
-                border-color: #47c1b2;
-                box-shadow: 0 0 5px rgba(71, 193, 178, 0.2);
-            }
-
-        button[type="submit"] {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            background: #47c1b2;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-            button[type="submit"]:hover {
-                background: #399f94;
-            }
-
-        .availability-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        input[type="date"] {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
+            padding: 20px;
         }
 
         .selected-date {
-            margin-bottom: 20px;
             font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #2c3e50;
             font-weight: bold;
-            color: #333;
         }
 
         .today-indicator {
-            color: green;
-            font-weight: bold;
-            margin-left: 10px;
+            color: #e74c3c;
+            font-weight: normal;
         }
 
-        .slot.available {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #a8e063, #56ab2f);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-            .slot.available:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            }
-
-        .slot.booked {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #ff6b6b, #c31432);
-            color: white;
-            font-weight: bold;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .slot.selected {
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #007bff, #00c6ff);
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.8);
-            border: 2px solid #007bff;
-            transform: scale(1.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
+        /* Calendar Table */
         .calendar {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
 
             .calendar th,
             .calendar td {
-                border: 1px solid #ccc;
-                padding: 5px;
-                text-align: center;
-                vertical-align: top;
-            }
-
-            .calendar th {
-                background-color: #f0f0f0;
-            }
-
-        .time-slot {
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-        }
-
-            .time-slot.available {
-                background-color: #28a745;
-            }
-
-            .time-slot.booked {
-                background-color: #dc3545;
-                cursor: not-allowed;
-                opacity: 0.6;
-            }
-
-            .time-slot.selected {
-                background-color: #007bff;
-            }
-
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-            .navigation button {
-                padding: 5px 10px;
-                font-size: 1rem;
-                cursor: pointer;
-            }
-
-        .calendar {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-            .calendar th,
-            .calendar td {
-                border: 1px solid #ccc;
-                padding: 5px;
-                text-align: center;
-                vertical-align: top;
-            }
-
-            .calendar th {
-                background-color: #f0f0f0;
-            }
-
-            .calendar .day {
                 padding: 10px;
-                cursor: pointer;
+                text-align: center;
+                border: 1px solid #ddd;
             }
 
-                .calendar .day.selected {
-                    background-color: #007bff;
-                    color: white;
+            .calendar th {
+                background-color: #3498db;
+                color: #fff;
+                font-weight: bold;
+            }
+
+            .calendar td {
+                background-color: #f9f9f9;
+                transition: background-color 0.3s ease;
+            }
+
+                
+
+                .calendar td:hover {
+                    background-color: #e0f7fa;
                 }
-    </style>
+
+        /* Time Slots */
+        .time-slots {
+            margin-top: 10px;
+        }
+
+        .slot {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .slot.available {
+                background-color: #d5f5e3;
+                color: #27ae60;
+            }
+
+            .slot.booked {
+                background-color: #f8d7da;
+                color: #dc3545;
+                cursor: not-allowed;
+            }
+
+            .slot.selected {
+                background-color: #3498db;
+                color: #fff;
+                transform: scale(1.05);
+            }
+
+        /* Buttons */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            button[type="submit"] {
+                background-color: #3498db;
+                color: #fff;
+            }
+
+                button[type="submit"]:hover {
+                    background-color: #2980b9;
+                }
+
+        .submit-button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+
+        .form-column {
+            border-right: none;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        .slots-column {
+            padding-top: 20px;
+        }
+
+   </style>
 </head>
 <body>
     <h1>Dental Appointment</h1>
 
-    <div class="container">
+    <div class="appointment-container">
         <!-- Left Column: Form Inputs -->
-        <div class="left-column">
+        <div class="form-column">
             <form method="post" id="mainForm">
                 <!-- Dentist Selection -->
                 <label for="dentistSelect">Dentist:</label>
@@ -325,7 +278,7 @@
         </div>
 
         <!-- Right Column: Time Slots -->
-        <div class="right-column">
+        <div class="slots-column">
             <!-- Selected Date -->
             <div class="selected-date">
                 <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
@@ -378,6 +331,11 @@
 
     <script>
         function selectTimeSlot(slot) {
+            // Check if the slot is booked
+            if (slot.classList.contains("booked")) {
+                return; // Do nothing if the slot is booked
+            }
+
             // Remove glow from all slots
             document.querySelectorAll(".slot").forEach(s => s.classList.remove("selected"));
 
@@ -387,7 +345,12 @@
             // Update hidden input
             document.getElementById("selectedTime").value = slot.getAttribute("data-time");
 
+            // Update date input field
+            const selectedDate = slot.closest("td").getAttribute("data-date");
+            document.getElementById("appointmentDate").value = selectedDate;
+
             console.log("Selected Time (via data-time):", slot.getAttribute("data-time"));
+            console.log("Selected Date (via data-date):", selectedDate);
         }
 
         async function searchPatients() {
