@@ -1,17 +1,17 @@
 ﻿
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Logging;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Dental.Model;
-    using Dental.Service;
-    using Dental_Surgery.Utilities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Dental.Model;
+using Dental.Service;
+using Dental_Surgery.Utilities;
 
 
 namespace Dental_Surgery.Pages.Receptionist
-    {
+{
     public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -138,5 +138,25 @@ namespace Dental_Surgery.Pages.Receptionist
 
             return true;
         }
-    }
-    }
+
+		public async Task<IActionResult> OnGetSearchPatientsAsync(string query)
+		{
+			if (string.IsNullOrEmpty(query))
+			{
+				return new JsonResult(new List<Patient>());
+			}
+
+			// Fetch all patients and filter based on query (by name or PPS)
+			var allPatients = (await _unitOfWork.Patients.GetAllAsync()).Cast<Patient>().ToList();
+
+			var filteredPatients = allPatients
+				.Where(p => p.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+							p.LastName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+							p.PPS.Contains(query, StringComparison.OrdinalIgnoreCase))
+				.Select(p => new { p.PatientId, p.FirstName, p.LastName, p.PPS })
+				.ToList();
+
+			return new JsonResult(filteredPatients);
+		}
+	}
+}
