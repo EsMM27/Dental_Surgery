@@ -23,14 +23,14 @@ namespace Dental_Surgery.Pages.Admin2.Patients
         [BindProperty]
         public Patient Patient { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var patient =  await _context.Patients.FirstOrDefaultAsync(m => m.PatientId == id);
+            var patient =  await _context.Patients.FirstOrDefaultAsync(m => m.PPS == id);
             if (patient == null)
             {
                 return NotFound();
@@ -56,7 +56,7 @@ namespace Dental_Surgery.Pages.Admin2.Patients
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PatientExists(Patient.PatientId))
+                if (!PatientExists(Patient.PPS))
                 {
                     return NotFound();
                 }
@@ -69,9 +69,9 @@ namespace Dental_Surgery.Pages.Admin2.Patients
             return RedirectToPage("./Index");
         }
 
-        private bool PatientExists(int id)
+        private bool PatientExists(string id)
         {
-            return _context.Patients.Any(e => e.PatientId == id);
+            return _context.Patients.Any(e => e.PPS == id);
         }
     }
 }

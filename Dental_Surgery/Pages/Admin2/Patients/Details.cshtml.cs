@@ -21,14 +21,14 @@ namespace Dental_Surgery.Pages.Admin2.Patients
 
         public Patient Patient { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(m => m.PatientId == id);
+            var patient = await _context.Patients.FirstOrDefaultAsync(m => m.PPS == id);
             if (patient == null)
             {
                 return NotFound();

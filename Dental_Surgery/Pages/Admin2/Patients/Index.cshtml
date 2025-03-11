@@ -41,9 +41,9 @@
                 <td>@item.Address</td>
                 <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.PatientId">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.PatientId">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.PatientId">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@item.PPS">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.PPS">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.PPS">Delete</a>
                 </td>
             </tr>
         }

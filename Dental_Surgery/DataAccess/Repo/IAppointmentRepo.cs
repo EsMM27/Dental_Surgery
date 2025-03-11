@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dental.DataAccess.Repo
 {
-    public interface IAppointmentRepo : IRepository<Appointment>
+    public interface IAppointmentRepo : IRepository<Appointment, int>
     {
         Task<List<(string TimeSlot, bool IsBooked)>> GetTimeSlotsWithAvailabilityAsync(int dentistId, DateTime appointmentDate);
         public void Update(Appointment appointment);

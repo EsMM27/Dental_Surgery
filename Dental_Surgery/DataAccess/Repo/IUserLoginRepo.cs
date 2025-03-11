@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace Dental_Surgery.DataAccess.Repo
 {
-    public interface IUserLoginRepo : IRepository<UserLogin>
+    public interface IUserLoginRepo : IRepository<UserLogin, int>
     {
         public void Update(UserLogin userLogin);
     }

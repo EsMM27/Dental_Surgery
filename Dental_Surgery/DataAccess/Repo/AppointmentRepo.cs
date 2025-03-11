@@ -10,7 +10,7 @@ using Dental_Surgery.Utilities;
 
 namespace Dental.DataAccess.Repo
 {
-    public class AppointmentRepo : Repository<Appointment>, IAppointmentRepo
+    public class AppointmentRepo : Repository<Appointment, int>, IAppointmentRepo
     {
         private readonly AppDBContext _context;
         public AppointmentRepo(AppDBContext context) : base(context)

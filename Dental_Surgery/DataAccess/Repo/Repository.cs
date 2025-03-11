@@ -4,7 +4,7 @@ using Dental.DataAccess;
 
 namespace Dental.DataAccess.Repo
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T, TKey> : IRepository<T, TKey> where T : class
     {
         private readonly AppDBContext _context;
         private readonly DbSet<T> _dbSet;
@@ -20,7 +20,7 @@ namespace Dental.DataAccess.Repo
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(TKey id)
         {
             return await _dbSet.FindAsync(id);
         }

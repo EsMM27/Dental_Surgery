@@ -9,9 +9,9 @@ namespace Dental.Service
     {
         private readonly AppDBContext _appDBContext;
 
-        private IRepository<Dentist> _dentists;
-        private IRepository<Patient> _patients;
-        private IRepository<Treatment> _treatments;
+        private IRepository<Dentist, int> _dentists;
+        private IRepository<Patient, string> _patients;
+        private IRepository<Treatment, int> _treatments;
         //private IRepository<Appointment> _appointments;
         private IAppointmentRepo _appointments;
 
@@ -22,9 +22,9 @@ namespace Dental.Service
             _appointments = appointmentRepository;
         }
 
-        public IRepository<Dentist> Dentists => _dentists ??= new Repository<Dentist>(_appDBContext);
-        public IRepository<Patient> Patients => _patients ??= new Repository<Patient>(_appDBContext);
-        public IRepository<Treatment> Treatments => _treatments ??= new Repository<Treatment>(_appDBContext);
+        public IRepository<Dentist, int> Dentists => _dentists ??= new Repository<Dentist, int>(_appDBContext);
+        public IRepository<Patient, string> Patients => _patients ??= new Repository<Patient, string>(_appDBContext);
+        public IRepository<Treatment, int> Treatments => _treatments ??= new Repository<Treatment, int>(_appDBContext);
         public IAppointmentRepo Appointments => _appointments;
 
         public async Task SaveAsync()

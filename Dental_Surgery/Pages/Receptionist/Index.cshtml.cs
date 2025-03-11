@@ -118,7 +118,7 @@ namespace Dental_Surgery.Pages.Receptionist
                 return false;
             }
 
-            if (Appointment.PatientId <= 0)
+            if (Appointment.PPS == null)
             {
                 TempData["ErrorMessage"] = "Please select a patient.";
                 return false;
@@ -153,7 +153,7 @@ namespace Dental_Surgery.Pages.Receptionist
 				.Where(p => p.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
 							p.LastName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
 							p.PPS.Contains(query, StringComparison.OrdinalIgnoreCase))
-				.Select(p => new { p.PatientId, p.FirstName, p.LastName, p.PPS })
+				.Select(p => new { p.PPS, p.FirstName, p.LastName })
 				.ToList();
 
 			return new JsonResult(filteredPatients);

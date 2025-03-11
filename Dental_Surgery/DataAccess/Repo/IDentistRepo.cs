@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dental.DataAccess.Repo
 {
-    public interface IDentistRepo : IRepository<Dentist>
+    public interface IDentistRepo : IRepository<Dentist, int>
     {
         public void Update(Dentist dentist);
     }

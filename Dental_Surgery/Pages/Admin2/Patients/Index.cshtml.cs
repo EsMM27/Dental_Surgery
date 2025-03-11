@@ -45,7 +45,6 @@ namespace Dental_Surgery.Pages.Admin2.Patients
                             p.LastName.Contains(searchString) ||
                             p.PPS.Contains(searchString))
                 .Select(p => new {
-                    p.PatientId,
                     p.FirstName,
                     p.LastName,
                     p.PPS,

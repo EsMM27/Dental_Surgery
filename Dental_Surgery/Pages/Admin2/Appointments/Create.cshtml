@@ -38,7 +38,7 @@
                 <label>Search for Patient:</label>
                 <input type="text" id="searchPatient" class="form-control" placeholder="Type patient name or PPS..." />
                 <ul id="patientResults" class="list-group mt-2" style="position:absolute; z-index:1000;"></ul>
-                <input type="hidden" asp-for="Appointment.PatientId" id="selectedPatientId" />
+                <input type="hidden" asp-for="Appointment.PPS" id="selectedPPS" />
             </div>
 
             <div class="form-group">
@@ -80,7 +80,7 @@
                         let listItem = document.createElement("li");
                         listItem.classList.add("list-group-item", "list-group-item-action");
                         listItem.textContent = `${patient.firstName} ${patient.lastName} (PPS: ${patient.pps})`;
-                        listItem.dataset.patientId = patient.patientId;
+                        listItem.dataset.PPS = patient.PPS;
 
                         listItem.addEventListener("click", function () {
                             document.getElementById("searchPatient").value = this.textContent;

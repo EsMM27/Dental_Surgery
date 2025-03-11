@@ -13,9 +13,9 @@ namespace Dental.Service
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Dentist> Dentists { get; }
-        IRepository<Patient> Patients { get; }
-        IRepository<Treatment> Treatments { get; }
+        IRepository<Dentist, int> Dentists { get; }
+        IRepository<Patient, string> Patients { get; }
+        IRepository<Treatment, int> Treatments { get; }
         IAppointmentRepo Appointments { get; }
         Task SaveAsync();
     }

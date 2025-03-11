@@ -50,7 +50,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                             p.FirstName.Contains(searchString) ||
                             p.LastName.Contains(searchString) ||
                             p.PPS.Contains(searchString))
-                .Select(p => new { p.PatientId, p.FirstName, p.LastName, p.PPS })
+                .Select(p => new { p.PPS, p.FirstName, p.LastName })
                 .ToListAsync();
 
             return new JsonResult(patients);

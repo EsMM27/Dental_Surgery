@@ -22,7 +22,7 @@ namespace Dental.DataAccess
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Patient)
                 .WithMany(p => p.Appointments)
-                .HasForeignKey(a => a.PatientId);
+                .HasForeignKey(a => a.PPS);
 
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Treatment)

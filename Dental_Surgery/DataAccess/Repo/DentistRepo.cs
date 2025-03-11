@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dental.DataAccess.Repo
 {
-    public class DentistRepo : Repository<Dentist>, IDentistRepo
+    public class DentistRepo : Repository<Dentist, int>, IDentistRepo
     {
         private readonly AppDBContext _context;
         public DentistRepo(AppDBContext context) : base(context)

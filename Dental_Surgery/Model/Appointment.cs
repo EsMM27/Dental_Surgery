@@ -18,8 +18,9 @@ namespace Dental.Model
 
         // Foreign keys
         public int DentistId { get; set; }
-        public int PatientId { get; set; }
-        public int TreatmentId { get; set; }
+		[ForeignKey("Patient")]
+		public string PPS { get; set; }
+		public int TreatmentId { get; set; }
 
         // Navigation properties
         public Dentist? Dentist { get; set; }
