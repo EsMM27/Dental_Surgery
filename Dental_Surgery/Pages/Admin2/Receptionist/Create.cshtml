@@ -1,0 +1,39 @@
+﻿@page
+@model Dental_Surgery.Pages.Admin2.Receptionist.CreateModel
+@{
+}
+<form method="post">
+		<div class="border p-3 mt-4">
+			<div asp-validation-summary="All" class="text-danger"></div>
+			<div class="row pb-2">
+				<h2 class="text-primary pl-3">
+					Register
+				</h2>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Register.Email"></label>
+				<input asp-for="Register.Email" class="form-control" />
+				<span asp-validation-for="Register.Email" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Register.Password"></label>
+				<input asp-for="Register.Password" class="form-control" />
+				<span asp-validation-for="Register.Password" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Register.ConfirmPassword"></label>
+				<input asp-for="Register.ConfirmPassword" class="form-control" />
+				<span asp-validation-for="Register.ConfirmPassword" class="text-danger"></span>
+			</div>
+
+
+
+			<button type="submit" class="btn btn-primary">Register</button>
+		</div>
+	</form>
+
+	@section Scripts {
+		@{
+			<partial name="_validationScriptsPartial" />
+		}
+	}
