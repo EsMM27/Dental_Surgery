@@ -36,7 +36,8 @@ namespace Dental_Surgery.Pages.Admin2.Receptionist
                     var result = await _userManager.CreateAsync(user, Register.Password);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, false);
+                        await _userManager.AddToRoleAsync(user, "Receptionist");
+                    await _signInManager.SignInAsync(user, false);
                         return RedirectToPage("/Index");
 
                     }
