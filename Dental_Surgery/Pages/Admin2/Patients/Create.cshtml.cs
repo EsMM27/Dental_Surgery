@@ -35,6 +35,12 @@ namespace Dental_Surgery.Pages.Admin2.Patients
             {
                 return Page();
             }
+
+            if (Patient.DateOfBirth > DateTime.Today)
+            {
+                ModelState.AddModelError("Patient.DateOfBirth", "Date of birth can't be in the future");
+                return Page();
+            }
             // Check for duplicate patient by PPS, email, or full name + DOB (excluding the current record)
             bool patientExists = await _context.Patients
                 .AnyAsync(p => (p.PPS == Patient.PPS ||
