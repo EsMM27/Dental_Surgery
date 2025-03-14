@@ -4,6 +4,7 @@ using Dental.DataAccess.Repo;
 using Dental.Service;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,11 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+// Register Services
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDBContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped<IAppointmentRepo, AppointmentRepo>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -67,6 +73,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

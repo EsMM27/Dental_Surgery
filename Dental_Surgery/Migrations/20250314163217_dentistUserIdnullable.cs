@@ -5,13 +5,13 @@
 namespace Dental_Surgery.Migrations
 {
     /// <inheritdoc />
-    public partial class appointment : Migration
+    public partial class dentistUserIdnullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Image",
+                name: "UserId",
                 table: "Dentists",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -23,7 +23,7 @@ namespace Dental_Surgery.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Image",
+                name: "UserId",
                 table: "Dentists",
                 type: "nvarchar(max)",
                 nullable: false,
