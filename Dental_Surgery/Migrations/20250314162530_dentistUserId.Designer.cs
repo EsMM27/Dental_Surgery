@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dental_Surgery.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250314100934_authTables")]
-    partial class authTables
+    [Migration("20250314162530_dentistUserId")]
+    partial class dentistUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,6 +94,10 @@ namespace Dental_Surgery.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
