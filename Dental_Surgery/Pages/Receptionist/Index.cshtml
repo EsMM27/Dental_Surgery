@@ -1,6 +1,7 @@
 ﻿@page
 @model Dental_Surgery.Pages.Receptionist.IndexModel
 @{
+    var currentDateTime = DateTime.Now;
 }
 
 <head>
@@ -125,6 +126,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed;
         }
 
             .calendar th,
@@ -216,6 +218,7 @@
             padding-top: 20px;
         }
 
+
    </style>
 </head>
 <body>
@@ -281,11 +284,11 @@
         <div class="slots-column">
             <!-- Selected Date -->
             <div class="selected-date">
-                <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
+                @* <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
                 @if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
                 {
                     <span class="today-indicator">(Today)</span>
-                }
+                } *@
             </div>
 
             <!-- Calendar Section -->
@@ -306,21 +309,21 @@
                             for (int i = 0; i < 5; i++)
                             {
                                 var day = startOfWeek.AddDays(i);
-                                <string>
-                                    <td class="day @(day == Model.Appointment.AppointmentDate ? "selected" : "")" data-date="@day.ToString("yyyy-MM-dd")">
-                                        @day.ToString("MMM dd")
-                                        <div class="time-slots">
-                                            @foreach (var slot in Model.TimeSlotsWithAvailability.Where(ts => ts.Date == day.Date))
-                                            {
-                                                <div class="slot @(slot.IsBooked ? "booked" : "available")"
-                                                     data-time="@slot.TimeSlot"
-                                                     onclick="selectTimeSlot(this)">
-                                                    @slot.TimeSlot - @(slot.IsBooked ? "Booked" : "Available")
-                                                </div>
-                                            }
-                                        </div>
-                                    </td>
-                                </string>
+                                <td class="day @(day == Model.Appointment.AppointmentDate ? "selected" : "")" data-date="@day.ToString("yyyy-MM-dd")">
+                                    @day.ToString("MMM dd")
+                                    <div class="time-slots">
+                                        @foreach (var slot in Model.TimeSlotsWithAvailability.Where(ts => ts.Date == day.Date))
+                                        {
+                                            var slotDateTime = new DateTime(day.Year, day.Month, day.Day, int.Parse(slot.TimeSlot.Split(':')[0]), int.Parse(slot.TimeSlot.Split(':')[1]), 0);
+                                            var isPast = slotDateTime < currentDateTime;
+                                            <div class="slot @(slot.IsBooked ? "booked" : isPast ? "booked" : "available")"
+                                                 data-time="@slot.TimeSlot"
+                                                 onclick="@(isPast || slot.IsBooked ? "return false;" : "selectTimeSlot(this);")">
+                                                @slot.TimeSlot
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
                             }
                         }
                     </tr>
@@ -330,10 +333,12 @@
     </div>
 
     <script>
+
+
         function selectTimeSlot(slot) {
-            // Check if the slot is booked
+            // Check if the slot is booked or unselectable
             if (slot.classList.contains("booked")) {
-                return; // Do nothing if the slot is booked
+                return; // Do nothing if the slot is booked or unselectable
             }
 
             // Remove glow from all slots
