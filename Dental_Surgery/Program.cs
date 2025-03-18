@@ -78,15 +78,23 @@ public class Program
         app.UseStaticFiles();
         app.UseRouting();
         await app.CreateRolesAsync(builder.Configuration);
+
+
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapRazorPages();
         app.MapBlazorHub();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            await AppDBContextInitializer.SeedAsync(services);
+        }
+
         app.Run();
     }
-
+    
 }
 
 public static class WebApplicationExtensions
@@ -108,5 +116,7 @@ public static class WebApplicationExtensions
 
     }
 }
+
+
 
 
