@@ -96,6 +96,7 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "Dentist");
                 // Link the IdentityUser to the Dentist
                 Dentist.UserId = user.Id;
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dental_Surgery.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250314161231_init")]
+    [Migration("20250314170857_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -95,6 +95,9 @@ namespace Dental_Surgery.Migrations
 
                     b.Property<string>("Specialization")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DentistId");
