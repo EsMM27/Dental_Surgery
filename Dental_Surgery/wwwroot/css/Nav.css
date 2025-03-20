@@ -1,9 +1,5 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap");
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 
-body {
-    background: #eaeef6;
-    font-family: "Open Sans", sans-serif;
-}
 
 .navbar {
     position: fixed;
@@ -14,6 +10,12 @@ body {
     padding: 1rem 0;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
     height: calc(100vh - 4rem);
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar__link {
@@ -55,7 +57,7 @@ body {
 }
 
 .navbar__item:last-child:before {
-    content: "";
+    content: '';
     position: absolute;
     opacity: 0;
     z-index: -1;
