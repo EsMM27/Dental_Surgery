@@ -1,11 +1,13 @@
 ﻿
 using Dental.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace Dental.DataAccess
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext : IdentityDbContext<IdentityUser>
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
@@ -13,6 +15,8 @@ namespace Dental.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Configure relationships
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Dentist)
@@ -34,14 +38,11 @@ namespace Dental.DataAccess
                 .Property(t => t.Cost)
                 .HasPrecision(18, 2); // 18 digits total, 2 digits after the decimal point
         }
+
         public DbSet<Dentist> Dentists { get; set; }
-
         public DbSet<Appointment> Appointments { get; set; }
-
         public DbSet<Patient> Patients { get; set; }
-
         public DbSet<Treatment> Treatments { get; set; }
-
     }
 
 }

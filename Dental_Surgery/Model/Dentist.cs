@@ -5,6 +5,9 @@ namespace Dental.Model
     public class Dentist
     {
         public int DentistId { get; set; }
+        // assocaite with IdentityUser
+        public string? UserId { get; set; }
+        // assocaite with IdentityUser
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

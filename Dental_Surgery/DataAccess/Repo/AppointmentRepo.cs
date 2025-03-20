@@ -38,5 +38,11 @@ namespace Dental.DataAccess.Repo
 
             return timeSlotsWithAvailability;
         }
-    }
+		public async Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date)
+		{
+			return await _context.Appointments
+				.Where(a => a.DentistId == dentistId && a.AppointmentDate.Date == date.Date)
+				.ToListAsync();
+		}
+	}
 }
