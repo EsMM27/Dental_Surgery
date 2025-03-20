@@ -13,6 +13,7 @@ namespace Dental.Model
         //place they got degree
         public string AwardingBody { get; set; }
         public string ContactNumber { get; set; }
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
         //image of the doctor 
         public string? Image {  get; set; }

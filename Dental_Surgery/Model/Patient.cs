@@ -17,6 +17,7 @@ namespace Dental.Model
         public string LastName { get; set; }
         [RegularExpression(@"^\+353[1-9][0-9]{6,9}$", ErrorMessage = "Please enter a valid phone number")]
         public string ContactNumber { get; set; }
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
         public string Address { get; set; }
 
