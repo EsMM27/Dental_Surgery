@@ -2,63 +2,49 @@
 @model Dental_Surgery.Pages.Admin2.Dentists.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Dentist";
 }
 
-<h1>Delete</h1>
+<div class="container mt-5">
+    <h2 class="mb-4 text-danger">Delete Dentist</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Dentist</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Specialization)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Specialization)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.AwardingBody)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.AwardingBody)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.ContactNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.ContactNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dentist.Image)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dentist.Image)
-        </dd>
-    </dl>
-    
-    <form method="post">
-        <input type="hidden" asp-for="Dentist.DentistId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
-    </form>
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> Are you sure you want to permanently delete this dentist?
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <img src="/@Url.Content(Model.Dentist.Image)" alt="Dentist Photo" class="img-thumbnail" style="max-height:200px; width:auto;" />
+            </div>
+
+            <dl class="row">
+                <dt class="col-md-4 text-muted">First Name</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.FirstName)</dd>
+
+                <dt class="col-md-4 text-muted">Last Name</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.LastName)</dd>
+
+                <dt class="col-md-4 text-muted">Specialization</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.Specialization)</dd>
+
+                <dt class="col-md-4 text-muted">Awarding Body</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.AwardingBody)</dd>
+
+                <dt class="col-md-4 text-muted">Contact Number</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.ContactNumber)</dd>
+
+                <dt class="col-md-4 text-muted">Email</dt>
+                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.Email)</dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-end">
+            <form method="post" class="d-inline">
+                <input type="hidden" asp-for="Dentist.DentistId" />
+                <button type="submit" class="btn btn-danger">Delete Dentist</button>
+            </form>
+            <a asp-page="./Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </div>
 </div>

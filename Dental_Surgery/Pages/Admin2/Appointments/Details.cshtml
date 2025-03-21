@@ -2,54 +2,62 @@
 @model Dental_Surgery.Pages.Admin2.Appointments.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Appointment Details";
 }
 
-<h1>Details</h1>
+<div class="container mt-5">
+    <h2 class="mb-4">Appointment Details</h2>
 
-<div>
-    <h4>Appointment</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.AppointmentDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.AppointmentDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Notes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Notes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.attend)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.attend)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Dentist)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Dentist.AwardingBody)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Patient)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Patient.Address)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment.Treatment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.Treatment.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Appointment.AppointmentId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-md-3 text-muted">
+                    @Html.DisplayNameFor(model => model.Appointment.AppointmentDate)
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.AppointmentDate)
+                </dd>
+
+                <dt class="col-md-3 text-muted">
+                    @Html.DisplayNameFor(model => model.Appointment.Notes)
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.Notes)
+                </dd>
+
+                <dt class="col-md-3 text-muted">
+                    @Html.DisplayNameFor(model => model.Appointment.attend)
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.attend)
+                </dd>
+
+                <dt class="col-md-3 text-muted">
+                    Dentist
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.Dentist.AwardingBody)
+                </dd>
+
+                <dt class="col-md-3 text-muted">
+                    Patient Address
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.Patient.Address)
+                </dd>
+
+                <dt class="col-md-3 text-muted">
+                    Treatment
+                </dt>
+                <dd class="col-md-9">
+                    @Html.DisplayFor(model => model.Appointment.Treatment.Description)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-end">
+            <a asp-page="./Edit" asp-route-id="@Model.Appointment.AppointmentId" class="btn btn-primary">Edit</a>
+            <a asp-page="./Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+        </div>
+    </div>
 </div>

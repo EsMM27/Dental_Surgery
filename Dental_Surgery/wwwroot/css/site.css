@@ -12,11 +12,217 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
 }
 
 body {
-  margin-bottom: 60px;
+    background: linear-gradient(to right, #00C9FF, #92FE9D);
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
 }
+
+/* Container for the Appointment Form and Time Slots */
+.appointment-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Left Column: Form Inputs */
+.form-column {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+    .form-column label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .form-column input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-column input[type="date"],
+    .form-column select,
+    .form-column textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-column input[type="text"]:focus,
+        .form-column input[type="date"]:focus,
+        .form-column select:focus,
+        .form-column textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+    .form-column textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+/* Patient Search Suggestions */
+.suggestion-box {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 250px;
+    display: none;
+    z-index: 1000;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+    .suggestion-item:hover {
+        background-color: #f0f0f0;
+    }
+
+/* Right Column: Time Slots */
+.slots-column {
+    flex: 1;
+    padding: 20px;
+}
+
+.selected-date {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.today-indicator {
+    color: #e74c3c;
+    font-weight: normal;
+}
+
+/* Calendar Table */
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed;
+}
+
+    .calendar th,
+    .calendar td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .calendar th {
+        background-color: #3498db;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .calendar td {
+        background-color: #f9f9f9;
+        transition: background-color 0.3s ease;
+    }
+
+
+
+        .calendar td:hover {
+            background-color: #e0f7fa;
+        }
+
+/* Time Slots */
+.time-slots {
+    margin-top: 10px;
+}
+
+.slot {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .slot.available {
+        background-color: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .slot.booked {
+        background-color: #f8d7da;
+        color: #dc3545;
+        cursor: not-allowed;
+    }
+
+    .slot.selected {
+        background-color: #3498db;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button[type="submit"] {
+        background-color: #3498db;
+        color: #fff;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+.submit-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+.form-column {
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.slots-column {
+    padding-top: 20px;
+}
+
+.table-white {
+    background-color: white !important;
+}
+

@@ -1,0 +1,53 @@
+﻿@page
+@model Dental_Surgery.Pages.RegisterUsers.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@attribute [Authorize(Roles = "Admin")]
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@ViewData["Title"]</h2>
+    </div>
+
+    <table class="table table-striped table-bordered table-white">
+        <thead class="table-dark">
+            <tr>
+                <th>Email</th>
+                <th>User Name</th>
+                <th>Roles</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                var roles = await Model.GetUserRolesAsync(user);
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        @foreach (var role in roles)
+                        {
+                            <span class="badge bg-secondary">@role</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <a asp-page="./Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <h5>Quick Actions</h5>
+        <div class="btn-group">
+            <a asp-page="/Admin2/Dentists/Create" class="btn btn-outline-primary">New Dentist</a>
+            <a asp-page="/Admin2/Receptionist/Create" class="btn btn-outline-primary">New Receptionist</a>
+        </div>
+    </div>
+</div>

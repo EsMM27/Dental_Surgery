@@ -1,0 +1,27 @@
+﻿@page "{id}"
+@model Dental_Surgery.Pages.UserManagment.DeleteModel
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<div class="container mt-5">
+    <h2 class="text-danger mb-4">Delete User</h2>
+
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> Are you sure you want to permanently delete the following user?
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="mb-0"><strong>Email:</strong> @Model.User.Email</p>
+            <p class="mb-0"><strong>Username:</strong> @Model.User.UserName</p>
+        </div>
+        <div class="card-footer text-end">
+            <form method="post" class="d-inline">
+                <input type="hidden" asp-for="User.Id" />
+                <button type="submit" class="btn btn-danger">Delete User</button>
+            </form>
+            <a asp-page="./Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </div>
+</div>
