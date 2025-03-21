@@ -1,0 +1,44 @@
+﻿@page
+@model Dental_Surgery.Pages.Bills.IndexModel
+@{
+    ViewData["Title"] = "Bill Generation";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="SelectedPatientId" class="form-label">Select Patient</label>
+                    <select asp-for="SelectedPatientId" class="form-select" asp-items="Model.PatientList">
+                        <option value="">-- Select Patient --</option>
+                    </select>
+                </div>
+
+                @if (Model.AppointmentList != null && Model.AppointmentList.Any())
+                {
+                    <div class="mb-3">
+                        <label asp-for="SelectedAppointmentId" class="form-label">Date of Appointment</label>
+                        <select asp-for="SelectedAppointmentId" class="form-select" asp-items="Model.AppointmentList">
+                            <option value="">-- Select Appointment --</option>
+                        </select>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-primary">Generate Bill</button>
+            </form>
+        </div>
+    </div>
+
+    @if (ViewData["PdfFilePath"] != null)
+    {
+        <div class="card shadow-sm mt-5 bg-black bg-opacity-25">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Bill Preview</h3>
+                <embed src="@ViewData["PdfFilePath"]" type="application/pdf" width="100%" height="1100px" />
+            </div>
+        </div>
+    }
+</div>
