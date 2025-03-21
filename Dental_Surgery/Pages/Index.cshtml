@@ -1,5 +1,81 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Receptionist Schedule";
+}
+
+<h2>Receptionist Schedule</h2>
+
+<form method="get">
+    <div style="margin-top:10px; display:flex; justify-content: space-between; align-items:center;">
+        <a asp-page="./Index"
+           asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
+           class="btn btn-secondary">← Previous Day</a>
+
+        <strong>@Model.ScheduleDate.ToString("dddd, MMM dd yyyy")</strong>
+
+        <a asp-page="./Index"
+           asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
+           class="btn btn-secondary">Next Day →</a>
+    </div>
+</form>
+
+@if (Model.GroupedAppointments.Any())
+{
+    @foreach (var group in Model.GroupedAppointments)
+    {
+        <h4 style="margin-top: 30px;">📅 @group.Key.ToString("dddd, MMM dd yyyy")</h4>
+
+        <div class="time-slots">
+            @foreach (var appt in group.OrderBy(a => a.AppointmentDate))
+            {
+                <div class="slot booked clickable-row"
+                     data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+                    <strong>@appt.AppointmentDate.ToString("HH:mm")</strong> –
+                    Patient: @(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "N/A")<br />
+                    Dentist: @(appt.Dentist != null ? $"{appt.Dentist.FirstName} {appt.Dentist.LastName}" : "N/A")<br />
+                    Treatment: @(appt.Treatment != null ? appt.Treatment.Description : "N/A")
+                </div>
+            }
+        </div>
+    }
+}
+else
+{
+    <p>No upcoming appointments.</p>
+}
+
+<style>
+    .time-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .slot.booked {
+        background-color: #f7f9fc;
+        border-left: 5px solid #007bff;
+        padding: 10px 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .clickable-row {
+        cursor: pointer;
+    }
+
+        .clickable-row:hover {
+            background-color: #e6f2ff;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', () => {
+                window.location = row.getAttribute('data-href');
+            });
+        });
+    </script>
 }
