@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,24 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Dental_Surgery</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Nav.css"></link>
     <link rel="stylesheet" href="~/Dental_Surgery.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Nav.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: 5% 95%; /* Adjust the first column to 25% and the second column to 75% */
-            height: 100vh;
-        }
-        .navbar {
-            background-color: #f8f9fa;
-            padding: 1rem;
-        }
-
-        .main-content {
-            padding: 1rem;
-        }
+        
     </style>
 </head>
 <body>
@@ -46,27 +35,27 @@
                     {
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Admin2/Dentists/Index">
-                                <i data-feather="home"></i><span>Dentists</span>
+                                <i data-feather="user-check"></i><span>Dentists</span>
                             </a>
                         </li>
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
-                                <i data-feather="home"></i><span>Patients</span>
+                                <i data-feather="users"></i><span>Patients</span>
                             </a>
                         </li>
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
-                                <i data-feather="home"></i><span>Appointments</span>
+                                <i data-feather="calendar"></i><span>Appointments</span>
                             </a>
                         </li>
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Admin2/Treatments/Index">
-                                <i data-feather="home"></i><span>Treatments</span>
+                                <i data-feather="activity"></i><span>Treatments</span>
                             </a>
                         </li>
                         <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Receptionist/Index">
-                                <i data-feather="home"></i><span>Register Receptionist</span>
+                            <a class="navbar__link" asp-area="" asp-page="/UserManagment/Index">
+                                <i data-feather="user-plus"></i><span>User Management</span>
                             </a>
                         </li>
                     }
@@ -74,7 +63,7 @@
                     {
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Dentists/Index">
-                                <i data-feather="home"></i><span>Dentist Schedule</span>
+                                <i data-feather="clipboard"></i><span>Dentist Schedule</span>
                             </a>
                         </li>
                     }
@@ -82,18 +71,28 @@
                     {
                         <li class="navbar__item">
                             <a class="navbar__link" asp-area="" asp-page="/Receptionist/Index">
-                                <i data-feather="home"></i><span>Rec Appoint</span>
+                                <i data-feather="book-open"></i><span>Create Appointment</span>
                             </a>
                         </li>
                     }
                     <li class="navbar__item">
+                        <a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
+                            <i data-feather="calendar"></i><span>Appointments</span>
+                        </a>
+                    </li>
+                    <li class="navbar__item">
+                        <a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
+                            <i data-feather="users"></i><span>Patients</span>
+                        </a>
+                    </li>
+                    <li class="navbar__item">
                         <a class="navbar__link" asp-area="" asp-page="/Privacy">
-                            <i data-feather="home"></i><span>Privacy</span>
+                            <i data-feather="shield"></i><span>Privacy</span>
                         </a>
                     </li>
                     <li class="navbar__item">
                         <a class="navbar__link" asp-area="" asp-page="/Logout">
-                            <i data-feather="home"></i><span>Logout</span>
+                            <i data-feather="log-out"></i><span>Logout</span>
                         </a>
                     </li>
                 </ul>
@@ -123,12 +122,7 @@
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
-            <footer class="border-top footer text-muted">
-                <div class="container">
-                    &copy; 2025 - Dental_Surgery - <a asp-area="" asp-page="/Privacy">Privacy</a>
-                </div>
-            </footer>
-        </div>
+            
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
