@@ -2,59 +2,64 @@
 @model Dental_Surgery.Pages.Admin2.Appointments.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Appointment";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Appointment</h2>
 
-<h4>Appointment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Appointment.AppointmentId" />
-            <div class="form-group">
-                <label asp-for="Appointment.AppointmentDate" class="control-label"></label>
-                <input asp-for="Appointment.AppointmentDate" class="form-control" />
-                <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.Notes" class="control-label"></label>
-                <input asp-for="Appointment.Notes" class="form-control" />
-                <span asp-validation-for="Appointment.Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Appointment.attend" /> @Html.DisplayNameFor(model => model.Appointment.attend)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.DentistId" class="control-label"></label>
-                <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
-                <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.PatientId" class="control-label"></label>
-                <select asp-for="Appointment.PatientId" class="form-control" asp-items="ViewBag.PatientId"></select>
-                <span asp-validation-for="Appointment.PatientId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.TreatmentId" class="control-label"></label>
-                <select asp-for="Appointment.TreatmentId" class="form-control" asp-items="ViewBag.TreatmentId"></select>
-                <span asp-validation-for="Appointment.TreatmentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="Appointment.AppointmentId" />
+
+                <div class="mb-3">
+                    <label asp-for="Appointment.AppointmentDate" class="form-label"></label>
+                    <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Appointment.Notes" class="form-label"></label>
+                    <textarea asp-for="Appointment.Notes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
+                    <span asp-validation-for="Appointment.Notes" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="Appointment.attend" />
+                    <label class="form-check-label" asp-for="Appointment.attend"></label>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Appointment.DentistId" class="form-label">Dentist</label>
+                    <select asp-for="Appointment.DentistId" class="form-select" asp-items="ViewBag.DentistId"></select>
+                    <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Appointment.PatientId" class="form-label">Patient</label>
+                    <select asp-for="Appointment.PatientId" class="form-select" asp-items="ViewBag.PatientId"></select>
+                    <span asp-validation-for="Appointment.PatientId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Appointment.TreatmentId" class="form-label">Treatment</label>
+                    <select asp-for="Appointment.TreatmentId" class="form-select" asp-items="ViewBag.TreatmentId"></select>
+                    <span asp-validation-for="Appointment.TreatmentId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <a asp-page="./Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

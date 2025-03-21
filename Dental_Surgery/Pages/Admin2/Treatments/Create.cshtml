@@ -2,43 +2,46 @@
 @model Dental_Surgery.Pages.Admin2.Treatments.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Treatment";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <h2 class="mb-4">Create New Treatment</h2>
 
-<h4>Treatment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Treatment.Name" class="control-label"></label>
-                <input asp-for="Treatment.Name" class="form-control" />
-                <span asp-validation-for="Treatment.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Treatment.Description" class="control-label"></label>
-                <input asp-for="Treatment.Description" class="form-control" />
-                <span asp-validation-for="Treatment.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Treatment.Cost" class="control-label"></label>
-                <input asp-for="Treatment.Cost" class="form-control" />
-                <span asp-validation-for="Treatment.Cost" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Treatment.Name" class="form-label"></label>
+                    <input asp-for="Treatment.Name" class="form-control" placeholder="Enter treatment name" />
+                    <span asp-validation-for="Treatment.Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Treatment.Description" class="form-label"></label>
+                    <textarea asp-for="Treatment.Description" class="form-control" rows="4" placeholder="Enter description"></textarea>
+                    <span asp-validation-for="Treatment.Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Treatment.Cost" class="form-label"></label>
+                    <input asp-for="Treatment.Cost" class="form-control" placeholder="Enter cost" />
+                    <span asp-validation-for="Treatment.Cost" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Create Treatment</button>
+                    <a asp-page="./Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,19 +1,31 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap");
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 
-body {
-    background: #eaeef6;
-    font-family: "Open Sans", sans-serif;
-}
 
 .navbar {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    background: #fff;
-    border-radius: 10px;
-    padding: 1rem 0;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
-    height: calc(100vh - 4rem);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    z-index: 100;
+    padding-left: 15px;
+}
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 5% 95%; /* Adjust the first column to 25% and the second column to 75% */
+    height: 100vh;
+}
+
+
+.main-content {
+    padding: 2rem;
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar__link {
@@ -55,7 +67,7 @@ body {
 }
 
 .navbar__item:last-child:before {
-    content: "";
+    content: '';
     position: absolute;
     opacity: 0;
     z-index: -1;
