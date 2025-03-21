@@ -4,20 +4,20 @@
     ViewData["Title"] = "Daily Schedule";
 }
 
-<h2>Daily Schedule</h2>
+<h2>Hello, Dr. @Model.CurrentDentist.FirstName @Model.CurrentDentist.LastName</h2>
 
 <form method="get">
     <div>
         <label for="dailyDentistSelect">View Schedule for Dentist:</label>
-        <select id="dailyDentistSelect" name="SelectedDentistId" onchange="this.form.submit()" required>
+        @* <select id="dailyDentistSelect" name="SelectedDentistId" onchange="this.form.submit()" required>
             <option value="">-- Select Dentist --</option>
             @foreach (var dentist in Model.Dentists)
             {
                 var isSelected = dentist.DentistId == Model.SelectedDentistId ? "selected=\"selected\"" : "";
                 var optionHtml = $"<option value=\"{dentist.DentistId}\" {isSelected}>{dentist.FirstName} {dentist.LastName}</option>";
                 @Html.Raw(optionHtml)
-            }
-        </select>
+            } 
+        </select>*@
 
 
 
@@ -25,19 +25,20 @@
     </div>
 
     <div style="margin-top:10px; display:flex; justify-content: space-between; align-items:center;">
-        <a asp-page="./Index" asp-route-SelectedDentistId="@Model.SelectedDentistId"
+        <a asp-page="./Index"
            asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
            class="btn btn-secondary">← Previous Day</a>
 
         <strong>@Model.ScheduleDate.ToString("dddd, MMM dd yyyy")</strong>
 
-        <a asp-page="./Index" asp-route-SelectedDentistId="@Model.SelectedDentistId"
+        <a asp-page="./Index"
            asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
            class="btn btn-secondary">Next Day →</a>
     </div>
+
 </form>
 
-@if (Model.SelectedDentistId > 0)
+@if (Model.CurrentDentist != null)
 {
     @if (Model.DailyAppointments.Any())
     {
@@ -45,9 +46,8 @@
             @foreach (var appt in Model.DailyAppointments)
             {
                 <div class="slot booked">
-                    <strong>@appt.AppointmentDate.ToString("HH:mm")</strong> - 
-                    Patient: @Model.Patients.FirstOrDefault(p => p.PatientId == appt.PatientId)?.FirstName
-                    @Model.Patients.FirstOrDefault(p => p.PatientId == appt.PatientId)?.LastName <br />
+                    <strong>@appt.AppointmentDate.ToString("HH:mm")</strong> -
+                    Patient: @appt.Patient?.FirstName @appt.Patient?.LastName <br />
                     Notes: @appt.Notes
                 </div>
             }
@@ -60,5 +60,6 @@
 }
 else
 {
-    <p>Please select a dentist to view their schedule.</p>
+    <p>Unable to load schedule. Dentist not found.</p>
 }
+

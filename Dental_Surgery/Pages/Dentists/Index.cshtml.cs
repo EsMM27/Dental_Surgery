@@ -7,39 +7,50 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dental.Model;
 using Dental.Service;
+using Microsoft.AspNetCore.Identity;
+using Dental_Surgery.Migrations;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Dental_Surgery.Pages.Dentists
 {
+    [Authorize(Roles = "Dentist")]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IndexModel(ILogger<IndexModel> logger, IUnitOfWork unitOfWork)
+        public IndexModel(ILogger<IndexModel> logger, IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
-        public List<Dentist> Dentists { get; set; } = new();
+        public Dentist CurrentDentist { get; set; }
         public List<Appointment> DailyAppointments { get; set; } = new();
-        public List<Patient> Patients { get; set; } = new();
-
-        [BindProperty(SupportsGet = true)]
-        public int SelectedDentistId { get; set; }
+        //public List<Patient> Patients { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
         public DateTime ScheduleDate { get; set; } = DateTime.Today;
 
         public async Task OnGetAsync()
         {
-            Dentists = (await _unitOfWork.Dentists.GetAllAsync()).ToList();
-            Patients = (await _unitOfWork.Patients.GetAllAsync()).ToList();
+            
+            //Dentists = (await _unitOfWork.Dentists.GetAllAsync()).ToList();
+            //Patients = (await _unitOfWork.Patients.GetAllAsync()).ToList();
 
-            if (SelectedDentistId > 0)
+            var userId = _userManager.GetUserId(User); //getting the id of the dentist currently logged in
+            var currentDentist = (await _unitOfWork.Dentists.GetAllAsync())
+                        .FirstOrDefault(d => d.UserId == userId);
+
+            CurrentDentist = currentDentist;
+
+            if (currentDentist != null)
             {
                 DailyAppointments = (await _unitOfWork.Appointments
-                    .GetAppointmentsForDentistAsync(SelectedDentistId, ScheduleDate))
+                    .GetAppointmentsForDentistAsync(currentDentist.DentistId, ScheduleDate))
                     .OrderBy(a => a.AppointmentDate.TimeOfDay)
                     .ToList();
             }
