@@ -2,71 +2,50 @@
 @model Dental_Surgery.Pages.Admin2.Dentists.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dentists";
 }
 
-<h1>Dentists</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dentists</h2>
+        <a asp-page="Create" class="btn btn-success">Add New Dentist</a>
+    </div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Specialization)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].AwardingBody)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].ContactNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dentist[0].Image)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Dentist) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Specialization)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AwardingBody)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                    <img src="/@Url.Content(item.Image)" alt="Dentist Photo" style="max-height:100px; width:auto;"/>
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.DentistId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.DentistId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.DentistId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="table-responsive shadow-sm">
+        <table class="table table-striped table-bordered align-middle table-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].FirstName)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].LastName)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].Specialization)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].AwardingBody)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].ContactNumber)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.Dentist[0].Image)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Dentist)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Specialization)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AwardingBody)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ContactNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>
+                            <img src="/@Url.Content(item.Image)" alt="Dentist Photo" class="img-thumbnail" style="max-height:80px; width:100%;" />
+                        </td>
+                        <td class="text-center">
+                            <a asp-page="./Edit" asp-route-id="@item.DentistId" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-page="./Details" asp-route-id="@item.DentistId" class="btn btn-sm btn-info">Details</a>
+                            <a asp-page="./Delete" asp-route-id="@item.DentistId" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

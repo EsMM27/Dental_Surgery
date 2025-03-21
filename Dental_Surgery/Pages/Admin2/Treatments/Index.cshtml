@@ -5,44 +5,37 @@
     ViewData["Title"] = "Treatments";
 }
 
-<h1>Index</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Treatment List</h2>
+        <a asp-page="Create" class="btn btn-success">Create New Treatment</a>
+    </div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Treatment[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Treatment[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Treatment[0].Cost)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Treatment) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.TreatmentId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.TreatmentId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.TreatmentId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="table-responsive shadow-sm">
+        <table class="table table-striped table-bordered table-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Treatment[0].Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Treatment[0].Description)</th>
+                    <th>@Html.DisplayNameFor(model => model.Treatment[0].Cost)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Treatment)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Cost)</td>
+                        <td class="text-center">
+                            <a asp-page="./Edit" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-page="./Details" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-info">Details</a>
+                            <a asp-page="./Delete" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

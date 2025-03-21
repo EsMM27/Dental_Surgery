@@ -101,7 +101,7 @@ namespace Dental_Surgery.Pages.Receptionist
             await _unitOfWork.SaveAsync();
 
             TempData["SuccessMessage"] = "Appointment created successfully.";
-            return RedirectToPage();
+            return RedirectToPage("/Admin2/Appointments/Index");
         }
 
         private async Task LoadDataAsync()
