@@ -29,6 +29,8 @@ namespace Dental_Surgery.Pages.Receptionist
 
         [BindProperty]
         public string SelectedTime { get; set; }
+        [BindProperty]
+        public string PatientSearchQuery { get; set; }
 
         public List<Dentist> Dentists { get; set; } = new();
         public List<(DateTime Date, string TimeSlot, bool IsBooked)> TimeSlotsWithAvailability { get; set; }
@@ -71,7 +73,16 @@ namespace Dental_Surgery.Pages.Receptionist
                 TimeSlotsWithAvailability.AddRange(dailySlots.Select(slot => (date, slot.TimeSlot, slot.IsBooked)));
             }
 
-            return Page();
+            if (Appointment.PatientId > 0)
+            {
+                var patient = await _unitOfWork.Patients.GetByIdAsync(Appointment.PatientId);
+                if (patient != null)
+                {
+                    PatientSearchQuery = $"{patient.FirstName} {patient.LastName} ({patient.PPS})";
+                }
+            }
+
+                return Page();
         }
 
         public async Task<IActionResult> OnPostCreateAppointmentAsync()

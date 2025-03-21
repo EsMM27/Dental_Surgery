@@ -1,20 +1,20 @@
 ﻿@page
 @model Dental_Surgery.Pages.LogoutModel
+
 @{
+    ViewData["Title"] = "Logout";
 }
 
-<form method="post">
-    <div class="border p-3 mt-4">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="row pb-2"></div>
-        <h2 class="text-primary p-lg-3">Logout</h2>
-    </div>
+<div class="container mt-5">
+    <div class="card shadow-sm mx-auto" style="max-width:500px;">
+        <div class="card-body text-center">
+            <h3 class="card-title mb-4 text-primary">Logout</h3>
+            <p>Are you sure you want to logout?</p>
 
-    <div class="mb-3">
-        <p> Are you sure you want to logout? </p>
-        <p>
-            <button class="btn btn-primary" asp-page-handler="Logout">Yes</button>
-            <button class="btn btn-outline-secondary ml-5" asp-page-handler="NoLogout">No</button>
-        </p>
+            <form method="post" class="mt-4">
+                <button class="btn btn-danger me-2" asp-page-handler="Logout">Yes, Logout</button>
+                <button class="btn btn-outline-secondary" asp-page-handler="NoLogout">Cancel</button>
+            </form>
+        </div>
     </div>
-</form>
+</div>
