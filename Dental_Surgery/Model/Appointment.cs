@@ -13,6 +13,7 @@ namespace Dental.Model
     {
         public int AppointmentId { get; set; }
         public DateTime AppointmentDate { get; set; }
+        [StringLength(250, ErrorMessage = "Notes cannot exceed 250 characters")]
         public string? Notes { get; set; }
         public bool attend { get; set; }
 

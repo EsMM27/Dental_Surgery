@@ -10,6 +10,7 @@ using Dental.Model;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
