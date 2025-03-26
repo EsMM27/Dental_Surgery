@@ -48,6 +48,17 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
                 return Page();
             }
 
+            // Check if a dentist with the same email OR first + last name already exists
+            bool dentistExists = await _context.Dentists
+                .AnyAsync(d => d.Email == Dentist.Email ||
+                               (d.FirstName == Dentist.FirstName && d.LastName == Dentist.LastName));
+
+            if (dentistExists)
+            {
+                ModelState.AddModelError(string.Empty, "A dentist with this email or name already exists.");
+                return Page();
+            }
+
             _context.Attach(Dentist).State = EntityState.Modified;
 
             try
