@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Dental.Model;
 using Dental.Service;
 using Microsoft.AspNetCore.Identity;
-using Dental_Surgery.Migrations;
 using Microsoft.AspNetCore.Authorization;
 
 

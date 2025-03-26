@@ -12,14 +12,15 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class DetailsModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly AppDBContext _context;
 
-        public DetailsModel(Dental.DataAccess.AppDBContext context)
+        public DetailsModel(AppDBContext context)
         {
             _context = context;
         }
 
         public Appointment Appointment { get; set; } = default!;
+
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,7 +29,12 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var appointment = await _context.Appointments
+                .Include(a => a.Dentist)
+                .Include(a => a.Patient)
+                .Include(a => a.Treatment)
+                .FirstOrDefaultAsync(m => m.AppointmentId == id);
+
             if (appointment == null)
             {
                 return NotFound();
@@ -39,5 +45,6 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             }
             return Page();
         }
+
     }
 }
