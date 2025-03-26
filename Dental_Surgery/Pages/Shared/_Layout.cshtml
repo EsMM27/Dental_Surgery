@@ -5,132 +5,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Dental_Surgery</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Dental_Surgery.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/Nav.css">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <style>
-        
-    </style>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Dental_Surgery</title>
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Dental_Surgery.styles.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/Nav.css">
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<style>
+
+	</style>
 </head>
 <body>
-    <div class="grid-container">
-        <nav class="navbar">
-            @if (SignInManager.IsSignedIn(User))
-            {
-                var user = await UserManager.GetUserAsync(User);
-                var roles = await UserManager.GetRolesAsync(user);
+	<div class="grid-container">
+		<nav class="navbar">
+			@if (SignInManager.IsSignedIn(User))
+			{
+				var user = await UserManager.GetUserAsync(User);
+				var roles = await UserManager.GetRolesAsync(user);
 
-                <ul class="navbar__menu no-bullets">
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Index">
-                            <i data-feather="home"></i><span>Home</span>
-                        </a>
-                    </li>
-                    @if (roles.Contains("Admin"))
-                    {
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Admin2/Dentists/Index">
-                                <i data-feather="user-check"></i><span>Dentists</span>
-                            </a>
-                        </li>
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
-                                <i data-feather="users"></i><span>Patients</span>
-                            </a>
-                        </li>
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
-                                <i data-feather="calendar"></i><span>Appointments</span>
-                            </a>
-                        </li>
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Admin2/Treatments/Index">
-                                <i data-feather="activity"></i><span>Treatments</span>
-                            </a>
-                        </li>
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/UserManagment/Index">
-                                <i data-feather="user-plus"></i><span>User Management</span>
-                            </a>
-                        </li>
-                    }
-                    @if (roles.Contains("Dentist"))
-                    {
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Dentists/Index">
-                                <i data-feather="clipboard"></i><span>Dentist Schedule</span>
-                            </a>
-                        </li>
-                    }
-                    @if (roles.Contains("Receptionist"))
-                    {
-                        <li class="navbar__item">
-                            <a class="navbar__link" asp-area="" asp-page="/Receptionist/Index">
-                                <i data-feather="book-open"></i><span>Create Appointment</span>
-                            </a>
-                        </li>
-                    }
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
-                            <i data-feather="calendar"></i><span>Appointments</span>
-                        </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
-                            <i data-feather="users"></i><span>Patients</span>
-                        </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Privacy">
-                            <i data-feather="shield"></i><span>Privacy</span>
-                        </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Logout">
-                            <i data-feather="log-out"></i><span>Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            }
-            else
-            {
-                <ul class="navbar__menu no-bullets">
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Login">
-                            <i data-feather="home"></i><span>Login</span>
-                        </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Register">
-                            <i data-feather="users"></i><span>Register</span>
-                        </a>
-                    </li>
-                    <li class="navbar__item">
-                        <a class="navbar__link" asp-area="" asp-page="/Privacy">
-                            <i data-feather="help-circle"></i><span>Privacy</span>
-                        </a>
-                    </li>
-                </ul>
-            }
-        </nav>
-        <div class="main-content">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-            
-    </div>
+				<ul class="navbar__menu no-bullets">
+					@* <li class="navbar__item">
+				<a class="navbar__link" asp-area="" asp-page="/Index">
+				<i data-feather="home"></i><span>Home</span>
+				</a>
+				</li> *@
+					@if (roles.Contains("Admin"))
+					{
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Index">
+								<i data-feather="home"></i><span>Home</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Admin2/Dentists/Index">
+								<i data-feather="user-check"></i><span>Dentists</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
+								<i data-feather="users"></i><span>Patients</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
+								<i data-feather="calendar"></i><span>Appointments</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Admin2/Treatments/Index">
+								<i data-feather="activity"></i><span>Treatments</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/UserManagment/Index">
+								<i data-feather="user-plus"></i><span>User Management</span>
+							</a>
+						</li>
+					}
+					@if (roles.Contains("Dentist"))
+					{
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Dentists/Index">
+								<i data-feather="clipboard"></i><span>Home</span>
+							</a>
+						</li>
+					}
+					@if (roles.Contains("Receptionist"))
+					{
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Index">
+								<i data-feather="home"></i><span>Home</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Receptionist/Index">
+								<i data-feather="book-open"></i><span>Create Appointment</span>
+							</a>
+						</li>
+					}
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
+							<i data-feather="calendar"></i><span>Appointments</span>
+						</a>
+					</li>
+					<li class="navbar__item">
+    <a class="navbar__link" asp-area="" asp-page="/Bills/Index">
+        <i data-feather="dollar-sign"></i><span>Bills</span>
+    </a>
+</li>
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
+							<i data-feather="users"></i><span>Patients</span>
+						</a>
+					</li>
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Privacy">
+							<i data-feather="shield"></i><span>Privacy</span>
+						</a>
+					</li>
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Logout">
+							<i data-feather="log-out"></i><span>Logout</span>
+						</a>
+					</li>
+				</ul>
+			}
+			else
+			{
+				<ul class="navbar__menu no-bullets">
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Login">
+							<i data-feather="home"></i><span>Login</span>
+						</a>
+					</li>
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Register">
+							<i data-feather="users"></i><span>Register</span>
+						</a>
+					</li>
+					<li class="navbar__item">
+						<a class="navbar__link" asp-area="" asp-page="/Privacy">
+							<i data-feather="help-circle"></i><span>Privacy</span>
+						</a>
+					</li>
+				</ul>
+			}
+		</nav>
+		<div class="main-content">
+			<main role="main" class="pb-3">
+				@RenderBody()
+			</main>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        feather.replace()
-    </script>
-    @await RenderSectionAsync("Scripts", required: false)
+		</div>
+
+		<script src="~/lib/jquery/dist/jquery.min.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+		<script>
+			feather.replace()
+		</script>
+		@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

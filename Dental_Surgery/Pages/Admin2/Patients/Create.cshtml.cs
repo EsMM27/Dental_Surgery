@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Surgery.Pages.Admin2.Patients
 {
@@ -32,6 +33,26 @@ namespace Dental_Surgery.Pages.Admin2.Patients
         {
             if (!ModelState.IsValid)
             {
+                return Page();
+            }
+
+            if (Patient.DateOfBirth > DateTime.Today)
+            {
+                ModelState.AddModelError("Patient.DateOfBirth", "Date of birth can't be in the future");
+                return Page();
+            }
+            // Check for duplicate patient by PPS, email, or full name + DOB (excluding the current record)
+            bool patientExists = await _context.Patients
+                .AnyAsync(p => (p.PPS == Patient.PPS ||
+                               p.Email == Patient.Email ||
+                               (p.FirstName == Patient.FirstName &&
+                                p.LastName == Patient.LastName &&
+                                p.DateOfBirth == Patient.DateOfBirth))
+                                && p.PatientId != Patient.PatientId); // Exclude the current patient
+
+            if (patientExists)
+            {
+                ModelState.AddModelError(string.Empty, "A patient with this PPS, email, or name and date of birth already exists.");
                 return Page();
             }
 

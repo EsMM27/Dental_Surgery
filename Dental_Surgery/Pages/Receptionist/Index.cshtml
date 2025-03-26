@@ -33,18 +33,45 @@
 
                 <!-- Date Selection -->
                 <label for="appointmentDate">Date:</label>
-                <input type="date" id="appointmentDate"
+                <input type="text" id="appointmentDate"
                        name="Appointment.AppointmentDate"
                        asp-for="Appointment.AppointmentDate"
                        value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")"
                        onchange="document.getElementById('fetchAvailabilityBtn').click()"
-                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
                        required />
+
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css" />
+
+                <script>
+                    flatpickr("#appointmentDate", {
+                        enableTime: false,
+                        dateFormat: "Y-m-d",
+                        "disable":[
+                            function (date) {
+                                return (date.getDay() === 0 || date.getDay() === 6);
+                            }
+                        ], "locale": {
+                            "firstDayOfWeek": 1
+                        },
+                        minDate: "@DateTime.Today.ToString("yyyy-MM-dd")",
+                        onChange: function(selectedDates, dateStr, instance) {
+                            document.getElementById('fetchAvailabilityBtn').click();
+                        }
+                    });
+                </script>
 
                 <!-- Patient Selection -->
                 <label for="patientSearch">Patient:</label>
-                <input type="text" id="patientSearch" placeholder="Enter name or PPS" onkeyup="searchPatients()" autocomplete="off" />
-                <input type="hidden" id="patientId" name="Appointment.PatientId" required /> <!-- Stores selected patient ID -->
+                <input type="text" id="patientSearch"
+                       placeholder="Enter name or PPS"
+                       onkeyup="searchPatients()"
+                       autocomplete="off"
+                       asp-for="PatientSearchQuery" /> <!-- Bind to the new property -->
+                <input type="hidden" id="patientId"
+                       name="Appointment.PatientId"
+                       asp-for="Appointment.PatientId"
+                       required /> <!-- Stores selected patient ID -->
                 <div id="suggestions" class="suggestion-box"></div>
 
                 <!-- Notes -->
@@ -99,21 +126,21 @@
                             for (int i = 0; i < 5; i++)
                             {
                                 var day = startOfWeek.AddDays(i);
-                                <td class="day @(day == Model.Appointment.AppointmentDate ? "selected" : "")" data-date="@day.ToString("yyyy-MM-dd")">
-                                    @day.ToString("MMM dd")
-                                    <div class="time-slots">
-                                        @foreach (var slot in Model.TimeSlotsWithAvailability.Where(ts => ts.Date == day.Date))
+                                    <td class="day @(day == Model.Appointment.AppointmentDate ? "selected" : "")" data-date="@day.ToString("yyyy-MM-dd")">
+                                        @day.ToString("MMM dd")
+                                        <div class="time-slots">
+                                            @foreach (var slot in Model.TimeSlotsWithAvailability.Where(ts => ts.Date == day.Date))
                                         {
                                             var slotDateTime = new DateTime(day.Year, day.Month, day.Day, int.Parse(slot.TimeSlot.Split(':')[0]), int.Parse(slot.TimeSlot.Split(':')[1]), 0);
                                             var isPast = slotDateTime < currentDateTime;
-                                            <div class="slot @(slot.IsBooked ? "booked" : isPast ? "booked" : "available")"
-                                                 data-time="@slot.TimeSlot"
-                                                 onclick="@(isPast || slot.IsBooked ? "return false;" : "selectTimeSlot(this);")">
-                                                @slot.TimeSlot
-                                            </div>
+                                                <div class="slot @(slot.IsBooked ? "booked" : isPast ? "booked" : "available")"
+                                                     data-time="@slot.TimeSlot"
+                                                     onclick="@(isPast || slot.IsBooked ? "return false;" : "selectTimeSlot(this);")">
+                                                    @slot.TimeSlot
+                                                </div>
                                         }
-                                    </div>
-                                </td>
+                                        </div>
+                                    </td>
                             }
                         }
                     </tr>

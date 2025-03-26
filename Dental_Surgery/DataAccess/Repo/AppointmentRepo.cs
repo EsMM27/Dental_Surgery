@@ -42,6 +42,7 @@ namespace Dental.DataAccess.Repo
 		{
 			return await _context.Appointments
 				.Where(a => a.DentistId == dentistId && a.AppointmentDate.Date == date.Date)
+                .Include(a => a.Patient)
 				.ToListAsync();
 		}
 	}

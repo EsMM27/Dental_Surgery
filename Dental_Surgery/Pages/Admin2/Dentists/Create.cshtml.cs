@@ -10,6 +10,7 @@ using Dental.Model;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
@@ -57,6 +58,18 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
                         Console.WriteLine(error.ErrorMessage);
                     }
                 }
+                return Page();
+
+            }
+
+            // Check if a dentist with the same email OR first + last name already exists
+            bool dentistExists = await _context.Dentists
+                .AnyAsync(d => d.Email == Dentist.Email ||
+                               (d.FirstName == Dentist.FirstName && d.LastName == Dentist.LastName));
+
+            if (dentistExists)
+            {
+                ModelState.AddModelError(string.Empty, "A dentist with this email or name already exists.");
                 return Page();
             }
 
