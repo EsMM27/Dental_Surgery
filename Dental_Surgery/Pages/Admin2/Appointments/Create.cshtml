@@ -2,103 +2,221 @@
 @model Dental_Surgery.Pages.Admin2.Appointments.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    var currentDateTime = DateTime.Now;
 }
 
-<h1>Create</h1>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
 
-<h4>Appointment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Appointment.AppointmentDate" class="control-label"></label>
-                <input asp-for="Appointment.AppointmentDate" class="form-control" />
-                <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.Notes" class="control-label"></label>
-                <input asp-for="Appointment.Notes" class="form-control" />
-                <span asp-validation-for="Appointment.Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Appointment.attend" /> @Html.DisplayNameFor(model => model.Appointment.attend)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Appointment.DentistId" class="control-label"></label>
-                <select asp-for="Appointment.DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
+    </style>
+</head>
+<body>
+    <h1>Dental Appointment</h1>
+
+    <div class="appointment-container">
+        <!-- Left Column: Form Inputs -->
+        <div class="form-column">
+            <form method="post" id="mainForm">
+                <!-- Dentist Selection -->
+                <label for="dentistSelect">Dentist:</label>
+                <select id="dentistSelect" name="Appointment.DentistId"
+                        asp-for="Appointment.DentistId"
+                        onchange="document.getElementById('fetchAvailabilityBtn').click()"
+                        required>
+                    <option value="">-- Select Dentist --</option>
+                    @foreach (var dentist in Model.Dentists)
+                    {
+                        <option value="@dentist.DentistId">@dentist.FirstName</option>
+                    }
+                </select>
+
+                <!-- Date Selection -->
+                <label for="appointmentDate">Date:</label>
+                <input type="text" id="appointmentDate"
+                       name="Appointment.AppointmentDate"
+                       asp-for="Appointment.AppointmentDate"
+                       value="@Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")"
+                       onchange="document.getElementById('fetchAvailabilityBtn').click()"
+                       required />
+
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css" />
+
+                <script>
+                    flatpickr("#appointmentDate", {
+                        enableTime: false,
+                        dateFormat: "Y-m-d",
+                        "disable": [
+                            function (date) {
+                                return (date.getDay() === 0 || date.getDay() === 6);
+                            }
+                        ], "locale": {
+                            "firstDayOfWeek": 1
+                        },
+                        minDate: "@DateTime.Today.ToString("yyyy-MM-dd")",
+                        onChange: function (selectedDates, dateStr, instance) {
+                            document.getElementById('fetchAvailabilityBtn').click();
+                        }
+                    });
+                </script>
+
+                <!-- Patient Selection -->
+                <label for="patientSearch">Patient:</label>
+                <input type="text" id="patientSearch"
+                       placeholder="Enter name or PPS"
+                       onkeyup="searchPatients()"
+                       autocomplete="off"
+                       asp-for="PatientSearchQuery" /> <!-- Bind to the new property -->
+                <input type="hidden" id="patientId"
+                       name="Appointment.PatientId"
+                       asp-for="Appointment.PatientId"
+                       required /> <!-- Stores selected patient ID -->
+                <div id="suggestions" class="suggestion-box"></div>
+
+                <!-- Notes -->
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="Appointment.Notes" asp-for="Appointment.Notes"></textarea>
+
+                <!-- Hidden Time Slot -->
+                <input type="hidden" id="selectedTime"
+                       name="SelectedTime"
+                       asp-for="SelectedTime" />
+
+                <!-- Buttons -->
+                <button type="submit" asp-page-handler="FetchAvailability"
+                        id="fetchAvailabilityBtn"
+                        style="display: none;">
+                    Refresh Slots
+                </button>
+
+                <button type="submit" asp-page-handler="CreateAppointment"
+                        class="submit-button">
+                    Create Appointment
+                </button>
+            </form>
+        </div>
+
+        <!-- Right Column: Time Slots -->
+        <div class="slots-column">
+            <!-- Selected Date -->
+            <div class="selected-date">
+                @* <span>Selected Date: @Model.Appointment.AppointmentDate.ToString("yyyy-MM-dd")</span>
+                @if (Model.Appointment.AppointmentDate.Date == DateTime.Today)
+                {
+                <span class="today-indicator">(Today)</span>
+                } *@
             </div>
 
-            <!-- Patient Search Input -->
-            <div class="form-group">
-                <label>Search for Patient:</label>
-                <input type="text" id="searchPatient" class="form-control" placeholder="Type patient name or PPS..." />
-                <ul id="patientResults" class="list-group mt-2" style="position:absolute; z-index:1000;"></ul>
-                <input type="hidden" asp-for="Appointment.PatientId" id="selectedPatientId" />
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Appointment.TreatmentId" class="control-label"></label>
-                <select asp-for="Appointment.TreatmentId" class="form-control" asp-items="ViewBag.TreatmentId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            <!-- Calendar Section -->
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @{
+                            var startOfWeek = Model.Appointment.AppointmentDate.StartOfWeek(DayOfWeek.Monday);
+                            for (int i = 0; i < 5; i++)
+                            {
+                                var day = startOfWeek.AddDays(i);
+                                <td class="day @(day == Model.Appointment.AppointmentDate ? "selected" : "")" data-date="@day.ToString("yyyy-MM-dd")">
+                                    @day.ToString("MMM dd")
+                                    <div class="time-slots">
+                                        @foreach (var slot in Model.TimeSlotsWithAvailability.Where(ts => ts.Date == day.Date))
+                                        {
+                                            var slotDateTime = new DateTime(day.Year, day.Month, day.Day, int.Parse(slot.TimeSlot.Split(':')[0]), int.Parse(slot.TimeSlot.Split(':')[1]), 0);
+                                            var isPast = slotDateTime < currentDateTime;
+                                            <div class="slot @(slot.IsBooked ? "booked" : isPast ? "booked" : "available")"
+                                                 data-time="@slot.TimeSlot"
+                                                 onclick="@(isPast || slot.IsBooked ? "return false;" : "selectTimeSlot(this);")">
+                                                @slot.TimeSlot
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 
     <script>
-        document.getElementById("searchPatient").addEventListener("input", function () {
-            let searchValue = this.value;
 
-            if (searchValue.length < 2) {
-                document.getElementById("patientResults").innerHTML = "";
+
+        function selectTimeSlot(slot) {
+            // Check if the slot is booked or unselectable
+            if (slot.classList.contains("booked")) {
+                return; // Do nothing if the slot is booked or unselectable
+            }
+
+            // Remove glow from all slots
+            document.querySelectorAll(".slot").forEach(s => s.classList.remove("selected"));
+
+            // Add glow to the clicked slot
+            slot.classList.add("selected");
+
+            // Update hidden input
+            document.getElementById("selectedTime").value = slot.getAttribute("data-time");
+
+            // Update date input field
+            const selectedDate = slot.closest("td").getAttribute("data-date");
+            document.getElementById("appointmentDate").value = selectedDate;
+
+            console.log("Selected Time (via data-time):", slot.getAttribute("data-time"));
+            console.log("Selected Date (via data-date):", selectedDate);
+        }
+
+        async function searchPatients() {
+            let query = document.getElementById("patientSearch").value;
+            console.log("Searching for query:", query);
+            let suggestionsBox = document.getElementById("suggestions");
+
+            if (query.length < 1) {
+                suggestionsBox.style.display = "none";
                 return;
             }
 
-            fetch(`/Admin2/Appointments/Create?handler=SearchPatients&searchString=${searchValue}`)
-                .then(response => response.json())
-                .then(data => {
-                    let resultsList = document.getElementById("patientResults");
-                    resultsList.innerHTML = "";
+            // Fetch matching patients
+            let response = await fetch(`/Admin2/Appointments/Create?handler=SearchPatients&query=${query}`);
 
-                    data.forEach(patient => {
-                        let listItem = document.createElement("li");
-                        listItem.classList.add("list-group-item", "list-group-item-action");
-                        listItem.textContent = `${patient.firstName} ${patient.lastName} (PPS: ${patient.pps})`;
-                        listItem.dataset.patientId = patient.patientId;
+            let patients = await response.json();
 
-                        listItem.addEventListener("click", function () {
-                            document.getElementById("searchPatient").value = this.textContent;
-                            document.getElementById("selectedPatientId").value = this.dataset.patientId;
-                            resultsList.innerHTML = "";
-                        });
+            // Clear previous suggestions
+            suggestionsBox.innerHTML = "";
+            suggestionsBox.style.display = patients.length > 0 ? "block" : "none";
 
-                        resultsList.appendChild(listItem);
-                    });
-                });
-        });
+            // Populate suggestions
+            patients.forEach(patient => {
+                let div = document.createElement("div");
+                div.classList.add("suggestion-item");
+                div.textContent = `${patient.firstName} ${patient.lastName} (${patient.pps})`;
+                div.onclick = () => selectPatient(patient.patientId, div.textContent);
+                suggestionsBox.appendChild(div);
+            });
+        }
 
-        // Close dropdown when clicking outside
+        function selectPatient(id, text) {
+            document.getElementById("patientSearch").value = text;
+            document.getElementById("patientId").value = id;
+            document.getElementById("suggestions").style.display = "none";
+        }
+
         document.addEventListener("click", function (event) {
-            let resultsList = document.getElementById("patientResults");
-            if (!event.target.closest("#searchPatient")) {
-                resultsList.innerHTML = "";
+            let suggestionsBox = document.getElementById("suggestions");
+            if (!document.getElementById("patientSearch").contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.style.display = "none";
             }
         });
     </script>
-}
+
+</body>

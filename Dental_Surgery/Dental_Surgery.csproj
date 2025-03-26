@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\Dentist\" />
+    <None Include="wwwroot\Images\Dentist\default.png" />
   </ItemGroup>
 
 </Project>

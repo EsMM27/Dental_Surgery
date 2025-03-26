@@ -13,5 +13,6 @@ namespace Dental.DataAccess.Repo
         public void Update(Appointment appointment);
 		Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date);
 
-	}
+        Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date);
+    }
 }
