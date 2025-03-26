@@ -30,17 +30,12 @@ namespace Dental_Surgery.Pages.Dentists
 
         public Dentist CurrentDentist { get; set; }
         public List<Appointment> DailyAppointments { get; set; } = new();
-        //public List<Patient> Patients { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
         public DateTime ScheduleDate { get; set; } = DateTime.Today;
 
         public async Task OnGetAsync()
         {
-            
-            //Dentists = (await _unitOfWork.Dentists.GetAllAsync()).ToList();
-            //Patients = (await _unitOfWork.Patients.GetAllAsync()).ToList();
-
             var userId = _userManager.GetUserId(User); //getting the id of the dentist currently logged in
             var currentDentist = (await _unitOfWork.Dentists.GetAllAsync())
                         .FirstOrDefault(d => d.UserId == userId);
