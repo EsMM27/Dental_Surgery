@@ -9,13 +9,13 @@
 <form method="get">
     <div style="margin-top:10px; display:flex; justify-content: space-between; align-items:center;">
         <a asp-page="./Index"
-           asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
+           asp-route-ScheduleDate="@Model.PreviousWeekday.ToString("yyyy-MM-dd")"
            class="btn btn-secondary">← Previous Day</a>
 
         <strong>@Model.ScheduleDate.ToString("dddd, MMM dd yyyy")</strong>
 
         <a asp-page="./Index"
-           asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
+           asp-route-ScheduleDate="@Model.NextWeekday.ToString("yyyy-MM-dd")"
            class="btn btn-secondary">Next Day →</a>
     </div>
 </form>

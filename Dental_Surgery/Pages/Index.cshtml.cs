@@ -26,7 +26,7 @@ namespace Dental_Surgery.Pages
                 .Include(a => a.Dentist)
                 .Include(a => a.Patient)
                 .Include(a => a.Treatment)
-                .Where(a => a.AppointmentDate >= ScheduleDate)
+                .Where(a => a.AppointmentDate.Date == ScheduleDate.Date)
                 .OrderBy(a => a.AppointmentDate)
                 .ToListAsync();
 
@@ -35,5 +35,29 @@ namespace Dental_Surgery.Pages
                 .OrderBy(g => g.Key)
                 .ToList();
         }
+
+        public DateTime PreviousWeekday => GetPreviousWeekday(ScheduleDate);
+
+        public DateTime NextWeekday => GetNextWeekday(ScheduleDate);
+
+        private DateTime GetPreviousWeekday(DateTime date)
+        {
+            do
+            {
+                date = date.AddDays(-1);
+            } while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+            return date;
+        }
+
+        private DateTime GetNextWeekday(DateTime date)
+        {
+            do
+            {
+                date = date.AddDays(1);
+            } while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+            return date;
+        }
+
+
     }
 }
