@@ -39,7 +39,7 @@ namespace Dental_Surgery.Pages
 					}
 					else if (roles.Contains("Receptionist"))
 					{
-						return RedirectToPage("/Receptionist/Index");
+						return RedirectToPage("/Index");
 					}
 					else if (roles.Contains("Dentist"))
 					{

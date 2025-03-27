@@ -20,13 +20,24 @@ namespace Dental_Surgery.Pages
 
         public List<IGrouping<DateTime, Appointment>> GroupedAppointments { get; set; } = new();
 
+        [BindProperty(SupportsGet = true)]
+        public string? SearchTerm { get; set; }
         public async Task OnGetAsync()
         {
-            var allAppointments = await _context.Appointments
+            var query = _context.Appointments
                 .Include(a => a.Dentist)
                 .Include(a => a.Patient)
                 .Include(a => a.Treatment)
-                .Where(a => a.AppointmentDate.Date == ScheduleDate.Date)
+                .Where(a => a.AppointmentDate.Date == ScheduleDate.Date);
+
+            if (!string.IsNullOrWhiteSpace(SearchTerm))
+            {
+                query = query.Where(a =>
+                    a.Patient != null &&
+                    (a.Patient.FirstName + " " + a.Patient.LastName).ToLower().Contains(SearchTerm.ToLower()));
+            }
+
+            var allAppointments = await query
                 .OrderBy(a => a.AppointmentDate)
                 .ToListAsync();
 
