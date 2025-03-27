@@ -1,0 +1,72 @@
+﻿@page
+@model Dental_Surgery.Pages.Shared.ScheduleModel
+@{
+	ViewData["Title"] = "Daily Schedule";
+	var hour = DateTime.Now.Hour;
+	var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
+}
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+<div class="container mt-4">
+	<div class="d-flex justify-content-between align-items-end mb-4">
+		<h2 class="mb-0 align-self-end">
+			@greeting@if (Model.IsDentist)
+			{
+				<text>, @Model.Dentist.FirstName</text>
+			}
+		</h2>
+
+		<div class="d-flex align-items-end">
+			<strong class="me-3 align-self-end">@Model.ScheduleDate.ToString("dddd, MMM dd yyyy")</strong>
+			<div class="btn-group">
+				<a asp-page="./Schedule"
+				   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
+				   class="btn btn-secondary" title="Previous day"><i data-feather="chevron-left"></i></a>
+				<a asp-page="./Schedule"
+				   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
+				   class="btn btn-secondary" title="Next Day"><i data-feather="chevron-right"></i></a>
+			</div>
+		</div>
+	</div>
+	@if (Model.DailyAppointments.Any())
+	{
+
+		<div class="table-responsive shadow-sm">
+			<table class="table table-striped table-bordered align-middle table-white">
+				<thead class="table-dark">
+					<tr>
+						<th>Time</th>
+						@if (!Model.IsDentist)
+						{
+							<th>Dentist</th>
+						}
+						<th>Patient</th>
+						<th>Treatment</th>
+						<th>Details</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var appt in Model.DailyAppointments)
+					{
+						<tr>
+							<td>@appt.AppointmentDate.ToString("HH:mm")</td>
+							@if (!Model.IsDentist)
+							{
+								<td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
+							}
+							<td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
+							<td>@appt.Treatment?.Name</td>
+							<td><a asp-page="/Admin2/Appointments/Details" asp-route-id="@appt.AppointmentId" class="btn btn-info btn-sm">Details</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+	}
+	else
+	{
+		<p>No appointments for this day.</p>
+	}
+</div>
