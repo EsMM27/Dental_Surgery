@@ -54,5 +54,12 @@ namespace Dental.DataAccess.Repo
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
+        {
+            return await _context.Appointments
+                                 .Include(a => a.Treatment) // Ensure Treatment is loaded
+                                 .ToListAsync();
+        }
+
     }
 }
