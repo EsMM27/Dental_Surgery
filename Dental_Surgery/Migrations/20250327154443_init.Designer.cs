@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dental_Surgery.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250321203657_FinishedInputValidation")]
-    partial class FinishedInputValidation
+    [Migration("20250327154443_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

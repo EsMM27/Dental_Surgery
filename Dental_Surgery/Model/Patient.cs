@@ -21,8 +21,7 @@ namespace Dental.Model
         public string LastName { get; set; }
         [RegularExpression(@"^0(7\d{9}|8\d{8})$", ErrorMessage = "Please enter a valid Irish/UK contact number")]
         public string ContactNumber { get; set; }
-        [RegularExpression(@"^0(7\d{9}|8\d{8})$", ErrorMessage = "Please enter a valid contact number")]
-
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Address is required")]
         [RegularExpression(@"^[A-Za-z0-9\s.,'\/#\-]{5,100}$", ErrorMessage = "Address contains invalid characters")]
