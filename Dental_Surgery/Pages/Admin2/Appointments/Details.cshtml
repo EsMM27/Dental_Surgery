@@ -36,8 +36,9 @@
                     Dentist
                 </dt>
                 <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.Dentist.AwardingBody)
+                    Dr. @Model.Appointment.Dentist.LastName
                 </dd>
+
 
                 <dt class="col-md-3 text-muted">
                     Patient Address
@@ -50,7 +51,7 @@
                     Treatment
                 </dt>
                 <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.Treatment.Description)
+                    @Html.DisplayFor(model => model.Appointment.Treatment.Name)
                 </dd>
             </dl>
         </div>

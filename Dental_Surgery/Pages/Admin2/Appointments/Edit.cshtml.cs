@@ -30,15 +30,33 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                 return NotFound();
             }
 
-            var appointment =  await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
             if (appointment == null)
             {
                 return NotFound();
             }
             Appointment = appointment;
-           ViewData["DentistId"] = new SelectList(_context.Dentists, "DentistId", "AwardingBody");
-           ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "Address");
-           ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Description");
+            ViewData["DentistId"] = new SelectList(_context.Dentists
+                .Select(d => new
+                {
+                    d.DentistId,
+                    FullName = "Dr. " + d.FirstName + " " + d.LastName
+                }),
+                 "DentistId",
+                 "FullName"
+             );
+
+            ViewData["PatientId"] = new SelectList(
+                _context.Patients
+                    .Select(p => new
+                    {
+                        p.PatientId,
+                        FullName = p.FirstName + " " + p.LastName
+                    }),
+                "PatientId",
+                "FullName"
+            );
+            ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
             return Page();
         }
 

@@ -28,16 +28,20 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+            var appointment = await _context.Appointments
+                .Include(a => a.Dentist)
+                .Include(a => a.Patient)
+                .Include(a => a.Treatment)
+                .FirstOrDefaultAsync(m => m.AppointmentId == id);
+
             if (appointment == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Appointment = appointment;
-            }
+
+            Appointment = appointment;
             return Page();
         }
+
     }
 }
