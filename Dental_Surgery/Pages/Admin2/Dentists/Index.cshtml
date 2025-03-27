@@ -5,9 +5,9 @@
     ViewData["Title"] = "Dentists";
 }
 
-<div class="container mt-5">
+<div class="container mt-4">
+    <h2>Dentists</h2>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Dentists</h2>
         <a asp-page="Create" class="btn btn-success">Add New Dentist</a>
     </div>
 
@@ -36,7 +36,7 @@
                         <td>@Html.DisplayFor(modelItem => item.ContactNumber)</td>
                         <td>@Html.DisplayFor(modelItem => item.Email)</td>
                         <td>
-                            <img src="/@Url.Content(item.Image)" alt="Dentist Photo" class="img-thumbnail" style="max-height:80px; width:100%;" />
+                            <img src="/@Url.Content(item.Image)" alt="Dentist Photo" class="img-thumbnail" style="height:80px; width:80px; object-fit:cover;" />
                         </td>
                         <td class="text-center">
                             <a asp-page="./Edit" asp-route-id="@item.DentistId" class="btn btn-sm btn-warning">Edit</a>

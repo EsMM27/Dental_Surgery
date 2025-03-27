@@ -45,5 +45,14 @@ namespace Dental.DataAccess.Repo
                 .Include(a => a.Patient)
 				.ToListAsync();
 		}
-	}
+        public async Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date)
+        {
+            return await _context.Appointments
+                .Where(a => a.AppointmentDate.Date == date.Date)
+                .Include(p => p.Patient)
+                .Include(d => d.Dentist)
+                .ToListAsync();
+        }
+
+    }
 }

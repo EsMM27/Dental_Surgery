@@ -75,7 +75,7 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
 
             var file = Request.Form.Files["files"];
 
-            if (file != null && file.Length > 0)
+			if (file != null && file.Length > 0)
             {
                 string uploadFolder = Path.Combine(_environment.WebRootPath, "Images", "Dentist");
                 if (!Directory.Exists(uploadFolder))
@@ -95,8 +95,10 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
             }
             else
             {
-                Console.WriteLine("No file uploaded.");
-            }
+				Dentist.Image = "Images/Dentist/default.png";
+
+				//Console.WriteLine("No file uploaded.");
+			}
 
             // Create IdentityUser
             var user = new IdentityUser
