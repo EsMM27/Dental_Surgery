@@ -24,7 +24,7 @@
                    class="btn btn-secondary" title="Previous day"><i data-feather="chevron-left"></i></a>
                 <input type="date"
                        name="ScheduleDate"
-                       value="@Model.ScheduleDate.ToString("dddd yyyy-MM-dd")"
+                       value="@Model.ScheduleDate.ToString("yyyy-MM-dd")"
                        class="form-control"
                        style="max-width: 200px; font-weight: bold; text-align: center; cursor: pointer;"
                        onchange="this.form.submit()" />
@@ -35,44 +35,45 @@
         </form>
     </div>
 
-    
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle table-white">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Time</th>
-                        @if (!Model.IsDentist)
-                        {
-                            <th>Dentist</th>
-                        }
-                        <th class="patient-column">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span id="patientHeaderText">Patient</span>
-                                <i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
-                            </div>
-                            <div class="patient-search-container" style="display: none;">
-                                <input type="text"
-                                       id="patientSearch"
-                                       class="form-control w-100 border-0 rounded-10 bg-white"
-                                       placeholder="Search for patient..."
-                                       onkeyup="searchPatients()" />
-                            </div>
-                        </th>
-                        <th>Treatment</th>
-                        
-                    </tr>
-                </thead>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle table-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Time</th>
+                    @if (!Model.IsDentist)
+                    {
+                        <th>Dentist</th>
+                    }
+                    <th class="patient-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="patientHeaderText">Patient</span>
+                            <i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
+                        </div>
+                        <div class="patient-search-container" style="display: none;">
+                            <input type="text"
+                                   id="patientSearch"
+                                   class="form-control w-100 border-0 rounded-10 bg-white"
+                                   placeholder="Search for patient..."
+                                   onkeyup="searchPatients()" />
+                        </div>
+                    </th>
+                    <th>Treatment</th>
+
+                </tr>
+            </thead>
 
 
-                <tbody id="appointmentsTBody">
+            <tbody id="appointmentsTBody">
                 @if (Model.DailyAppointments.Any())
                 {
 
                     @foreach (var appt in Model.DailyAppointments)
                     {
-                        <tr class="appointment-row clickable-row" 
+                        <tr class="appointment-row clickable-row"
                             data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
                             data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+
                             <td>@appt.AppointmentDate.ToString("HH:mm")</td>
                             @if (!Model.IsDentist)
                             {
@@ -80,24 +81,25 @@
                             }
                             <td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
                             <td>@appt.Treatment?.Name</td>
+
                         </tr>
                     }
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     <tr class="appointment-row">
                         <td colspan="@(Model.IsDentist ? "3" : "4")" class="border-0">No appointments.</td>
-                        </tr>
-                    }
-                </tbody>
+                    </tr>
+                }
+            </tbody>
 
 
 
 
-            </table>
-        </div>
-    
-    
+        </table>
+    </div>
+
+
 </div>
 @section Scripts {
     <script>
@@ -184,18 +186,19 @@
         padding: 0.5rem;
     }
 
-    .patient-search-container input {
-        height: 100%;
-        outline: none;
-        box-shadow: none;
-        border: none !important;
-    }
+        .patient-search-container input {
+            height: 100%;
+            outline: none;
+            box-shadow: none;
+            border: none !important;
+        }
 
-    .patient-search-container input:focus {
-        outline: none !important;
-        box-shadow: none !important;
-        border-color: transparent !important;
-    }
+            .patient-search-container input:focus {
+                outline: none !important;
+                box-shadow: none !important;
+                border-color: transparent !important;
+            }
+
     .patient-column .d-flex {
         height: 100%;
     }
@@ -204,9 +207,9 @@
         cursor: pointer;
     }
 
-    .clickable-row:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        .clickable-row:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 </style>
