@@ -1,72 +1,212 @@
 ﻿@page
 @model Dental_Surgery.Pages.Shared.ScheduleModel
 @{
-	ViewData["Title"] = "Daily Schedule";
-	var hour = DateTime.Now.Hour;
-	var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
+    ViewData["Title"] = "Daily Schedule";
+    var hour = DateTime.Now.Hour;
+    var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
 }
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
 <div class="container mt-4">
-	<div class="d-flex justify-content-between align-items-end mb-4">
-		<h2 class="mb-0 align-self-end">
-			@greeting@if (Model.IsDentist)
-			{
-				<text>, @Model.Dentist.FirstName</text>
-			}
-		</h2>
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="mb-0 align-self-end">
+            @greeting@if (Model.IsDentist)
+            {
+                <text>, @Model.Dentist.FirstName</text>
+            }
+        </h2>
 
-		<div class="d-flex align-items-end">
-			<strong class="me-3 align-self-end">@Model.ScheduleDate.ToString("dddd, MMM dd yyyy")</strong>
-			<div class="btn-group">
-				<a asp-page="./Schedule"
-				   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
-				   class="btn btn-secondary" title="Previous day"><i data-feather="chevron-left"></i></a>
-				<a asp-page="./Schedule"
-				   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
-				   class="btn btn-secondary" title="Next Day"><i data-feather="chevron-right"></i></a>
-			</div>
-		</div>
-	</div>
-	@if (Model.DailyAppointments.Any())
-	{
+        <form method="get" class="d-flex align-items-end">
+            <div class="btn-group me-2">
+                <a asp-page="./Schedule"
+                   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(-1).ToString("yyyy-MM-dd")"
+                   class="btn btn-secondary" title="Previous day"><i data-feather="chevron-left"></i></a>
+                <input type="date"
+                       name="ScheduleDate"
+                       value="@Model.ScheduleDate.ToString("dddd yyyy-MM-dd")"
+                       class="form-control"
+                       style="max-width: 200px; font-weight: bold; text-align: center; cursor: pointer;"
+                       onchange="this.form.submit()" />
+                <a asp-page="./Schedule"
+                   asp-route-ScheduleDate="@Model.ScheduleDate.AddDays(1).ToString("yyyy-MM-dd")"
+                   class="btn btn-secondary" title="Next Day"><i data-feather="chevron-right"></i></a>
+            </div>
+        </form>
+    </div>
 
-		<div class="table-responsive shadow-sm">
-			<table class="table table-striped table-bordered align-middle table-white">
-				<thead class="table-dark">
-					<tr>
-						<th>Time</th>
-						@if (!Model.IsDentist)
-						{
-							<th>Dentist</th>
-						}
-						<th>Patient</th>
-						<th>Treatment</th>
-						<th>Details</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var appt in Model.DailyAppointments)
-					{
-						<tr>
-							<td>@appt.AppointmentDate.ToString("HH:mm")</td>
-							@if (!Model.IsDentist)
-							{
-								<td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
-							}
-							<td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
-							<td>@appt.Treatment?.Name</td>
-							<td><a asp-page="/Admin2/Appointments/Details" asp-route-id="@appt.AppointmentId" class="btn btn-info btn-sm">Details</a></td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
+    
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle table-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Time</th>
+                        @if (!Model.IsDentist)
+                        {
+                            <th>Dentist</th>
+                        }
+                        <th class="patient-column">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span id="patientHeaderText">Patient</span>
+                                <i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
+                            </div>
+                            <div class="patient-search-container" style="display: none;">
+                                <input type="text"
+                                       id="patientSearch"
+                                       class="form-control w-100 border-0 rounded-10 bg-white"
+                                       placeholder="Search for patient..."
+                                       onkeyup="searchPatients()" />
+                            </div>
+                        </th>
+                        <th>Treatment</th>
+                        
+                    </tr>
+                </thead>
 
-	}
-	else
-	{
-		<p>No appointments for this day.</p>
-	}
+
+                <tbody id="appointmentsTBody">
+                @if (Model.DailyAppointments.Any())
+                {
+
+                    @foreach (var appt in Model.DailyAppointments)
+                    {
+                        <tr class="appointment-row clickable-row" 
+                            data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
+                            data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+                            <td>@appt.AppointmentDate.ToString("HH:mm")</td>
+                            @if (!Model.IsDentist)
+                            {
+                                <td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
+                            }
+                            <td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
+                            <td>@appt.Treatment?.Name</td>
+                        </tr>
+                    }
+                    }
+                    else
+                    {
+                    <tr class="appointment-row">
+                        <td colspan="@(Model.IsDentist ? "3" : "4")" class="border-0">No appointments.</td>
+                        </tr>
+                    }
+                </tbody>
+
+
+
+
+            </table>
+        </div>
+    
+    
 </div>
+@section Scripts {
+    <script>
+        feather.replace();
+
+        // Make rows clickable
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', () => {
+                window.location = row.getAttribute('data-href');
+            });
+        });
+
+        // Define the functions first
+        function togglePatientSearch() {
+            const searchContainer = document.querySelector('.patient-search-container');
+            const patientHeaderText = document.getElementById('patientHeaderText');
+            const searchIcon = document.querySelector('.search-icon');
+            const isVisible = searchContainer.style.display === 'block';
+
+            if (isVisible) {
+                searchContainer.style.display = 'none';
+                patientHeaderText.style.display = '';
+                searchIcon.style.display = '';
+            } else {
+                searchContainer.style.display = 'block';
+                patientHeaderText.style.display = 'none';
+                searchIcon.style.display = 'none';
+                document.getElementById('patientSearch').focus();
+            }
+        }
+
+        function searchPatients() {
+            const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('.appointment-row');
+
+            rows.forEach(row => {
+                const patientName = row.getAttribute('data-patient-name').toLowerCase();
+                if (patientName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Close search when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchContainer = document.querySelector('.patient-search-container');
+            const searchIcon = document.querySelector('.search-icon');
+            const patientHeaderText = document.getElementById('patientHeaderText');
+
+            if (!searchContainer.contains(event.target) && event.target !== searchIcon) {
+                searchContainer.style.display = 'none';
+                patientHeaderText.style.display = '';
+                searchIcon.style.display = '';
+            }
+        });
+
+        document.addEventListener('keyup', function (event) {
+            if (event.key === 'Escape') {
+                const searchContainer = document.querySelector('.patient-search-container');
+                const patientHeaderText = document.getElementById('patientHeaderText');
+                const searchIcon = document.querySelector('.search-icon');
+
+                searchContainer.style.display = 'none';
+                patientHeaderText.style.display = '';
+                searchIcon.style.display = '';
+            }
+        });
+    </script>
+}
+<style>
+    .patient-column {
+        position: relative;
+    }
+
+    .patient-search-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bs-dark);
+        padding: 0.5rem;
+    }
+
+    .patient-search-container input {
+        height: 100%;
+        outline: none;
+        box-shadow: none;
+        border: none !important;
+    }
+
+    .patient-search-container input:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: transparent !important;
+    }
+    .patient-column .d-flex {
+        height: 100%;
+    }
+    /* Hover effects for table rows */
+    .clickable-row {
+        cursor: pointer;
+    }
+
+    .clickable-row:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>

@@ -67,8 +67,19 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
+		//Login page is the first thing user sees
+        app.Use(async (context, next) =>
+		{
+			if (context.Request.Path == "/")
+			{
+				context.Response.Redirect("/Login");
+				return;
+			}
+			await next();
+		});
+
+		// Configure the HTTP request pipeline.
+		if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
@@ -86,7 +97,7 @@ public class Program
         app.MapRazorPages();
         app.MapBlazorHub();
 
-        using (var scope = app.Services.CreateScope())
+		using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
             await AppDBContextInitializer.SeedAsync(services);
