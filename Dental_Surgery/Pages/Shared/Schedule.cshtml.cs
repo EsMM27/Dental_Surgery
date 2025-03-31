@@ -31,7 +31,27 @@ namespace Dental_Surgery.Pages.Shared
         public Dentist Dentist { get; private set; }
 		public bool IsDentist { get; private set; }
 
-        public async Task OnGetAsync()
+		private DateTime GetPreviousWeekday(DateTime date)
+		{
+			do
+			{
+				date = date.AddDays(-1);
+			} while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+			return date;
+		}
+
+		private DateTime GetNextWeekday(DateTime date)
+		{
+			do
+			{
+				date = date.AddDays(1);
+			} while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+			return date;
+		}
+
+		public DateTime PreviousWeekday => GetPreviousWeekday(ScheduleDate);
+		public DateTime NextWeekday => GetNextWeekday(ScheduleDate);
+		public async Task OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
