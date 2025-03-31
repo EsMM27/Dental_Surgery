@@ -88,15 +88,22 @@
 							<td>@appt.Treatment?.Name</td>
 							@if (!Model.IsDentist)
 							{
-								<td>
+								<td class="no-click">
 									<div class="form-check d-flex justify-content-center">
 										<input class="form-check-input attendance-checkbox"
 											   type="checkbox"
 											   data-id="@appt.AppointmentId"
-										@(appt.attend ? "checked" : "") />
+										@(appt.attend ? "checked" : "")
+											   style="display: none;" />
+										<i data-feather="@(appt.attend ? "check-square" : "square")"
+										   class="attendance-icon"
+										   data-id="@appt.AppointmentId"></i>
 									</div>
 								</td>
+
 							}
+
+
 
 						</tr>
 					}
@@ -108,104 +115,138 @@
 					</tr>
 				}
 			</tbody>
-
-
-
-
 		</table>
 	</div>
 
 
 </div>
 @section Scripts {
-	<script>
-		feather.replace();
+    <script>
+        feather.replace();
 
 		// Makes rows clickable
 		document.querySelectorAll('.clickable-row').forEach(row => {
-			row.addEventListener('click', () => {
-				window.location = row.getAttribute('data-href');
-			});
-		});
-
-		// define the functions first, won't work otherwise
-		function togglePatientSearch() {
-			const searchContainer = document.querySelector('.patient-search-container');
-			const patientHeaderText = document.getElementById('patientHeaderText');
-			const searchIcon = document.querySelector('.search-icon');
-			const isVisible = searchContainer.style.display === 'block';
-
-			if (isVisible) {
-				searchContainer.style.display = 'none';
-				patientHeaderText.style.display = '';
-				searchIcon.style.display = '';
-			} else {
-				searchContainer.style.display = 'block';
-				patientHeaderText.style.display = 'none';
-				searchIcon.style.display = 'none';
-				document.getElementById('patientSearch').focus();
-			}
-		}
-
-		//shows rows if they match the search term
-		function searchPatients() {
-			const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
-			const rows = document.querySelectorAll('.appointment-row');
-
-			rows.forEach(row => {
-				const patientName = row.getAttribute('data-patient-name').toLowerCase();
-				if (patientName.includes(searchTerm)) {
-					row.style.display = '';
-				} else {
-					row.style.display = 'none';
+			row.addEventListener('click', (event) => {
+				let target = event.target;
+				// Traverse up the DOM tree until we hit the row or null
+				while (target && target !== row) {
+					if (target.classList.contains('no-click')) return;
+					target = target.parentElement;
 				}
-			});
-		}
-
-		// Close search when clicking outside
-		document.addEventListener('click', function (event) {
-			const searchContainer = document.querySelector('.patient-search-container');
-			const searchIcon = document.querySelector('.search-icon');
-			const patientHeaderText = document.getElementById('patientHeaderText');
-
-			if (!searchContainer.contains(event.target) && event.target !== searchIcon) {
-				searchContainer.style.display = 'none';
-				patientHeaderText.style.display = '';
-				searchIcon.style.display = '';
-			}
-		});
-
-		// Attendance checkbox functionality
-		document.querySelectorAll('.attendance-checkbox').forEach(box => {
-			// stops clicking the checkbox also triggering a click on the row (opening appt details)
-				e.stopPropagation();
-			});
-
-			box.addEventListener('change', async () => {
-				const appointmentId = parseInt(box.getAttribute('data-id'));
-				const attend = box.checked;
-
-				console.log("Sending to server:", { id: appointmentId, attend });
-
-				const response = await fetch('/Admin2/Appointments/UpdateAttendance?handler=Update', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ id: appointmentId, attend: attend })
-				});
-
-				const responseText = await response.text();
-				console.log("Response status:", response.status);
-				console.log("Response body:", responseText);
-
-				if (!response.ok) {
-					alert("Failed to update attendance.");
-					box.checked = !attend;
+				// Only navigate if we stopped at the row (not null)
+				if (target === row) {
+					window.location = row.getAttribute('data-href');
 				}
 			});
 		});
-	</script>
+
+        // define the functions first, won't work otherwise
+        function togglePatientSearch() {
+            const searchContainer = document.querySelector('.patient-search-container');
+            const patientHeaderText = document.getElementById('patientHeaderText');
+            const searchIcon = document.querySelector('.search-icon');
+            const isVisible = searchContainer.style.display === 'block';
+
+            if (isVisible) {
+                searchContainer.style.display = 'none';
+                patientHeaderText.style.display = '';
+                searchIcon.style.display = '';
+            } else {
+                searchContainer.style.display = 'block';
+                patientHeaderText.style.display = 'none';
+                searchIcon.style.display = 'none';
+                document.getElementById('patientSearch').focus();
+            }
+        }
+
+        //shows rows if they match the search term
+        function searchPatients() {
+            const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('.appointment-row');
+
+            rows.forEach(row => {
+                const patientName = row.getAttribute('data-patient-name').toLowerCase();
+                if (patientName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Close search when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchContainer = document.querySelector('.patient-search-container');
+            const searchIcon = document.querySelector('.search-icon');
+            const patientHeaderText = document.getElementById('patientHeaderText');
+
+            if (!searchContainer.contains(event.target) && event.target !== searchIcon) {
+                searchContainer.style.display = 'none';
+                patientHeaderText.style.display = '';
+                searchIcon.style.display = '';
+            }
+        });
+
+		// using event delegation 
+		// previously had a click handler on icons
+		// but when icons got updated and replaced, DOM element was replaced
+		// meaning the new icon didn't have a click event listener
+		// subsequent clicks didn't work
+		// solution: event delegation
+		// event listener is instead attached to parent element (document)
+		// it's listening for clicks on atendance icons
+		document.addEventListener('click', async function (event) {
+			const icon = event.target.closest('.attendance-icon');
+			if (!icon) return; // Exit if the clicked element is not an attendance icon
+
+			const appointmentId = parseInt(icon.getAttribute('data-id'));
+			const checkbox = document.querySelector(`.attendance-checkbox[data-id="${appointmentId}"]`);
+			const isChecked = !checkbox.checked;
+
+			// Update visual state immediately
+			icon.setAttribute('data-feather', isChecked ? 'check-square' : 'square');
+			feather.replace(); // Replace all icons 
+
+			// Update the hidden checkbox
+			checkbox.checked = isChecked;
+
+			localStorage.setItem(`attendance-${appointmentId}`, JSON.stringify({ attend: isChecked }));
+
+			// Send update to server
+			console.log("Sending to server:", { id: appointmentId, attend: isChecked });
+
+			const response = await fetch('/Admin2/Appointments/UpdateAttendance?handler=Update', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: appointmentId, attend: isChecked })
+			});
+
+			if (!response.ok) {
+				alert("Failed to update attendance.");
+				// Revert if failed
+				icon.setAttribute('data-feather', isChecked ? 'square' : 'check-square');
+				feather.replace();
+				checkbox.checked = !isChecked;
+			}
+		});
+		
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('.attendance-icon').forEach(icon => {
+				const appointmentId = parseInt(icon.getAttribute('data-id'));
+				const storedState = localStorage.getItem(`attendance-${appointmentId}`);
+
+				if (storedState) {
+					const { attend } = JSON.parse(storedState);
+					icon.setAttribute('data-feather', attend ? 'check-square' : 'square');
+					feather.replace();  // Replace the icon with the correct state
+				}
+			});
+		});
+
+
+    </script>
 }
 <style>
 	.patient-column {
@@ -248,5 +289,18 @@
 			background-color: rgba(0, 0, 0, 0.05);
 			transform: translateY(-1px);
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+	.attendance-icon {
+		cursor: pointer;
+		color: var(--bs-primary);
+		width: 20px;
+		height: 20px;
+		transition: transform 0.2s;
+	}
+
+		.attendance-icon:hover {
+			transform: scale(1.1);
+			color: var(--bs-primary-dark);
 		}
 </style>
