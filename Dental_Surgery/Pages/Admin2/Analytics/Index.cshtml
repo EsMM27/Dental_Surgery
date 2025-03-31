@@ -1,0 +1,219 @@
+﻿@page
+@model Dental_Surgery.Pages.Admin2.Analytics.IndexModel
+@{
+    ViewData["Title"] = "Analytics";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="p-6">
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <!-- Appointment Statistics -->
+            <div class="md:col-span-2 bg-white p-4 rounded-xl shadow">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Appointment Statistics</h2>
+                    <div>
+                        <button class="px-3 py-1 border rounded-full text-sm time-range-button" data-range="Weekly">Weekly</button>
+                        <button class="px-3 py-1 border rounded-full text-sm time-range-button" data-range="30 Day">30 Day</button>
+                    </div>
+                </div>
+                <!-- Chart Container -->
+                <div class="bg-gray-100 flex items-center justify-center">
+                    <canvas id="appointmentsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Requests and Appointment Info -->
+            <div class="bg-white p-4 rounded-xl shadow space-y-4">
+                <div>
+                    <h3 class="text-2xl font-bold">@Model.UpcomingAppointmentsCount</h3>
+                    <p class="text-gray-500">Upcoming Appointment</p>
+                </div>
+                <div class="md:col-span-1 bg-white p-4 rounded-xl shadow">
+                    <h2>Weeks Treatment Types</h2>
+                        <canvas id="treatmentsPieChart"></canvas>                    
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Lower Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                <!-- Today's Appointment -->
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <h2 class="text-lg font-semibold mb-2">Today's Appointment (@Model.TodaysAppointments.Count)</h2>
+                    <ul class="space-y-2 max-h-48 overflow-y-auto">
+                        @for (int i = 0; i < Model.TodaysAppointments.Count; i++)
+                        {
+                            <li class="bg-gray-100 p-2 rounded">
+                                @Model.TodaysAppointments[i].TreatmentName
+                                <span class="float-right text-sm text-gray-500">
+                                    @Model.TodaysAppointments[i].AppointmentTime.ToString("HH:mm") - @Model.TodaysAppointments[i].AppointmentTime.AddMinutes(30).ToString("HH:mm")
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            
+
+
+            <!-- Top Treatment -->
+            <div class="bg-white p-4 rounded-xl shadow">
+                <h2 class="text-lg font-semibold mb-2">Top Treatment</h2>
+                <ol class="list-decimal ml-5 space-y-1 text-gray-700">
+                    @foreach (var treatment in Model.TopTreatments)
+                    {
+                        <li>@treatment</li>
+                    }
+                </ol>
+            </div>
+
+            <!-- Patients This Month -->
+            <div class="bg-white p-4 rounded-xl shadow text-center">
+                <h3 class="text-sm text-gray-500 mt-4">Total Patients</h3>
+                <h2 class="text-3xl font-bold">@Model.TotalPatientsCount</h2>
+            </div>
+
+
+
+            <!-- Revenue Info -->
+            <div class="bg-white p-4 rounded-xl shadow text-center">
+                <h3 class="text-sm text-gray-500">Total Money Earned This Month</h3>
+                <h2 class="text-3xl font-bold">@Model.TotalMoneyEarnedThisMonth.ToString("C")</h2>
+                <p class="text-gray-500">This Month So Far</p>
+                <h3 class="text-sm text-gray-500 mt-4">Total Money Earned Previous Month</h3>
+                <h2 class="text-3xl font-bold">@Model.TotalMoneyEarnedPreviousMonth.ToString("C")</h2>
+                <p class="text-gray-500">Previous Month</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Retrieve data passed from the server
+    var timeRangeLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TimeRangeLabels));
+    var timeRangeData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TimeRangeData));
+    var defaultTimeRange = "@Model.DefaultTimeRange";
+
+    // Initialize the chart with default data
+    var ctx = document.getElementById('appointmentsChart').getContext('2d');
+    var appointmentsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timeRangeLabels[defaultTimeRange],
+            datasets: [{
+                label: 'Appointments',
+                data: timeRangeData[defaultTimeRange],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Time Period'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Appointments'
+                    }
+                }
+            }
+        }
+    });
+
+    // Function to update the chart based on selected time range
+    function updateChart(timeRange) {
+        appointmentsChart.data.labels = timeRangeLabels[timeRange];
+        appointmentsChart.data.datasets[0].data = timeRangeData[timeRange];
+        appointmentsChart.update();
+    }
+
+    
+    // Add event listeners to time range buttons
+    document.querySelectorAll('.time-range-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var timeRange = this.getAttribute('data-range');
+            updateChart(timeRange);
+
+            // Update button styles to indicate active selection
+            document.querySelectorAll('.time-range-button').forEach(function(btn) {
+                btn.classList.remove('border-blue-500', 'text-blue-500');
+            });
+            this.classList.add('border-blue-500', 'text-blue-500');
+        });
+    });
+
+    // Data for treatments pie chart
+        var treatmentsLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TreatmentsLabels));
+        var treatmentsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TreatmentsData));
+
+        // Initialize the pie chart
+        var ctxPie = document.getElementById('treatmentsPieChart').getContext('2d');
+        var treatmentsPieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: treatmentsLabels,
+            datasets: [{
+                data: treatmentsData,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+        });
+
+
+</script>

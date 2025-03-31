@@ -18,6 +18,8 @@ A dental surgery management system
 when opening the project for first time or on a new machine you will require to 
 "update-database" in the NuGet package manager
 this is done to create the database on your machine.
+## Usage 
+You can import sample database from .DACPAC
 
 ## Commits
 all changes to be made through visual studio code, 
@@ -28,6 +30,9 @@ Post Initial setup changes to be made through the creation of new branches and m
 You can open this repository from github "Open in Visual Studio"
 
 ## Release History
+* 0.1.6
+    * Added analytics page for the admin user
+    * dentist/receptionist now share the daily schedule with different views
 * 0.1.5
     * Layout/Styles orginized
     * Nav Updated
