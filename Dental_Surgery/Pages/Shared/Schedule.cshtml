@@ -88,7 +88,14 @@
 							<td>@appt.Treatment?.Name</td>
 							@if (!Model.IsDentist)
 							{
-								<th>checkbox code here </th>
+								<td>
+									<div class="form-check d-flex justify-content-center">
+										<input class="form-check-input attendance-checkbox"
+											   type="checkbox"
+											   data-id="@appt.AppointmentId"
+										@(appt.attend ? "checked" : "") />
+									</div>
+								</td>
 							}
 
 						</tr>
@@ -166,6 +173,37 @@
 				patientHeaderText.style.display = '';
 				searchIcon.style.display = '';
 			}
+		});
+
+		// Attendance checkbox functionality
+		document.querySelectorAll('.attendance-checkbox').forEach(box => {
+			// stops clicking the checkbox also triggering a click on the row (opening appt details)
+				e.stopPropagation();
+			});
+
+			box.addEventListener('change', async () => {
+				const appointmentId = parseInt(box.getAttribute('data-id'));
+				const attend = box.checked;
+
+				console.log("Sending to server:", { id: appointmentId, attend });
+
+				const response = await fetch('/Admin2/Appointments/UpdateAttendance?handler=Update', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ id: appointmentId, attend: attend })
+				});
+
+				const responseText = await response.text();
+				console.log("Response status:", response.status);
+				console.log("Response body:", responseText);
+
+				if (!response.ok) {
+					alert("Failed to update attendance.");
+					box.checked = !attend;
+				}
+			});
 		});
 	</script>
 }
