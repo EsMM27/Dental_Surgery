@@ -8,20 +8,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class EditModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(Dental.DataAccess.AppDBContext context)
+        public EditModel(Dental.DataAccess.AppDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
         public Appointment Appointment { get; set; } = default!;
+
+        public List<string> UserRoles { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -35,28 +40,30 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             {
                 return NotFound();
             }
-            Appointment = appointment;
-            ViewData["DentistId"] = new SelectList(_context.Dentists
-                .Select(d => new
-                {
-                    d.DentistId,
-                    FullName = "Dr. " + d.FirstName + " " + d.LastName
-                }),
-                 "DentistId",
-                 "FullName"
-             );
 
-            ViewData["PatientId"] = new SelectList(
-                _context.Patients
-                    .Select(p => new
-                    {
-                        p.PatientId,
-                        FullName = p.FirstName + " " + p.LastName
-                    }),
-                "PatientId",
-                "FullName"
-            );
+            Appointment = appointment;
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                UserRoles = roles.ToList();
+            }
+
+            ViewData["DentistId"] = new SelectList(_context.Dentists.Select(d => new
+            {
+                d.DentistId,
+                FullName = "Dr. " + d.FirstName + " " + d.LastName
+            }), "DentistId", "FullName");
+
+            ViewData["PatientId"] = new SelectList(_context.Patients.Select(p => new
+            {
+                p.PatientId,
+                FullName = p.FirstName + " " + p.LastName
+            }), "PatientId", "FullName");
+
             ViewData["TreatmentId"] = new SelectList(_context.Treatments, "TreatmentId", "Name");
+
             return Page();
         }
 
@@ -87,7 +94,9 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
                 }
             }
 
-            return RedirectToPage("./Index");
+            TempData["SuccessMessage"] = "Appointment updated successfully.";
+            return RedirectToPage("./Details", new { id = Appointment.AppointmentId });
+
         }
 
         private bool AppointmentExists(int id)

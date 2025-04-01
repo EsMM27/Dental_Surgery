@@ -32,7 +32,7 @@
                     <td>@Html.DisplayFor(modelItem => item.attend)</td>
                     <td>@Html.DisplayFor(modelItem => item.Dentist.FirstName)</td>
                     <td>@Html.DisplayFor(modelItem => item.Patient.FirstName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Treatment.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Treatment.Name)</td>
                     <td class="text-center">
                         <a asp-page="./Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-warning">Edit</a>
                         <a asp-page="./Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-info">Details</a>

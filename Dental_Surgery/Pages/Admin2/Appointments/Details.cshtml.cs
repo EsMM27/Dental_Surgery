@@ -7,19 +7,26 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
     public class DetailsModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DetailsModel(Dental.DataAccess.AppDBContext context)
+        public DetailsModel(Dental.DataAccess.AppDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public Appointment Appointment { get; set; } = default!;
+        public string BackUrl { get; set; } = "/Admin2/Appointments/Index"; // Default
+
+        public List<string> UserRoles { get; set; } = new();
+
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -40,8 +47,24 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             }
 
             Appointment = appointment;
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                UserRoles = roles.ToList();
+
+                if (roles.Contains("Receptionist"))
+                {
+                    BackUrl = "/Index";
+                }
+                else if (roles.Contains("Dentist"))
+                {
+                    BackUrl = "/Shared/Schedule";
+                }
+            }
+
             return Page();
         }
-
     }
 }

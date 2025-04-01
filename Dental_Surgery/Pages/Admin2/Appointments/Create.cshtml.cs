@@ -32,7 +32,11 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
         [BindProperty]
         public string SelectedTime { get; set; }
         [BindProperty]
+
         public string PatientSearchQuery { get; set; }
+
+
+        public List<Treatment> Treatments { get; set; } = new();
 
         public List<Dentist> Dentists { get; set; } = new();
         public List<(DateTime Date, string TimeSlot, bool IsBooked)> TimeSlotsWithAvailability { get; set; }
@@ -124,6 +128,8 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             _logger.LogInformation("Loading data");
             Dentists = (await _unitOfWork.Dentists.GetAllAsync()).ToList();
             Patients = (await _unitOfWork.Patients.GetAllAsync()).ToList();
+            Treatments = (await _unitOfWork.Treatments.GetAllAsync()).ToList();
+
         }
 
         private async Task LoadTimeSlotsAsync()

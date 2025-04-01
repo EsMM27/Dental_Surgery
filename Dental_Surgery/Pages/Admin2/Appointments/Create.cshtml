@@ -19,6 +19,7 @@
         <!-- Left Column: Form Inputs -->
         <div class="form-column">
             <form method="post" id="mainForm">
+
                 <!-- Dentist Selection -->
                 <label for="dentistSelect">Dentist:</label>
                 <select id="dentistSelect" name="Appointment.DentistId"
@@ -31,6 +32,19 @@
                         <option value="@dentist.DentistId">@dentist.FirstName</option>
                     }
                 </select>
+
+                <!-- Patient Selection -->
+                <label for="patientSearch">Patient:</label>
+                <input type="text" id="patientSearch"
+                       placeholder="Enter name or PPS"
+                       onkeyup="searchPatients()"
+                       autocomplete="off"
+                       asp-for="PatientSearchQuery" /> <!-- Bind to the new property -->
+                <input type="hidden" id="patientId"
+                       name="Appointment.PatientId"
+                       asp-for="Appointment.PatientId"
+                       required /> <!-- Stores selected patient ID -->
+                <div id="suggestions" class="suggestion-box"></div>
 
                 <!-- Date Selection -->
                 <label for="appointmentDate">Date:</label>
@@ -62,18 +76,23 @@
                     });
                 </script>
 
-                <!-- Patient Selection -->
-                <label for="patientSearch">Patient:</label>
-                <input type="text" id="patientSearch"
-                       placeholder="Enter name or PPS"
-                       onkeyup="searchPatients()"
-                       autocomplete="off"
-                       asp-for="PatientSearchQuery" /> <!-- Bind to the new property -->
-                <input type="hidden" id="patientId"
-                       name="Appointment.PatientId"
-                       asp-for="Appointment.PatientId"
-                       required /> <!-- Stores selected patient ID -->
-                <div id="suggestions" class="suggestion-box"></div>
+
+
+
+
+                <!-- Treatment Selection -->
+                <label for="treatmentSelect">Treatment:</label>
+                <select id="treatmentSelect"
+                        name="Appointment.TreatmentId"
+                        asp-for="Appointment.TreatmentId"
+                        required>
+                    <option value="">-- Select Treatment --</option>
+                    @foreach (var treatment in Model.Treatments)
+                    {
+                        <option value="@treatment.TreatmentId">@treatment.Name</option>
+                    }
+                </select>
+
 
                 <!-- Notes -->
                 <label for="notes">Notes:</label>

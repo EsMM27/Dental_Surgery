@@ -14,5 +14,7 @@ namespace Dental.DataAccess.Repo
 		Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date);
 
         Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date);
+
+        Task<IEnumerable<Appointment>> GetAppointmentHistoryForDentistAsync(int dentistId);
     }
 }

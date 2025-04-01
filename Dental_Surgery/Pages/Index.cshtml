@@ -1,10 +1,16 @@
 ﻿@page
-@model IndexModel
+@model Dental_Surgery.Pages.IndexModel
 @{
     ViewData["Title"] = "Dashboard";
+    var hour = DateTime.Now.Hour;
+    var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
 }
-
-<h2>👋 Welcome, @Model.DisplayName!</h2>
+<h2 class="mb-3">
+    @greeting@if (!string.IsNullOrEmpty(Model.DisplayName))
+    {
+        <text>, @Model.DisplayName</text>
+    }
+</h2>
 
 @if (User.IsInRole("Admin"))
 {
@@ -31,7 +37,6 @@
                 <span>Dentists on Duty:</span>
                 <strong>@Model.DentistsOnDuty</strong>
             </li>
-            
         </ul>
 
         <div>
@@ -59,9 +64,7 @@
 
         <div>
             <a class="btn btn-primary me-2" asp-page="/Shared/Schedule">📅 View My Schedule</a>
-            <a class="btn btn-secondary" asp-page="/Patients/History">📄 Patient History</a>
+            <a class="btn btn-secondary" asp-page="/Admin2/Patients/History">📄 Patient History</a>
         </div>
     </div>
 }
-
-

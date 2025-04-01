@@ -14,40 +14,73 @@
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                 <input type="hidden" asp-for="Appointment.AppointmentId" />
 
-                <div class="mb-3">
-                    <label asp-for="Appointment.AppointmentDate" class="form-label"></label>
-                    <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local" />
-                    <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
-                </div>
+                @* Appointment Date — both roles *@
+                @if (Model.UserRoles.Contains("Receptionist") || Model.UserRoles.Contains("Dentist"))
+                {
+                    <div class="mb-3">
+                        <label asp-for="Appointment.AppointmentDate" class="form-label"></label>
+                        <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Appointment.Notes" class="form-label"></label>
-                    <textarea asp-for="Appointment.Notes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
-                    <span asp-validation-for="Appointment.Notes" class="text-danger"></span>
-                </div>
+                    
 
-                <div class="form-check mb-3">
-                    <input class="form-check-input" asp-for="Appointment.attend" />
-                    <label class="form-check-label" asp-for="Appointment.attend"></label>
-                </div>
 
-                <div class="mb-3">
-                    <label asp-for="Appointment.DentistId" class="form-label">Dentist</label>
-                    <select asp-for="Appointment.DentistId" class="form-select" asp-items="ViewBag.DentistId"></select>
-                    <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
-                </div>
 
-                <div class="mb-3">
-                    <label asp-for="Appointment.PatientId" class="form-label">Patient</label>
-                    <select asp-for="Appointment.PatientId" class="form-select" asp-items="ViewBag.PatientId"></select>
-                    <span asp-validation-for="Appointment.PatientId" class="text-danger"></span>
-                </div>
+                @* Attend checkbox — Receptionist only *@
+                @if (Model.UserRoles.Contains("Receptionist"))
+                {
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="Appointment.attend" />
+                        <label class="form-check-label" asp-for="Appointment.attend"></label>
+                    </div>
+                }
 
-                <div class="mb-3">
-                    <label asp-for="Appointment.TreatmentId" class="form-label">Treatment</label>
-                    <select asp-for="Appointment.TreatmentId" class="form-select" asp-items="ViewBag.TreatmentId"></select>
-                    <span asp-validation-for="Appointment.TreatmentId" class="text-danger"></span>
-                </div>
+                @* Dentist dropdown — Receptionist can select, Dentist sees hidden input *@
+                @if (Model.UserRoles.Contains("Receptionist"))
+                {
+                    <div class="mb-3">
+                        <label asp-for="Appointment.DentistId" class="form-label">Dentist</label>
+                        <select asp-for="Appointment.DentistId" class="form-select" asp-items="ViewBag.DentistId"></select>
+                        <span asp-validation-for="Appointment.DentistId" class="text-danger"></span>
+                    </div>
+                }
+                else if (Model.UserRoles.Contains("Dentist"))
+                {
+                    <input type="hidden" asp-for="Appointment.DentistId" />
+                }
+
+                @* Patient — Receptionist only *@
+                @if (Model.UserRoles.Contains("Receptionist"))
+                {
+                    <div class="mb-3">
+                        <label asp-for="Appointment.PatientId" class="form-label">Patient</label>
+                        <select asp-for="Appointment.PatientId" class="form-select" asp-items="ViewBag.PatientId"></select>
+                        <span asp-validation-for="Appointment.PatientId" class="text-danger"></span>
+                    </div>
+                }
+                else if (Model.UserRoles.Contains("Dentist"))
+                {
+                    <input type="hidden" asp-for="Appointment.PatientId" />
+                }
+
+
+                @* Treatment — both can edit *@
+                @if (Model.UserRoles.Contains("Receptionist") || Model.UserRoles.Contains("Dentist"))
+                {
+                    <div class="mb-3">
+                        <label asp-for="Appointment.TreatmentId" class="form-label">Treatment</label>
+                        <select asp-for="Appointment.TreatmentId" class="form-select" asp-items="ViewBag.TreatmentId"></select>
+                        <span asp-validation-for="Appointment.TreatmentId" class="text-danger"></span>
+                    </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Appointment.Notes" class="form-label"></label>
+                            <textarea asp-for="Appointment.Notes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
+                            <span asp-validation-for="Appointment.Notes" class="text-danger"></span>
+                        </div>
+                    }
+                }
 
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-success">Save Changes</button>

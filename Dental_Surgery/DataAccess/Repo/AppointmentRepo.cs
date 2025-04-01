@@ -61,5 +61,18 @@ namespace Dental.DataAccess.Repo
                                  .ToListAsync();
         }
 
+        public async Task<IEnumerable<Appointment>> GetAppointmentHistoryForDentistAsync(int dentistId)
+        {
+            return await _context.Appointments
+                .Include(a => a.Patient)
+                .Include(a => a.Treatment)
+                .Where(a => a.DentistId == dentistId && a.AppointmentDate < DateTime.Now)
+                .OrderByDescending(a => a.AppointmentDate)
+                .ToListAsync();
+        }
+
+
+
+
     }
 }

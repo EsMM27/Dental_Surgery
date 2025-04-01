@@ -1,17 +1,13 @@
 using System.Linq;
-using Dental.DataAccess;
 using Dental.Model;
 using Dental.Service;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Surgery.Pages
 {
     public class IndexModel : PageModel
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -28,7 +24,6 @@ namespace Dental_Surgery.Pages
 
         // Receptionist
         public int DentistsOnDuty { get; set; }
-        public int NewPatientsToday { get; set; }
 
         // Dentist
         public string NextAppointmentTime { get; set; }
@@ -42,24 +37,20 @@ namespace Dental_Surgery.Pages
         public async Task OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            DisplayName = user?.UserName ?? "Receptionist";
-
             var roles = await _userManager.GetRolesAsync(user);
+
             if (roles.Contains("Receptionist"))
             {
-                var today = DateTime.Today;
+                var receptionist = user; // Assuming IdentityUser has names (if not, use fallback)
+                DisplayName = $"{receptionist?.UserName}";
 
-                // 1. Appointments Today
+                // Optional: If you store first/last name for receptionists in a separate model, use that instead
+
+                var today = DateTime.Today;
                 var appointments = await _unitOfWork.Appointments.GetAppointmentsForDateAsync(today);
                 AppointmentsToday = appointments.Count();
-
-                // 2. Dentists On Duty (you could define this as "any dentist who has at least 1 appointment today")
-                var dentistIds = appointments.Select(a => a.DentistId).Distinct();
-                DentistsOnDuty = dentistIds.Count();
-
-                
+                DentistsOnDuty = appointments.Select(a => a.DentistId).Distinct().Count();
             }
-
             else if (roles.Contains("Dentist"))
             {
                 var dentist = (await _unitOfWork.Dentists.GetAllAsync())
@@ -67,6 +58,8 @@ namespace Dental_Surgery.Pages
 
                 if (dentist != null)
                 {
+                    DisplayName = $"Dr. {dentist.FirstName} {dentist.LastName}";
+
                     var today = DateTime.Today;
 
                     var todaysAppointments = (await _unitOfWork.Appointments
@@ -90,16 +83,20 @@ namespace Dental_Surgery.Pages
                         NextPatientName = "No more appointments today";
                     }
                 }
+                else
+                {
+                    DisplayName = "Dentist";
+                }
             }
-
-            else if (User.IsInRole("Admin"))
+            else if (roles.Contains("Admin"))
             {
+                DisplayName = user?.UserName ?? "Admin";
                 AppointmentsToday = 20;
                 TotalUsers = 10;
                 TotalDentists = 5;
                 TotalReceptionists = 3;
             }
         }
-    }
 
+    }
 }
