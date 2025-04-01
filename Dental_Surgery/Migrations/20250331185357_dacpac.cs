@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dental_Surgery.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class dacpac : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

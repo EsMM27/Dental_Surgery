@@ -54,8 +54,11 @@ public class AppDBContextInitializer
             {
                 // User already exists, add to role
                 Console.WriteLine("User already exists");
-                await userManager.AddToRoleAsync(user, roleName);
-            }
+				if (!await userManager.IsInRoleAsync(user, roleName))
+				{
+					await userManager.AddToRoleAsync(user, roleName);
+				}
+			}
         }
     }
 }
