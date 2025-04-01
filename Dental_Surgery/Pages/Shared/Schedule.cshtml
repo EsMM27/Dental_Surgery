@@ -11,36 +11,53 @@
 @* Greeting message & date selector *@
 <div class="container mt-4">
 
-	<div class="d-flex align-items-end mb-4">
-		<h1 class="mb-0 align-self-end">
-			@greeting@if (Model.IsDentist)
-			{
-				<text>, @Model.Dentist.FirstName</text>
-			}
-		</h1>
-	</div>
+	
 
-	<div class="d-flex justify-content-between align-items-end mb-4">
-		<h3 class="mb-1 align-self-end">
-			@DateTime.Now.ToString("dddd")
-		</h3>
+	<div class="d-flex justify-content-between align-items-end mb-1">
+		@* <h2 class="mb-0 align-self-end">
+			@DateTime.Now.ToString("dddd, d MMMM")
+		</h2> *@
 
-		<form method="get" class="d-flex align-items-end">
-			<div class="btn-group me-2">
+		<div class="d-flex align-items-end mb-4">
+			<h1 class="mb-0 align-self-end">
+				@greeting@if (Model.IsDentist)
+				{
+					<text>, @Model.Dentist.FirstName</text>
+				}
+			</h1>
+		</div>
+
+		<form method="get" class="d-flex align-items-center">
+			<div class="btn-group" >
 				<a asp-page="./Schedule"
 				   asp-route-ScheduleDate="@Model.PreviousWeekday.ToString("yyyy-MM-dd")"
-				   class="btn btn-secondary" title="Previous day"><i data-feather="chevron-left"></i></a>
+				   class="btn btn-dark d-flex justify-content-center align-items-center p-0"
+				   style="width: 30px;"
+				   title="Previous day"><i data-feather="chevron-left" class="chevron-icon"></i>
+			   </a>
+
 				<input type="date"
 					   name="ScheduleDate"
 					   value="@Model.ScheduleDate.ToString("yyyy-MM-dd")"
 					   class="form-control"
-					   style="max-width: 200px; font-weight: bold; text-align: center; cursor: pointer;"
+					   style="max-width: 200px;
+                      font-weight: bold;
+                      color: #6e7174;
+                      text-align: center;
+                      cursor: pointer;
+                      border-radius: 0;
+                      border-color: #6e7174;"
 					   onchange="this.form.submit()" />
+
 				<a asp-page="./Schedule"
 				   asp-route-ScheduleDate="@Model.NextWeekday.ToString("yyyy-MM-dd")"
-				   class="btn btn-secondary" title="Next Day"><i data-feather="chevron-right"></i></a>
+				   class="btn btn-dark d-flex justify-content-center align-items-center p-0"
+				   style="width: 30px;"
+				   title="Next Day"><i data-feather="chevron-right" class="chevron-icon"></i>
+			   </a>
 			</div>
 		</form>
+
 	</div>
 
 	@* table headings *@
@@ -50,7 +67,7 @@
 			<thead class="table-dark">
 				<tr>
 					<th width="5%">Time</th>
-					
+
 					@if (!Model.IsDentist)
 					{
 						<th width=30%>Dentist</th>
@@ -69,7 +86,7 @@
 						</div>
 					</th>
 					<th width="@(Model.IsDentist ? "45%" : "30%")">Treatment</th>
-					
+
 					@if (!Model.IsDentist)
 					{
 						<th width=5%>Attended</th>
@@ -293,7 +310,7 @@
 				border-color: transparent !important; /* overriding bootstrap's goofy auto border around search inputs */
 			}
 
-			.form-con
+	.form-con
 
 	.patient-column .d-flex {
 		height: 100%;
@@ -303,14 +320,14 @@
 		cursor: pointer;
 	}
 
-	/* sizing icon and adding transformation */ 
+	/* sizing icon and adding transformation */
 	.attendance-icon {
 		cursor: pointer;
 		width: 30px;
 		height: 30px;
 		transition: transform 0.2s;
 		margin: 0 auto;
-		color: #B0BEC5;
+		color: #6e7174;
 	}
 
 		.attendance-icon:hover {

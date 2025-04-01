@@ -67,16 +67,7 @@ public class Program
 
         var app = builder.Build();
 
-		//Login page is the first thing user sees
-        app.Use(async (context, next) =>
-		{
-			if (context.Request.Path == "/")
-			{
-				context.Response.Redirect("/Login");
-				return;
-			}
-			await next();
-		});
+		
 
 		// Configure the HTTP request pipeline.
 		if (!app.Environment.IsDevelopment())
@@ -94,7 +85,18 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapRazorPages();
+		//Login page is the first thing user sees if not logged in
+		app.Use(async (context, next) =>
+		{
+			if (context.Request.Path == "/" && !context.User.Identity.IsAuthenticated)
+			{
+				context.Response.Redirect("/Login");
+				return;
+			}
+			await next();
+		});
+
+		app.MapRazorPages();
         app.MapBlazorHub();
 
 		using (var scope = app.Services.CreateScope())
