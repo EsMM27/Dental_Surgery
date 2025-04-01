@@ -2,6 +2,7 @@ using System.Linq;
 using Dental.Model;
 using Dental.Service;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dental_Surgery.Pages
@@ -34,10 +35,17 @@ namespace Dental_Surgery.Pages
         public int TotalDentists { get; set; }
         public int TotalReceptionists { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains("Admin"))
+            {
+                return RedirectToPage("/Admin2/Analytics/Index"); // or just "/Admin2/Analytics" if that works
+            }
+
+
 
             if (roles.Contains("Receptionist"))
             {
@@ -88,14 +96,8 @@ namespace Dental_Surgery.Pages
                     DisplayName = "Dentist";
                 }
             }
-            else if (roles.Contains("Admin"))
-            {
-                DisplayName = user?.UserName ?? "Admin";
-                AppointmentsToday = 20;
-                TotalUsers = 10;
-                TotalDentists = 5;
-                TotalReceptionists = 3;
-            }
+            return Page();
+
         }
 
     }

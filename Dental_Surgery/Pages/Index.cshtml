@@ -12,18 +12,7 @@
     }
 </h2>
 
-@if (User.IsInRole("Admin"))
-{
-    <div>
-        <h3>📊 Admin Overview</h3>
-        <p>Appointments Today: @Model.AppointmentsToday</p>
-        <p>Total Users: @Model.TotalUsers</p>
-        <p>Dentists: @Model.TotalDentists</p>
-        <p>Receptionists: @Model.TotalReceptionists</p>
-        <a asp-page="/Admin/ManageUsers">Manage Users</a>
-        <a asp-page="/Admin/SystemLogs">View Logs</a>
-    </div>
-}
+
 @if (User.IsInRole("Receptionist"))
 {
     <div class="card shadow-sm p-4">
