@@ -253,3 +253,18 @@ button {
         color: #2563eb; /* deep calming blue */
     }
 
+#header {
+    background-image: linear-gradient(150deg, #212529, #2e353c);
+    height: 120px;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+    #header p {
+        margin-bottom: 0;
+    }
+.font-volkhov {
+    font-family: 'Volkhov', serif;
+}
