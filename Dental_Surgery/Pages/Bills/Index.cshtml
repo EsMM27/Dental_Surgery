@@ -11,22 +11,15 @@
         <div class="card-body">
             <form method="post">
                 <div class="mb-3">
-                    <label asp-for="SelectedPatientId" class="form-label">Select Patient</label>
-                    <select asp-for="SelectedPatientId" class="form-select" asp-items="Model.PatientList">
-                        <option value="">-- Select Patient --</option>
-                    </select>
+                    <label for="patientSearch">Patient:</label>
+                    <input type="text" id="patientSearch"
+                           placeholder="Enter name or PPS"
+                           onkeyup="searchPatients()"
+                           autocomplete="off"
+                           class="form-control" />
+                    <input type="hidden" asp-for="SelectedPatientId" id="selectedPatientId" />
+                    <div id="suggestions" class="suggestion-box"></div>
                 </div>
-
-                @if (Model.AppointmentList != null && Model.AppointmentList.Any())
-                {
-                    <div class="mb-3">
-                        <label asp-for="SelectedAppointmentId" class="form-label">Date of Appointment</label>
-                        <select asp-for="SelectedAppointmentId" class="form-select" asp-items="Model.AppointmentList">
-                            <option value="">-- Select Appointment --</option>
-                        </select>
-                    </div>
-                }
-
                 <button type="submit" class="btn btn-primary">Generate Bill</button>
             </form>
         </div>
@@ -42,3 +35,45 @@
         </div>
     }
 </div>
+<script>
+    async function searchPatients() {
+        let query = document.getElementById("patientSearch").value;
+        let suggestionsBox = document.getElementById("suggestions");
+
+        if (query.length < 1) {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        // Fetch matching patients
+        let response = await fetch(`?handler=SearchPatients&query=${encodeURIComponent(query)}`);
+        let patients = await response.json();
+
+        // Clear previous suggestions
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = patients.length > 0 ? "block" : "none";
+
+        // showing all matches in the suggestions box
+        patients.forEach(patient => {
+            let div = document.createElement("div");
+            div.classList.add("suggestion-item");
+            div.textContent = `${patient.firstName} ${patient.lastName} (${patient.pps})`;
+            div.onclick = () => {
+                document.getElementById("patientSearch").value = `${patient.firstName} ${patient.lastName}`;
+                document.getElementById("selectedPatientId").value = patient.patientId;
+                suggestionsBox.style.display = "none";
+            };
+            suggestionsBox.appendChild(div);
+        });
+    }
+
+    // if you click away the search pop up disappears
+    document.addEventListener("click", function (event) {
+        let suggestionsBox = document.getElementById("suggestions");
+        let patientSearch = document.getElementById("patientSearch");
+        if (event.target !== patientSearch &&
+            (!suggestionsBox || !suggestionsBox.contains(event.target))) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+</script>
