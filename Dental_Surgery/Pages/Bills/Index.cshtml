@@ -17,15 +17,7 @@
                     </select>
                 </div>
 
-                @if (Model.AppointmentList != null && Model.AppointmentList.Any())
-                {
-                    <div class="mb-3">
-                        <label asp-for="SelectedAppointmentId" class="form-label">Date of Appointment</label>
-                        <select asp-for="SelectedAppointmentId" class="form-select" asp-items="Model.AppointmentList">
-                            <option value="">-- Select Appointment --</option>
-                        </select>
-                    </div>
-                }
+
 
                 <button type="submit" class="btn btn-primary">Generate Bill</button>
             </form>

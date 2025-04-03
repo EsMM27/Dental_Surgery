@@ -26,6 +26,7 @@ body {
     align-items: center;
 }
 
+
 /* Container for the Appointment Form and Time Slots */
 .appointment-container {
     display: flex;

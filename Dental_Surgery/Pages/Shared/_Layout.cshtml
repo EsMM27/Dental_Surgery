@@ -105,21 +105,6 @@
 						</li>
 					}
 					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
-							<i data-feather="calendar"></i><span>Appointments</span>
-						</a>
-					</li>
-					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Bills/Index">
-							<i data-feather="dollar-sign"></i><span>Bills</span>
-						</a>
-					</li>
-					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
-							<i data-feather="users"></i><span>Patients</span>
-						</a>
-					</li>
-					<li class="navbar__item">
 						<a class="navbar__link" asp-area="" asp-page="/Privacy">
 							<i data-feather="shield"></i><span>Privacy</span>
 						</a>
@@ -167,9 +152,7 @@
 		</script>
 		@await RenderSectionAsync("Scripts", required: false)
 	</div>
-	<footer class="bg-light py-2">
-		<h1 class="ps-3 m-0">Tooth Hurty Surgery</h1>
-	</footer>
+	
 </body>
 
 </html>
