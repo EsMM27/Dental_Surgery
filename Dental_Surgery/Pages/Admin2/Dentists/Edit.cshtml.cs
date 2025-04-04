@@ -11,6 +11,7 @@ using Dental.Model;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
+
     public class EditModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;

@@ -11,10 +11,12 @@ using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Dentists
 {
-    public class CreateModel : PageModel
+	[Authorize(Roles = "Admin")]
+	public class CreateModel : PageModel
     {
         private readonly AppDBContext _context;
         private readonly IWebHostEnvironment _environment;

@@ -35,7 +35,7 @@ namespace Dental_Surgery.Pages
 
 					if (roles.Contains("Admin"))
 					{
-						return RedirectToPage("/Index");
+						return RedirectToPage("/Admin2/Analytics/Index");
 					}
 					else if (roles.Contains("Receptionist") || roles.Contains("Dentist"))
 					{

@@ -43,15 +43,10 @@
 				var roles = await UserManager.GetRolesAsync(user);
 
 				<ul class="navbar__menu no-bullets">
-					@* <li class="navbar__item">
-				<a class="navbar__link" asp-area="" asp-page="/Index">
-				<i data-feather="home"></i><span>Home</span>
-				</a>
-				</li> *@
 					@if (roles.Contains("Admin"))
 					{
 						<li class="navbar__item">
-							<a class="navbar__link" asp-area="" asp-page="/Index">
+							<a class="navbar__link" asp-area="" asp-page="/Admin2/Analytics/Index">
 								<i data-feather="home"></i><span>Home</span>
 							</a>
 						</li>
@@ -80,11 +75,6 @@
 								<i data-feather="user-plus"></i><span>User Management</span>
 							</a>
 						</li>
-						<li class="navbar__item">
-							<a class="navbar__link" asp-area="" asp-page="/Admin2/Analytics/Index">
-								<i data-feather="book-open"></i><span>Analytics</span>
-							</a>
-						</li>
 					}
 					@if (roles.Contains("Dentist"))
 					{
@@ -104,6 +94,11 @@
 						<li class="navbar__item">
 							<a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Create">
 								<i data-feather="book-open"></i><span>Create Appointment</span>
+							</a>
+						</li>
+						<li class="navbar__item">
+							<a class="navbar__link" asp-area="" asp-page="/Bills/Index">
+								<i data-feather="dollar-sign"></i><span>Bill Generation</span>
 							</a>
 						</li>
 					}

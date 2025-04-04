@@ -104,7 +104,8 @@
 					{
 						<tr class="appointment-row clickable-row"
 							data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
-							data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+							data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId&returnUrl=/Shared/Schedule">
+						
 
 							<td>@appt.AppointmentDate.ToString("HH:mm")</td>
 							@if (!Model.IsDentist)

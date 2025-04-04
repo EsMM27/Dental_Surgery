@@ -32,7 +32,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Treatment.Description)</td>
                     <td class="text-center">
                         <a asp-page="./Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-page="./Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-info">Details</a>
+                        <a asp-page="./Details" asp-route-id="@item.AppointmentId" asp-route-returnUrl="/Admin2/Appointments/Index" class="btn btn-sm btn-info">Details</a>
                         <a asp-page="./Delete" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>

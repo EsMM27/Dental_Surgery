@@ -1,12 +1,14 @@
 using Dental.Model;
 using Dental.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dental_Surgery.Pages.Admin2.Analytics
 {
-    public class IndexModel : PageModel
+	[Authorize(Roles = "Admin")]
+	public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
 
