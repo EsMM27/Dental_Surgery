@@ -48,14 +48,16 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
                 return Page();
             }
 
-            // Check if a dentist with the same email OR first + last name already exists
+            // Check if any other dentist has the same email OR first + last name
+            // EXCLUDING the dentist you're editing
             bool dentistExists = await _context.Dentists
-                .AnyAsync(d => d.Email == Dentist.Email ||
-                               (d.FirstName == Dentist.FirstName && d.LastName == Dentist.LastName));
+        .AnyAsync(d => (d.Email == Dentist.Email ||
+                        (d.FirstName == Dentist.FirstName && d.LastName == Dentist.LastName))
+                        && d.DentistId != Dentist.DentistId);
 
             if (dentistExists)
             {
-                ModelState.AddModelError(string.Empty, "A dentist with this email or name already exists.");
+                ModelState.AddModelError(string.Empty, "Another dentist with this email or name already exists.");
                 return Page();
             }
 
