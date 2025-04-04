@@ -3,7 +3,13 @@
 @{
     ViewData["Title"] = "Bill Generation";
 }
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
 
+    </style>
+</head>
 <div class="container mt-4">
     <h2>Bill Generation</h2>
 
@@ -13,10 +19,13 @@
                 <div class="mb-3">
                     <label for="patientSearch">Patient:</label>
                     <input type="text" id="patientSearch"
-                           placeholder="Enter name or PPS"
+                           id="searchPatient" 
+                           placeholder="Search for patient..."
                            onkeyup="searchPatients()"
                            autocomplete="off"
-                           class="form-control" />
+                           class="form-control" 
+                           style="max-width: 400px"
+                           />
                     <input type="hidden" asp-for="SelectedPatientId" id="selectedPatientId" />
                     <div id="suggestions" class="suggestion-box"></div>
                 </div>
