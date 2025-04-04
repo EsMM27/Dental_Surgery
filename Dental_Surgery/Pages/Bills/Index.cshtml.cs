@@ -1,3 +1,4 @@
+using Dental.Model;
 using Dental.Service;
 using Dental_Surgery.Pages.PageViewModels;
 using Dental_Surgery.Utilities;
@@ -24,37 +25,21 @@ namespace Dental_Surgery.Pages.Bills
 
         [BindProperty]
         public int SelectedAppointmentId { get; set; }
-
-        public SelectList PatientList { get; set; }
         public SelectList AppointmentList { get; set; }
         public BillViewModel Bill { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            await LoadPatientsAsync();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await LoadPatientsAsync();
             await LoadAppointmentsAsync();
-
-            if (SelectedPatientId > 0 && SelectedAppointmentId == 0)
-            {
-                // Patient selected but appointment not yet selected
-                return Page();
-            }
 
             if (SelectedPatientId <= 0)
             {
                 TempData["ErrorMessage"] = "Please select a patient.";
-                return Page();
-            }
-
-            if (SelectedAppointmentId <= 0)
-            {
-                TempData["ErrorMessage"] = "Please select an appointment.";
                 return Page();
             }
 
@@ -121,12 +106,6 @@ namespace Dental_Surgery.Pages.Bills
             return Page();
         }
 
-        private async Task LoadPatientsAsync()
-        {
-            var patients = await _unitOfWork.Patients.GetAllAsync();
-            PatientList = new SelectList(patients, "PatientId", "FirstName", SelectedPatientId);
-        }
-
         private async Task LoadAppointmentsAsync()
         {
             if (SelectedPatientId > 0)
@@ -144,7 +123,25 @@ namespace Dental_Surgery.Pages.Bills
                 }
             }
         }
-    }
+		public async Task<IActionResult> OnGetSearchPatientsAsync(string query)
+		{
+			if (string.IsNullOrEmpty(query))
+			{
+				return new JsonResult(new List<Patient>());
+			}
+
+			var allPatients = (await _unitOfWork.Patients.GetAllAsync()).ToList();
+
+			var filteredPatients = allPatients
+				.Where(p => (p.FirstName != null && p.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+							(p.LastName != null && p.LastName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+							(p.PPS != null && p.PPS.Contains(query, StringComparison.OrdinalIgnoreCase)))
+				.Select(p => new { p.PatientId, p.FirstName, p.LastName, p.PPS })
+				.ToList();
+
+			return new JsonResult(filteredPatients);
+		}
+	}
 
 }
 
