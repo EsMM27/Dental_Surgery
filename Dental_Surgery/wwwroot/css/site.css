@@ -26,6 +26,7 @@ body {
     align-items: center;
 }
 
+
 /* Container for the Appointment Form and Time Slots */
 .appointment-container {
     display: flex;
@@ -255,6 +256,7 @@ button {
 
 #header {
     background-image: linear-gradient(150deg, #121314, #2e353c);
+
     height: 120px;
     color: white;
     padding: 20px;
@@ -267,7 +269,6 @@ button {
     }
 .font-volkhov {
     font-family: 'Volkhov', serif;
-}
 
 #searchPatient {
     width: 20% !important;

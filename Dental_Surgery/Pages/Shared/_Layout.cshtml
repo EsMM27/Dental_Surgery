@@ -1,10 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Globalization
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - Dental_Surgery</title>
@@ -17,7 +19,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Volkhov&display=swap" rel="stylesheet">
 	<style>
 
-	</style>
+
+    </style>
 </head>
 <body>
 	<header id="header" class="d-flex justify-content-between align-items-center ">
@@ -103,21 +106,6 @@
 						</li>
 					}
 					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Admin2/Appointments/Index">
-							<i data-feather="calendar"></i><span>Appointments</span>
-						</a>
-					</li>
-					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Bills/Index">
-							<i data-feather="dollar-sign"></i><span>Bills</span>
-						</a>
-					</li>
-					<li class="navbar__item">
-						<a class="navbar__link" asp-area="" asp-page="/Admin2/Patients/Index">
-							<i data-feather="users"></i><span>Patients</span>
-						</a>
-					</li>
-					<li class="navbar__item">
 						<a class="navbar__link" asp-area="" asp-page="/Privacy">
 							<i data-feather="shield"></i><span>Privacy</span>
 						</a>
@@ -165,9 +153,6 @@
 		</script>
 		@await RenderSectionAsync("Scripts", required: false)
 	</div>
-	<footer class="bg-light py-2">
-		<h1 class="ps-3 m-0">Tooth Hurty Surgery</h1>
-	</footer>
+	
 </body>
-
 </html>
