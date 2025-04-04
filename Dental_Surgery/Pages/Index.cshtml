@@ -1,120 +1,93 @@
 ﻿@page
-@model IndexModel
+@model Dental_Surgery.Pages.IndexModel
 @{
-	ViewData["Title"] = "Receptionist Schedule";
+    ViewData["Title"] = "Dashboard & Schedule";
+    var hour = DateTime.Now.Hour;
+    var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
 }
-<h1>Tooth Hurty Dental</h1>
-
-<h2>Receptionist Schedule</h2>
-
-<form method="get">
-	<div style="margin-top:10px; display:flex; justify-content: space-between; align-items:center;">
-		<a asp-page="./Index"
-		   asp-route-ScheduleDate="@Model.PreviousWeekday.ToString("yyyy-MM-dd")"
-		   class="btn btn-secondary">← Previous Day
-	   </a>
-
-		<input type="date"
-			   name="ScheduleDate"
-			   value="@Model.ScheduleDate.ToString("yyyy-MM-dd")"
-			   class="form-control"
-			   style="max-width: 200px; font-weight: bold; text-align: center; cursor: pointer;"
-			   onchange="this.form.submit()" />
-
-
-		<a asp-page="./Index"
-		   asp-route-ScheduleDate="@Model.NextWeekday.ToString("yyyy-MM-dd")"
-		   class="btn btn-secondary">Next Day →</a>
-	</div>
-
-	<div style="margin-top:20px; display:flex; justify-content:center;">
-		<input type="text"
-			   name="SearchTerm"
-			   value="@Model.SearchTerm"
-			   placeholder="Search by patient name..."
-			   class="form-control"
-			   style="max-width: 300px;" />
-		<button type="submit" class="btn btn-primary" style="margin-left:10px;">Search</button>
-	</div>
-</form>
-
-
-@if (Model.GroupedAppointments.Any())
-{
-	@foreach (var group in Model.GroupedAppointments)
-	{
-		<h4 style="margin-top: 30px;">📅 @group.Key.ToString("dddd, MMM dd yyyy")</h4>
-
-		<div class="time-slots">
-			@foreach (var appt in group.OrderBy(a => a.AppointmentDate))
-			{
-				<div class="reception-slot clickable-row"
-					 data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
-					<strong>@appt.AppointmentDate.ToString("HH:mm")</strong> –
-					Patient: @(appt.Patient != null ? $"{appt.Patient.FirstName} {appt.Patient.LastName}" : "N/A")<br />
-					Dentist: @(appt.Dentist != null ? $"{appt.Dentist.FirstName} {appt.Dentist.LastName}" : "N/A")<br />
-					Treatment: @(appt.Treatment != null ? appt.Treatment.Name : "N/A")
-					<div class="form-check mt-2">
-						<input class="form-check-input attendance-checkbox"
-							   type="checkbox"
-							   data-id="@appt.AppointmentId"
-						@(appt.attend ? "checked" : "") />
-						<label class="form-check-label">Attended</label>
-					</div>
-
-				</div>
-			}
-		</div>
-	}
-}
-else
-{
-	<p>No upcoming appointments.</p>
-}
-
-
-
 
 @section Scripts {
-	<script>
-		document.querySelectorAll('.clickable-row').forEach(row => {
-			row.addEventListener('click', () => {
-				window.location = row.getAttribute('data-href');
-			});
-		});
-
-		document.querySelectorAll('.attendance-checkbox').forEach(box => {
-			// Prevent checkbox from triggering parent click
-			box.addEventListener('click', e => {
-				e.stopPropagation();
-			});
-
-			box.addEventListener('change', async () => {
-				const appointmentId = parseInt(box.getAttribute('data-id'));
-				const attend = box.checked;
-
-				console.log("Sending to server:", { id: appointmentId, attend });
-
-				const response = await fetch('/Admin2/Appointments/UpdateAttendance?handler=Update', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ id: appointmentId, attend: attend })
-				});
-
-				const responseText = await response.text();
-				console.log("Response status:", response.status);
-				console.log("Response body:", responseText);
-
-				if (!response.ok) {
-					alert("Failed to update attendance.");
-					box.checked = !attend;
-				}
-			});
-		});
-	</script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+    <script src="~/js/schedule.js"></script>
 }
 
+<h2 class="mb-4">
+    @greeting@if (!string.IsNullOrEmpty(Model.DisplayName))
+    {
+        <text>, @Model.DisplayName</text>
+    }
+</h2>
 
+@if (User.IsInRole("Receptionist"))
+{
+    <!-- 🔹 TOP ROW: Big Buttons -->
+    <div class="container mb-4">
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+                <a class="btn btn-primary btn-lg w-100" asp-page="/Admin2/Patients/Create">➕ Add New Patient</a>
+            </div>
+            <div class="col-md-4">
+                <a class="btn btn-success btn-lg w-100" asp-page="/Admin2/Appointments/Create">📅 Make Appointment</a>
+            </div>
+            <div class="col-md-4">
+                <a asp-page="/Admin2/Patients/Index" class="btn btn-info btn-lg w-100">👥 View Patients</a>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 STATS BELOW BUTTONS -->
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 shadow-sm text-center">
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <i data-feather="bar-chart-2" class="me-2"></i>
+                        <h5 class="mb-0">Today's Summary</h5>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Appointments Today</span>
+                        <span class="fs-4 fw-bold text-primary">@Model.AppointmentsToday</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Dentists on Duty</span>
+                        <span class="fs-4 fw-bold text-success">@Model.DentistsOnDuty</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 MIDDLE: Schedule Centered -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                @await Html.PartialAsync("/Pages/Shared/_SchedulePartial.cshtml", Model)
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("Dentist"))
+{
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="mb-3">🦷 Dentist Dashboard</h3>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Appointments Today:</span>
+                <strong>@Model.AppointmentsToday</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Next Appointment:</span>
+                <strong>@Model.NextAppointmentTime - @Model.NextPatientName</strong>
+            </li>
+        </ul>
+        <div>
+            <a class="btn btn-primary me-2" asp-page="/Shared/Schedule">📅 View My Schedule</a>
+            <a class="btn btn-secondary" asp-page="/Admin2/Patients/History">📄 Patient History</a>
+        </div>
+    </div>
+}

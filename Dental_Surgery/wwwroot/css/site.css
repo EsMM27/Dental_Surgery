@@ -269,3 +269,18 @@ button {
 .font-volkhov {
     font-family: 'Volkhov', serif;
 }
+
+
+.card {
+    min-width: 300px;
+}
+
+
+.card h5 {
+    white-space: nowrap;
+}
+
+.card i {
+    width: 24px;
+    height: 24px;
+}
