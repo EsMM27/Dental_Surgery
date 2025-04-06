@@ -39,7 +39,7 @@ namespace Dental_Surgery.Pages
 					}
 					else if (roles.Contains("Receptionist") || roles.Contains("Dentist"))
 					{
-						return RedirectToPage("/Shared/Schedule");
+						return RedirectToPage("/Index");
 					}
 					else
 					{

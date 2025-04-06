@@ -23,71 +23,138 @@
 
 @if (User.IsInRole("Receptionist"))
 {
-    <!-- 🔹 TOP ROW: Big Buttons -->
-    <div class="container mb-4">
-        <div class="row g-3 justify-content-center">
-            <div class="col-md-4">
+    <div class="container-fluid">
+        <div class="row justify-content-start">
+            <!-- 📅 Schedule (Wider & Left-Aligned) -->
+            <div class="col-lg-8">
+                <div class="table-responsive pe-3">
+                    @await Html.PartialAsync("/Pages/Shared/_SchedulePartial.cshtml", Model)
+                </div>
+            </div>
+
+            <!-- 👉 Right Column: Buttons + Stats -->
+            <div class="col-lg-4 d-flex flex-column gap-3 ps-lg-4 mt-4 mt-lg-0">
+                <!-- Buttons -->
                 <a class="btn btn-primary btn-lg w-100" asp-page="/Admin2/Patients/Create">➕ Add New Patient</a>
-            </div>
-            <div class="col-md-4">
-                <a class="btn btn-success btn-lg w-100" asp-page="/Admin2/Appointments/Create">📅 Make Appointment</a>
-            </div>
-            <div class="col-md-4">
-                <a asp-page="/Admin2/Patients/Index" class="btn btn-info btn-lg w-100">👥 View Patients</a>
+                <a class="btn btn-info btn-lg w-100" asp-page="/Admin2/Patients/Index">👥 View Patients</a>
 
-            </div>
-        </div>
-    </div>
+                <!-- Available Slots Card -->
+                <div class="card p-3 shadow-sm">
+                    <h6 class="mb-2"><i data-feather="clock"></i> Next Available Appointments</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        @foreach (var slot in Model.NextAvailableSlots)
+                        {
+                            <li class="list-group-item px-0 py-1">@slot</li>
+                        }
+                    </ul>
 
-    <!-- 🔹 STATS BELOW BUTTONS -->
-    <div class="container mb-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm text-center">
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i data-feather="bar-chart-2" class="me-2"></i>
-                        <h5 class="mb-0">Today's Summary</h5>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
+                    <!-- 👉 Moved Button HERE -->
+                    <a class="btn btn-outline-success w-100 mt-2" asp-page="/Admin2/Appointments/AvailableSlots">
+                        📖 View All Available Slots
+                    </a>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="card p-3 shadow-sm mt-3">
+                    <h6 class="mb-2"><i data-feather="bar-chart-2"></i> Today's Summary</h6>
+                    <div class="d-flex justify-content-between">
                         <span>Appointments Today</span>
-                        <span class="fs-4 fw-bold text-primary">@Model.AppointmentsToday</span>
+                        <strong class="text-primary">@Model.AppointmentsToday</strong>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>Dentists on Duty</span>
-                        <span class="fs-4 fw-bold text-success">@Model.DentistsOnDuty</span>
+                        <strong class="text-success">@Model.DentistsOnDuty</strong>
                     </div>
                 </div>
+
+                <div class="card p-4 shadow-sm mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i data-feather="edit-3" class="me-2"></i>
+                        <h5 class="mb-0">My Notes</h5>
+                    </div>
+                    <textarea id="userNotes" class="form-control" rows="5" placeholder="Write your notes here..."></textarea>
+                </div>
+
+               
+
             </div>
         </div>
     </div>
 
-    <!-- 🔹 MIDDLE: Schedule Centered -->
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                @await Html.PartialAsync("/Pages/Shared/_SchedulePartial.cshtml", Model)
-            </div>
-        </div>
-    </div>
+
+
+
 }
 
 @if (User.IsInRole("Dentist"))
 {
-    <div class="card shadow-sm p-4 mb-4">
-        <h3 class="mb-3">🦷 Dentist Dashboard</h3>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Appointments Today:</span>
-                <strong>@Model.AppointmentsToday</strong>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-                <span>Next Appointment:</span>
-                <strong>@Model.NextAppointmentTime - @Model.NextPatientName</strong>
-            </li>
-        </ul>
-        <div>
-            <a class="btn btn-primary me-2" asp-page="/Shared/Schedule">📅 View My Schedule</a>
-            <a class="btn btn-secondary" asp-page="/Admin2/Patients/History">📄 Patient History</a>
+    <div class="container-fluid">
+        <div class="row justify-content-start">
+            <!-- Schedule -->
+            <div class="col-lg-8">
+                <div class="table-responsive pe-3">
+                    @await Html.PartialAsync("/Pages/Shared/_SchedulePartial.cshtml", Model)
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 d-flex flex-column gap-3 ps-lg-4 mt-4 mt-lg-0">
+                <a class="btn btn-primary btn-lg w-100" asp-page="/Shared/Schedule">📅 View Full Schedule</a>
+                <a class="btn btn-secondary btn-lg w-100" asp-page="/Admin2/Patients/History">📄 Patient History</a>
+
+                <div class="card p-3 shadow-sm">
+                    <h6 class="mb-2"><i data-feather="bar-chart-2"></i> Today's Summary</h6>
+                    <div class="d-flex justify-content-between">
+                        <span>Appointments Today</span>
+                        <strong class="text-primary">@Model.AppointmentsToday</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Next Appointment</span>
+                        <strong class="text-success">@Model.NextAppointmentTime - @Model.NextPatientName</strong>
+                    </div>
+                    @if (Model.RecentAppointmentsForNextPatient.Any())
+                    {
+                        <div class="mt-3">
+                            <strong>Recent Appointments for @Model.NextPatientName:</strong>
+                            <ul class="list-unstyled mb-0 ms-2 mt-1">
+                                @foreach (var pastAppt in Model.RecentAppointmentsForNextPatient)
+                                {
+                                    <li>
+                                        @pastAppt.AppointmentDate.ToString("yyyy-MM-dd"):
+                                        @(string.IsNullOrEmpty(pastAppt.Treatment?.Name) ? "No treatment info" : pastAppt.Treatment.Name)
+                                    </li>
+
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                </div>
+
+                <div class="card p-4 shadow-sm mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i data-feather="edit-3" class="me-2"></i>
+                        <h5 class="mb-0">My Notes</h5>
+                    </div>
+                    <textarea id="userNotes" class="form-control" rows="5" placeholder="Write your notes here..."></textarea>
+                </div>
+
+            </div>
         </div>
     </div>
 }
+
+<script>
+    feather.replace();
+
+    const notesKey = "dashboard-notes";
+    const notesTextarea = document.getElementById("userNotes");
+
+    // Load saved notes
+    notesTextarea.value = localStorage.getItem(notesKey) || "";
+
+    // Save notes on change
+    notesTextarea.addEventListener("input", () => {
+        localStorage.setItem(notesKey, notesTextarea.value);
+    });
+</script>

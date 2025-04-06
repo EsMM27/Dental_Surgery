@@ -14,6 +14,8 @@
 </head>
 <body>
     <h1>Dental Appointment</h1>
+    <p>Debug: Selected time is @Model.SelectedTime</p>
+
 
     <div class="appointment-container">
         <!-- Left Column: Form Inputs -->
@@ -215,6 +217,17 @@
             let suggestionsBox = document.getElementById("suggestions");
             if (!document.getElementById("patientSearch").contains(event.target) && !suggestionsBox.contains(event.target)) {
                 suggestionsBox.style.display = "none";
+            }
+        });
+
+            document.addEventListener("DOMContentLoaded", function () {
+            const time = "@Model.SelectedTime";
+            if (time) {
+                const slot = document.querySelector(`.slot[data-time='${time}']`);
+                if (slot) {
+                    slot.classList.add("selected");
+                    document.getElementById("selectedTime").value = time;
+                }
             }
         });
     </script>

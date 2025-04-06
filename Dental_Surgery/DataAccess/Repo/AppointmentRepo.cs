@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Dental_Surgery.Utilities;
+using System.Linq.Expressions;
 
 namespace Dental.DataAccess.Repo
 {
@@ -43,7 +44,8 @@ namespace Dental.DataAccess.Repo
 			return await _context.Appointments
 				.Where(a => a.DentistId == dentistId && a.AppointmentDate.Date == date.Date)
                 .Include(a => a.Patient)
-				.ToListAsync();
+                .Include(t => t.Treatment)
+                .ToListAsync();
 		}
         public async Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date)
         {
@@ -51,6 +53,7 @@ namespace Dental.DataAccess.Repo
                 .Where(a => a.AppointmentDate.Date == date.Date)
                 .Include(p => p.Patient)
                 .Include(d => d.Dentist)
+                .Include(t => t.Treatment)
                 .ToListAsync();
         }
 
@@ -59,6 +62,26 @@ namespace Dental.DataAccess.Repo
             return await _context.Appointments
                                  .Include(a => a.Treatment) // Ensure Treatment is loaded
                                  .ToListAsync();
+        }
+
+        public async Task AddRangeAsync(IEnumerable<Appointment> appointments)
+        {
+            await _context.Appointments.AddRangeAsync(appointments);
+        }
+
+        public async Task<IEnumerable<Appointment>> GetByConditionAsync(Expression<Func<Appointment, bool>> predicate)
+        {
+            return await _context.Appointments.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentHistoryForDentistAsync(int dentistId)
+        {
+            return await _context.Appointments
+                .Include(a => a.Patient)
+                .Include(a => a.Treatment)
+                .Where(a => a.DentistId == dentistId && a.AppointmentDate < DateTime.Now)
+                .OrderByDescending(a => a.AppointmentDate)
+                .ToListAsync();
         }
 
     }

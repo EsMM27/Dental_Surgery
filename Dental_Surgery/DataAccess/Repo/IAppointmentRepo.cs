@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,5 +15,12 @@ namespace Dental.DataAccess.Repo
 		Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date);
 
         Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date);
+
+        Task AddRangeAsync(IEnumerable<Appointment> appointments);
+
+        Task<IEnumerable<Appointment>> GetByConditionAsync(Expression<Func<Appointment, bool>> predicate);
+
+        Task<IEnumerable<Appointment>> GetAppointmentHistoryForDentistAsync(int dentistId);
+
     }
 }

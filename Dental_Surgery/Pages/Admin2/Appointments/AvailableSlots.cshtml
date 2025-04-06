@@ -1,0 +1,82 @@
+﻿@page
+@model Dental_Surgery.Pages.Admin2.Appointments.AvailableSlotsModel
+@{
+    ViewData["Title"] = "Available Time Slots";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="mb-0 align-self-end">🕒 Available Appointment Slots</h2>
+        
+    </div>
+
+    <!-- 🔍 Filters -->
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Start Date</label>
+            <input type="date"
+                   name="StartDate"
+                   class="form-control"
+                   value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Dentist</label>
+            <select name="DentistId" class="form-select">
+                <option value="">All Dentists</option>
+                @foreach (var d in Model.AllDentists)
+                {
+                    string selected = d.DentistId == Model.DentistId ? "selected" : "";
+                    <option value="@d.DentistId" selected="@selected">
+                         @d.FirstName @d.LastName
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-primary w-100">🔍 Search</button>
+        </div>
+    </form>
+
+    <!-- 📅 Results -->
+    @if (!Model.AvailableSlots.Any())
+    {
+        <div class="alert alert-warning shadow-sm">No available slots found for the selected criteria.</div>
+    }
+    else
+    {
+        @foreach (var group in Model.AvailableSlots.GroupBy(s => s.Date))
+        {
+            <div class="shadow-sm mb-4">
+                <div class="card-header bg-dark text-white fw-bold">
+                    @group.Key.ToString("dddd, dd MMMM yyyy")
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var slot in group)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <i data-feather="clock" class="me-2"></i>
+                                @slot.Time.ToString(@"hh\:mm") with <strong> @slot.DentistName</strong>
+                            </span>
+                            <a class="btn btn-outline-success btn-sm"
+                               asp-page="/Admin2/Appointments/Create"
+                               asp-route-dentistId="@slot.DentistId"
+                               asp-route-date="@slot.Date.ToString("yyyy-MM-dd")"
+                               asp-route-time="@slot.Time.ToString(@"hh\:mm")">
+                                Book
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>feather.replace();</script>
+}

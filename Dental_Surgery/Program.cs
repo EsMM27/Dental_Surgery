@@ -5,6 +5,7 @@ using Dental.Service;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity;
+using Dental.Service.Seeders;
 
 public class Program
 {
@@ -67,10 +68,22 @@ public class Program
 
         var app = builder.Build();
 
-		
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var services = scope.ServiceProvider;
+        //    var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
-		// Configure the HTTP request pipeline.
-		if (!app.Environment.IsDevelopment())
+        //    Console.WriteLine(" Seeding appointments...");
+        //    //await DbSeeder.SeedAppointmentsAsync(unitOfWork);
+        //    await TodayAppointmentSeeder.SeedTodayAsync(unitOfWork);
+
+        //    Console.WriteLine(" Seeding complete.");
+        //}
+
+
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();

@@ -1,86 +1,86 @@
 ﻿@model Dental_Surgery.Pages.IndexModel
 
 <div class="container-xl px-0" style="max-width: 1200px; margin-left: 0; margin-right: auto;">
-    
+    <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 300px);">
 
-        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-bordered align-middle table-white" style="table-layout: fixed;">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width: 10%;">Time</th>
-                        @if (!Model.IsDentist)
-                        {
-                            <th style="width: 20%;">Dentist</th>
-                        }
-                        <th class="patient-column" style="width: 25%;">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span id="patientHeaderText">Patient</span>
-                                <i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
-                            </div>
-                            <div class="patient-search-container" style="display: none;">
-                                <input type="text"
-                                       id="patientSearch"
-                                       class="form-control w-100 border-0 rounded-10 bg-white"
-                                       placeholder="Search for patient..."
-                                       onkeyup="searchPatients()" />
-                            </div>
-                        </th>
-                        <th style="width: 35%;">Treatment</th>
-                        @if (!Model.IsDentist)
-                        {
-                            <th style="width: 10%;">Attended</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody id="appointmentsTBody">
-                    @if (Model.DailyAppointments.Any())
+        <table class="table table-bordered align-middle table-white" style="table-layout: fixed;">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 10%;">Time</th>
+                    @if (!Model.IsDentist)
                     {
-                        @foreach (var appt in Model.DailyAppointments)
-                        {
-                            <tr class="appointment-row clickable-row"
-                                data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
-                                data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
-
-                                <td>@appt.AppointmentDate.ToString("HH:mm")</td>
-                                @if (!Model.IsDentist)
-                                {
-                                    <td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
-                                }
-                                <td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
-                                <td>@appt.Treatment?.Name</td>
-                                @if (!Model.IsDentist)
-                                {
-                                    <td class="no-click">
-                                        <div class="form-check d-flex justify-content-center">
-                                            <input class="form-check-input attendance-checkbox"
-                                                   type="checkbox"
-                                                   data-id="@appt.AppointmentId"
-                                            @(appt.attend ? "checked" : "")
-                                                   style="display: none;" />
-                                            <i data-feather="@(appt.attend ? "check-square" : "square")"
-                                               class="attendance-icon"
-                                               data-id="@appt.AppointmentId"></i>
-                                        </div>
-                                    </td>
-                                }
-                            </tr>
-                        }
+                        <th style="width: 20%;">Dentist</th>
                     }
-                    else
+                    <th class="patient-column" style="width: 25%;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="patientHeaderText">Patient</span>
+                            <i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
+                        </div>
+                        <div class="patient-search-container" style="display: none;">
+                            <input type="text"
+                                   id="patientSearch"
+                                   class="form-control w-100 border-0 rounded-10 bg-white"
+                                   placeholder="Search for patient..."
+                                   onkeyup="searchPatients()" />
+                        </div>
+                    </th>
+                    <th style="width: 35%;">Treatment</th>
+                    @if (!Model.IsDentist)
                     {
-                        <tr class="appointment-row">
-                            <td colspan="@(Model.IsDentist ? "4" : "5")" class="border-0">No appointments.</td>
+                        <th style="width: 10%;">Attended</th>
+                    }
+                </tr>
+            </thead>
+            <tbody id="appointmentsTBody">
+                @if (Model.DailyAppointments.Any())
+                {
+                    @foreach (var appt in Model.DailyAppointments)
+                    {
+                        <tr class="appointment-row clickable-row"
+                            data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
+                            data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+
+                            <td>@appt.AppointmentDate.ToString("HH:mm")</td>
+                            @if (!Model.IsDentist)
+                            {
+                                <td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
+                            }
+                            <td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
+                            <td>@appt.Treatment?.Name</td>
+                            @if (!Model.IsDentist)
+                            {
+                                <td class="no-click">
+                                    <div class="form-check d-flex justify-content-center">
+                                        <input class="form-check-input attendance-checkbox" type="checkbox"
+                                               data-id="@appt.AppointmentId" @(appt.attend ? "checked" : "")
+                                               style="display: none;" />
+                                        <i data-feather="@(appt.attend ? "check-square" : "square")"
+                                           class="attendance-icon"
+                                           data-id="@appt.AppointmentId"></i>
+                                    </div>
+                                </td>
+                            }
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr class="appointment-row">
+                        <td colspan="@(Model.IsDentist ? "3" : "5")" class="border-0">No appointments.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
+
+  
 
 
 
 <style>
+    
+    
     td {
         white-space: normal;
         word-wrap: break-word;

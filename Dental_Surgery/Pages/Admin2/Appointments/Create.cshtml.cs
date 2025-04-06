@@ -38,12 +38,28 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
         public List<(DateTime Date, string TimeSlot, bool IsBooked)> TimeSlotsWithAvailability { get; set; }
         public List<Patient> Patients { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? dentistId, DateTime? date, string? time)
         {
-            //return RedirectToPage("/Shared/Schedule"); 
-
             _logger.LogInformation("OnGetAsync called");
+
+            // Pre-fill if query params are provided
+            if (dentistId.HasValue)
+                Appointment.DentistId = dentistId.Value;
+
+            if (date.HasValue)
+                Appointment.AppointmentDate = date.Value;
+
+            if (!string.IsNullOrEmpty(time))
+                SelectedTime = time;
+
             await LoadDataAsync();
+
+            if (!string.IsNullOrEmpty(time))
+            {
+                SelectedTime = time;
+                ViewData["SelectedTime"] = SelectedTime; // just to confirm it's coming through
+            }
+
 
             if (Appointment.DentistId > 0)
             {
@@ -52,6 +68,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 
             return Page();
         }
+
 
         public async Task<IActionResult> OnPostFetchAvailabilityAsync()
         {

@@ -1,0 +1,54 @@
+﻿@page
+@model Dental_Surgery.Pages.Admin2.Patients.HistoryModel
+@{
+    ViewData["Title"] = "Patient History";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="mb-0 align-self-end">Patient History</h2>
+
+        <div class="d-flex align-items-end">
+            <strong class="me-3 align-self-end">@DateTime.Today.ToString("dddd, MMM dd yyyy")</strong>
+        </div>
+    </div>
+
+    @if (Model.AppointmentHistory.Any())
+    {
+        <div class="table-responsive shadow-sm">
+            <table class="table table-striped table-bordered align-middle table-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Treatment</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appt in Model.AppointmentHistory)
+                    {
+                        <tr>
+                            <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                            <td>@appt.AppointmentDate.ToString("HH:mm")</td>
+                            <td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
+                            <td>@appt.Treatment?.Name</td>
+                            <td>@appt.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>No patient history found.</p>
+    }
+</div>
+
+<script>
+    feather.replace();
+</script>
