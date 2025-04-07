@@ -1,72 +1,84 @@
 ﻿@page
 @model Dental_Surgery.Pages.Admin2.Dentists.CreateModel
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Register Dentist";
 }
 
-<h1>Add new dentist</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Dentist.FirstName" class="control-label"></label>
-                <input asp-for="Dentist.FirstName" class="form-control" />
-                <span asp-validation-for="Dentist.FirstName" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4 text-primary">Register Dentist</h3>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.FirstName" class="form-label"></label>
+                            <input asp-for="Dentist.FirstName" class="form-control" placeholder="Enter first name" />
+                            <span asp-validation-for="Dentist.FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.LastName" class="form-label"></label>
+                            <input asp-for="Dentist.LastName" class="form-control" placeholder="Enter last name" />
+                            <span asp-validation-for="Dentist.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.Specialization" class="form-label"></label>
+                            <input asp-for="Dentist.Specialization" class="form-control" placeholder="Enter specialization" />
+                            <span asp-validation-for="Dentist.Specialization" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.AwardingBody" class="form-label"></label>
+                            <input asp-for="Dentist.AwardingBody" class="form-control" placeholder="Enter awarding body" />
+                            <span asp-validation-for="Dentist.AwardingBody" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.ContactNumber" class="form-label"></label>
+                            <input asp-for="Dentist.ContactNumber" class="form-control" placeholder="Enter contact number" />
+                            <span asp-validation-for="Dentist.ContactNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dentist.Email" class="form-label"></label>
+                            <input asp-for="Dentist.Email" type="email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Dentist.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Dentist Photo</label>
+                            <input type="file" name="files" id="upLoadBox" class="form-control" accept="image/*" />
+                            <span asp-validation-for="Dentist.Image" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register Dentist</button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Dentist.LastName" class="control-label"></label>
-                <input asp-for="Dentist.LastName" class="form-control" />
-                <span asp-validation-for="Dentist.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dentist.Specialization" class="control-label"></label>
-                <input asp-for="Dentist.Specialization" class="form-control" />
-                <span asp-validation-for="Dentist.Specialization" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dentist.AwardingBody" class="control-label"></label>
-                <input asp-for="Dentist.AwardingBody" class="form-control" />
-                <span asp-validation-for="Dentist.AwardingBody" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dentist.ContactNumber" class="control-label"></label>
-                <input asp-for="Dentist.ContactNumber" class="form-control" />
-                <span asp-validation-for="Dentist.ContactNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dentist.Email" class="control-label"></label>
-                <input asp-for="Dentist.Email" class="form-control" />
-                <span asp-validation-for="Dentist.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" type="password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" type="password" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Dentist.Image" class="control-label">Dentist Photo</label>
-                <input type="file" name="files" id="upLoadBox" class="form-control" accept="image/*" />
-                <span asp-validation-for="Dentist.Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -1,49 +1,54 @@
 ﻿@page
 @model Dental_Surgery.Pages.Admin2.Receptionist.CreateModel
 @{
+    ViewData["Title"] = "Register Receptionist";
 }
-<form method="post">
-		<div class="border p-3 mt-4">
-			<div asp-validation-summary="All" class="text-danger"></div>
-			<div class="row pb-2">
-				<h2 class="text-primary pl-3">
-					Register
-				</h2>
-			</div>
-			<div class="mb-3">
-				<label asp-for="Register.FirstName"></label>
-				<input asp-for="Register.FirstName" class="form-control" />
-				<span asp-validation-for="Register.FirstName" class="text-danger"></span>
-			</div>
-			<div class="mb-3">
-				<label asp-for="Register.LastName"></label>
-				<input asp-for="Register.LastName" class="form-control" />
-				<span asp-validation-for="Register.LastName" class="text-danger"></span>
-			</div>
-			<div class="mb-3">
-				<label asp-for="Register.Email"></label>
-				<input asp-for="Register.Email" class="form-control" />
-				<span asp-validation-for="Register.Email" class="text-danger"></span>
-			</div>
-			<div class="mb-3">
-				<label asp-for="Register.Password"></label>
-				<input asp-for="Register.Password" class="form-control" />
-				<span asp-validation-for="Register.Password" class="text-danger"></span>
-			</div>
-			<div class="mb-3">
-				<label asp-for="Register.ConfirmPassword"></label>
-				<input asp-for="Register.ConfirmPassword" class="form-control" />
-				<span asp-validation-for="Register.ConfirmPassword" class="text-danger"></span>
-			</div>
 
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4 text-primary">Register Receptionist</h3>
 
+                    <form method="post">
+                        <div asp-validation-summary="All"></div>
 
-			<button type="submit" class="btn btn-primary">Register</button>
-		</div>
-	</form>
+                        <div class="mb-3">
+                            <label asp-for="Register.FirstName" class="form-label"></label>
+                            <input asp-for="Register.FirstName" class="form-control" placeholder="Enter first name" />
+                            <span asp-validation-for="Register.FirstName" class="text-danger"></span>
+                        </div>
 
-	@section Scripts {
-		@{
-			<partial name="_validationScriptsPartial" />
-		}
-	}
+                        <div class="mb-3">
+                            <label asp-for="Register.Email" class="form-label"></label>
+                            <input asp-for="Register.Email" type="email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Register.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Register.Password" class="form-label"></label>
+                            <input asp-for="Register.Password" type="password" class="form-control" placeholder="Enter password" />
+                            <span asp-validation-for="Register.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Register.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="Register.ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                            <span asp-validation-for="Register.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

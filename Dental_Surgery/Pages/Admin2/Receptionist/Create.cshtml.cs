@@ -25,34 +25,41 @@ namespace Dental_Surgery.Pages.Admin2.Receptionist
             {
             }
 
-            public async Task<IActionResult> OnPost()
+            public async Task<IActionResult> OnPostAsync()
             {
                 if (!ModelState.IsValid)
                 {
-                    var user = new IdentityUser()
-                    {
-                        UserName = Register.Email,
-                        Email = Register.Email
-                    };
-
-                    var result = await _userManager.CreateAsync(user, Register.Password);
-                    if (result.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(user, "Receptionist");
-                    await _signInManager.SignInAsync(user, false);
-                        return RedirectToPage("/Index");
-
-                    }
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-
-
+                    return Page();
                 }
-                return Page();
 
+                var existingUser = await _userManager.FindByEmailAsync(Register.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "An account with this email already exists.");
+                    return Page();
+                }
+
+                var user = new IdentityUser()
+                {
+                    UserName = Register.FirstName,
+                    Email = Register.Email
+                };
+
+                var result = await _userManager.CreateAsync(user, Register.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Receptionist");
+                    await _signInManager.SignInAsync(user, false);
+                    return RedirectToPage("/Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return Page();
             }
-        }
+    }
     }
 
