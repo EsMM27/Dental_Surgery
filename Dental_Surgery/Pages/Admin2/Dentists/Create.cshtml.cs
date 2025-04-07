@@ -69,9 +69,11 @@ namespace Dental_Surgery.Pages.Admin2.Dentists
                 .AnyAsync(d => d.Email == Dentist.Email ||
                                (d.FirstName == Dentist.FirstName && d.LastName == Dentist.LastName));
 
-            if (dentistExists)
+            bool userExists = await _userManager.FindByEmailAsync(Dentist.Email) != null;
+
+            if (dentistExists || userExists)
             {
-                ModelState.AddModelError(string.Empty, "A dentist with this email or name already exists.");
+                ModelState.AddModelError(string.Empty, "A dentist/user with this email or name already exists.");
                 return Page();
             }
 

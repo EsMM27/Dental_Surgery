@@ -7,7 +7,6 @@ namespace Dental_Surgery.Pages.PageViewModels
         [Required]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required]
         public string LastName { get; set; } = string.Empty;
 
         [Required]
