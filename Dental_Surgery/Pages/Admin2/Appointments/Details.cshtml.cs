@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
-    public class DetailsModel : PageModel
+	[Authorize(Roles = "Admin,Receptionist")]
+	public class DetailsModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;
 

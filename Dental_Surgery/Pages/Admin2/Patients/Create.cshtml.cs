@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Dental.DataAccess;
 using Dental.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Patients
 {
-    public class CreateModel : PageModel
+	[Authorize(Roles = "Admin,Receptionist")]
+	public class CreateModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;
 

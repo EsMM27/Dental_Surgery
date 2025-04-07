@@ -11,6 +11,16 @@
 				</h2>
 			</div>
 			<div class="mb-3">
+				<label asp-for="Register.FirstName"></label>
+				<input asp-for="Register.FirstName" class="form-control" />
+				<span asp-validation-for="Register.FirstName" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Register.LastName"></label>
+				<input asp-for="Register.LastName" class="form-control" />
+				<span asp-validation-for="Register.LastName" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
 				<label asp-for="Register.Email"></label>
 				<input asp-for="Register.Email" class="form-control" />
 				<span asp-validation-for="Register.Email" class="text-danger"></span>

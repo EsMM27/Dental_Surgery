@@ -1,12 +1,14 @@
 using Dental.DataAccess;
 using Dental.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Surgery.Pages
 {
-    public class IndexModel : PageModel
+	
+	public class IndexModel : PageModel
     {
         private readonly AppDBContext _context;
 

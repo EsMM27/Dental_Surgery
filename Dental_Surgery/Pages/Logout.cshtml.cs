@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dental_Surgery.Pages
 {
-    public class LogoutModel : PageModel
+	[Authorize(Roles = "Admin,Receptionist,Dentist")]
+	public class LogoutModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
 

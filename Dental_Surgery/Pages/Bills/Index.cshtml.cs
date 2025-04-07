@@ -2,6 +2,7 @@ using Dental.Model;
 using Dental.Service;
 using Dental_Surgery.Pages.PageViewModels;
 using Dental_Surgery.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace Dental_Surgery.Pages.Bills
 {
-    public class IndexModel : PageModel
+	[Authorize(Roles = "Receptionist")]
+	public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
 
