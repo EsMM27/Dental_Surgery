@@ -5,6 +5,8 @@ using Dental.Service;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity;
+using Dental_Surgery.DataAccess.Repo;
+using Dental_Surgery.Service;
 
 public class Program
 {
@@ -65,12 +67,13 @@ public class Program
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        // Register Email Service
+        builder.Services.AddTransient<IEmailService, EmailService>();
+
         var app = builder.Build();
 
-		
-
-		// Configure the HTTP request pipeline.
-		if (!app.Environment.IsDevelopment())
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
@@ -81,28 +84,24 @@ public class Program
         app.UseRouting();
         await app.CreateRolesAsync(builder.Configuration);
 
-
         app.UseAuthentication();
         app.UseAuthorization();
 
+        //Login page is the first thing user sees if not logged in
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/" && !context.User.Identity.IsAuthenticated)
+            {
+                context.Response.Redirect("/Login");
+                return;
+            }
+            await next();
+        });
 
-
-		//Login page is the first thing user sees if not logged in
-		app.Use(async (context, next) =>
-		{
-			if (context.Request.Path == "/" && !context.User.Identity.IsAuthenticated)
-			{
-				context.Response.Redirect("/Login");
-				return;
-			} 
-			await next();
-		});
-
-
-		app.MapRazorPages();
+        app.MapRazorPages();
         app.MapBlazorHub();
 
-		using (var scope = app.Services.CreateScope())
+        using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
             await AppDBContextInitializer.SeedAsync(services);
@@ -110,7 +109,6 @@ public class Program
 
         app.Run();
     }
-    
 }
 
 public static class WebApplicationExtensions
