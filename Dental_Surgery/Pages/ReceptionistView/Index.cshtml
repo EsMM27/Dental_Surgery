@@ -1,0 +1,376 @@
+﻿@page
+@model Dental_Surgery.Pages.ReceptionistView.IndexModel
+@{
+	ViewData["Title"] = "Daily Schedule";
+	var hour = DateTime.Now.Hour;
+	var greeting = hour < 12 ? "Good morning" : (hour < 16 ? "Good afternoon" : "Good evening");
+}
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+@* Greeting message & date selector *@
+<div class="container mt-4">
+
+
+
+	<div class="d-flex justify-content-between align-items-end mb-1">
+		<div class="d-flex align-items-end mb-4">
+			<h1 class="mb-0 align-self-end">
+				@greeting
+			</h1>
+		</div>
+
+		<form method="get" class="d-flex align-items-center">
+			<div class="btn-group">
+				<a asp-page="./Index"
+				   asp-route-ScheduleDate="@Model.PreviousWeekday.ToString("yyyy-MM-dd")"
+				   class="btn btn-dark d-flex justify-content-center align-items-center p-0"
+				   style="width: 30px;"
+				   title="Previous day">
+					<i data-feather="chevron-left" class="chevron-icon"></i>
+				</a>
+
+				<input type="date"
+					   name="ScheduleDate"
+					   value="@Model.ScheduleDate.ToString("yyyy-MM-dd")"
+					   class="form-control"
+					   style="max-width: 200px;
+                      font-weight: bold;
+                      color: #6e7174;
+                      text-align: center;
+                      cursor: pointer;
+                      border-radius: 0;
+                      border-color: #6e7174;"
+					   onchange="this.form.submit()" />
+
+				<a asp-page="./Index"
+				   asp-route-ScheduleDate="@Model.NextWeekday.ToString("yyyy-MM-dd")"
+				   class="btn btn-dark d-flex justify-content-center align-items-center p-0"
+				   style="width: 30px;"
+				   title="Next Day">
+					<i data-feather="chevron-right" class="chevron-icon"></i>
+				</a>
+			</div>
+		</form>
+
+	</div>
+
+	@* table headings *@
+	@* Widths of the columns is changed depending on who is logged in *@
+	<div class="table-responsive">
+		<table class="table table-bordered align-middle table-white">
+			<thead class="table-dark">
+				<tr>
+					<th width="5%">Time</th>
+					<th width=30%>Dentist</th>
+					<th class="patient-column" width="30%">
+						<div class="d-flex justify-content-between align-items-center">
+							<span id="patientHeaderText">Patient</span>
+							<i data-feather="search" class="search-icon" style="cursor: pointer;" onclick="togglePatientSearch()"></i>
+						</div>
+						<div class="patient-search-container" style="display: none;">
+							<input type="text"
+								   id="patientSearch"
+								   class="form-control w-100 border-0 rounded-10 bg-white"
+								   placeholder="Search for patient..."
+								   onkeyup="searchPatients()" />
+						</div>
+					</th>
+					<th width="30%">Treatment</th>
+					<th width=5%>Attended</th>
+				</tr>
+			</thead>
+
+			@* body of schedule table *@
+			<tbody id="appointmentsTBody">
+				@if (Model.DailyAppointments.Any())
+				{
+
+					@foreach (var appt in Model.DailyAppointments)
+					{
+						<tr class="appointment-row clickable-row"
+							data-patient-name="@($"{appt.Patient?.FirstName} {appt.Patient?.LastName}")"
+							data-href="/Admin2/Appointments/Details?id=@appt.AppointmentId">
+
+							<td>@appt.AppointmentDate.ToString("HH:mm")</td>
+							<td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
+							<td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
+							<td>@appt.Treatment?.Name</td>
+							<td class="no-click">
+								<div class="form-check d-flex justify-content-center">
+									<input class="form-check-input attendance-checkbox"
+											type="checkbox"
+											data-id="@appt.AppointmentId"
+									@(appt.attend ? "checked" : "")
+											style="display: none;" />
+									<i data-feather="@(appt.attend ? "check-square" : "square")"
+										class="attendance-icon"
+										data-id="@appt.AppointmentId"></i>
+								</div>
+							</td>
+							
+						</tr>
+					}
+				}
+				else
+				{
+					<tr class="appointment-row">
+						<td colspan="5" class="border-0">No appointments.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+
+</div>
+@section Scripts {
+	<script>
+		feather.replace();
+
+		// Makes rows clickable
+		document.querySelectorAll('.clickable-row').forEach(row => {
+			row.addEventListener('click', (event) => {
+				let target = event.target;
+				while (target && target !== row) {
+					if (target.classList.contains('no-click')) return; //if you clicked on the attend column don't do anything
+					target = target.parentElement; // keep going up through the DOM until you get to a row
+				}
+				if (target === row) {
+					window.location = row.getAttribute('data-href'); //takes you to the appt detail page of that row
+				}
+			});
+		});
+
+		// define the functions first, won't work otherwise
+		function togglePatientSearch() {
+			const searchContainer = document.querySelector('.patient-search-container');
+			const patientHeaderText = document.getElementById('patientHeaderText');
+			const searchIcon = document.querySelector('.search-icon');
+			const isVisible = searchContainer.style.display === 'block';
+
+			if (isVisible) {
+				searchContainer.style.display = 'none';
+				patientHeaderText.style.display = '';
+				searchIcon.style.display = '';
+			} else {
+				searchContainer.style.display = 'block';
+				patientHeaderText.style.display = 'none';
+				searchIcon.style.display = 'none';
+				document.getElementById('patientSearch').focus();
+			}
+		}
+
+		//shows rows if they match the search term
+		function searchPatients() {
+			const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
+			const rows = document.querySelectorAll('.appointment-row');
+
+			rows.forEach(row => {
+				const patientName = row.getAttribute('data-patient-name').toLowerCase();
+				if (patientName.includes(searchTerm)) {
+					row.style.display = '';
+				} else {
+					row.style.display = 'none';
+				}
+			});
+		}
+
+		// Close search when clicking outside
+		document.addEventListener('click', function (event) {
+			const searchContainer = document.querySelector('.patient-search-container');
+			const searchIcon = document.querySelector('.search-icon');
+			const patientHeaderText = document.getElementById('patientHeaderText');
+
+			if (!searchContainer.contains(event.target) && event.target !== searchIcon) {
+				searchContainer.style.display = 'none';
+				patientHeaderText.style.display = '';
+				searchIcon.style.display = '';
+			}
+		});
+
+		// using event delegation
+		// previously had a click handler on icons
+		// but when icons got updated and replaced, DOM element was replaced
+		// meaning the new icon didn't have a click event listener
+		// subsequent clicks didn't work
+		// solution: event delegation
+		// event listener is instead attached to parent element (document)
+		// it's listening for clicks on attendance icons
+		document.addEventListener('click', async function (event) {
+			const icon = event.target.closest('.attendance-icon');
+			if (!icon) return; // Exit if the clicked element is not an attendance icon
+
+			const appointmentId = parseInt(icon.getAttribute('data-id'));
+			const checkbox = document.querySelector(`.attendance-checkbox[data-id="${appointmentId}"]`);
+			const isChecked = !checkbox.checked;
+			const cell = icon.closest("td");
+
+			// Update the icon + cell
+			icon.setAttribute('data-feather', isChecked ? 'check-square' : 'square');
+			cell.classList.toggle('attended-cell', isChecked);
+
+			feather.replace(); // Replace all icons
+
+			// Update the hidden checkbox
+			checkbox.checked = isChecked;
+
+			// before, if you clicked to new page and then returned to this page
+			// using the browser back button
+			// the icon would revert
+			// this saves what the icon state is so it shows the correct one
+			// if you return to this page using the back button
+			localStorage.setItem(`attendance-${appointmentId}`, JSON.stringify({ attend: isChecked }));
+
+			// checking what's getting sent to the server
+			console.log("sending to server:", { id: appointmentId, attend: isChecked });
+
+			const response = await fetch('/Admin2/Appointments/UpdateAttendance?handler=Update', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: appointmentId, attend: isChecked })
+			});
+
+			if (!response.ok) {
+				alert("Failed to update attendance.");
+				// revert if the update failed
+				icon.setAttribute('data-feather', isChecked ? 'square' : 'check-square');
+				feather.replace();
+				checkbox.checked = !isChecked;
+			}
+		});
+
+		// checking the icon stored state
+		// so that it shows the correct icon
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('.attendance-icon').forEach(icon => {
+				const appointmentId = parseInt(icon.getAttribute('data-id'));
+				const storedState = localStorage.getItem(`attendance-${appointmentId}`);
+				const cell = icon.closest('td');
+
+				if (storedState) {
+					const { attend } = JSON.parse(storedState);
+					icon.setAttribute('data-feather', attend ? 'check-square' : 'square');
+					cell.classList.toggle('attended-cell', attend);
+					feather.replace();
+				}
+			});
+		});
+
+
+	</script>
+}
+<style>
+	.patient-column {
+		position: relative;
+	}
+
+	/* changing how patient heading appears when search input appears inside it, stays dark*/
+	.patient-search-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: var(--bs-dark);
+		padding: 0.5rem;
+	}
+
+		.patient-search-container input {
+			height: 100%;
+			outline: none;
+			box-shadow: none;
+			border: none !important;
+		}
+
+			.patient-search-container input:focus {
+				outline: none !important;
+				box-shadow: none !important;
+				border-color: transparent !important; /* overriding bootstrap's goofy auto border around search inputs */
+			}
+
+	.form-con
+
+	.patient-column .d-flex {
+		height: 100%;
+	}
+	/* hover effects for table rows */
+	.clickable-row {
+		cursor: pointer;
+	}
+
+	/* sizing icon and adding transformation */
+	.attendance-icon {
+		cursor: pointer;
+		width: 30px;
+		height: 30px;
+		transition: transform 0.2s;
+		margin: 0 auto;
+		color: #6e7174;
+	}
+
+		.attendance-icon:hover {
+			transform: scale(1.1);
+			color: var(--bs-primary-dark);
+		}
+
+	/* background colour of all rows other than attended */
+	.clickable-row td:not(.no-click) {
+		cursor: pointer;
+	}
+	/* hover colour on all rows other than attended */
+	.clickable-row:hover td:not(.no-click) {
+		background-color: rgba(0, 0, 0, 0.05);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	/* aligning icon in the center of the attended column */
+	.no-click {
+		cursor: default !important;
+		padding: 0 !important;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+		.no-click .form-check {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			min-height: 50px;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* attended cell background is light green */
+		.no-click.attended-cell {
+			background-color: rgba(76, 175, 80, 0.1) !important;
+			position: relative;
+		}
+			/* adds border to green attended cell */
+			.no-click.attended-cell::after {
+				content: '';
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				border: 2px solid rgba(76, 175, 80, 0.3);
+				pointer-events: none;
+			}
+
+			.no-click.attended-cell .attendance-icon {
+				color: #2E7D32; /* icon is dark green */
+				z-index: 1; /* icon is in front of background */
+			}
+
+			/* Hover colour for attended cells */
+			.no-click.attended-cell:hover {
+				background-color: rgba(76, 175, 80, 0.3) !important;
+			}
+
+</style>
