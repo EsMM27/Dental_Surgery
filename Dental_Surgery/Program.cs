@@ -85,6 +85,8 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+
+
 		//Login page is the first thing user sees if not logged in
 		app.Use(async (context, next) =>
 		{
@@ -92,9 +94,10 @@ public class Program
 			{
 				context.Response.Redirect("/Login");
 				return;
-			}
+			} 
 			await next();
 		});
+
 
 		app.MapRazorPages();
         app.MapBlazorHub();
