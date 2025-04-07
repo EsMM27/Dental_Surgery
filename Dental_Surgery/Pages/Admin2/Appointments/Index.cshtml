@@ -11,9 +11,9 @@
     <table class="table table-striped table-bordered table-white">
         <thead class="table-dark">
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Appointment[0].AppointmentDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Appointment[0].Notes)</th>
-                <th>@Html.DisplayNameFor(model => model.Appointment[0].attend)</th>
+                <th>Date</th>
+                <th>Notes</th>
+                <th>Attendence</th>
                 <th>Dentist</th>
                 <th>Patient</th>
                 <th>Treatment</th>
@@ -27,13 +27,13 @@
                     <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.Notes)</td>
                     <td>@Html.DisplayFor(modelItem => item.attend)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Dentist.FirstName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Patient.FirstName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Dentist.FirstName) @Html.DisplayFor(modelItem => item.Dentist.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Patient.FirstName) @Html.DisplayFor(modelItem => item.Patient.LastName)</td>
                     <td>@Html.DisplayFor(modelItem => item.Treatment.Description)</td>
                     <td class="text-center">
-                        <a asp-page="./Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-page="./Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-info">Details</a>
-                        <a asp-page="./Delete" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-page="./Edit" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-warning w-100">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-info w-100">Details</a>
+                        <a asp-page="./Delete" asp-route-id="@item.AppointmentId" class="btn btn-sm btn-danger w-100">Delete</a>
                     </td>
                 </tr>
             }

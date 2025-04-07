@@ -29,9 +29,9 @@
                         <td>@Html.DisplayFor(modelItem => item.Description)</td>
                         <td>@Html.DisplayFor(modelItem => item.Cost)</td>
                         <td class="text-center">
-                            <a asp-page="./Edit" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-page="./Details" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-info">Details</a>
-                            <a asp-page="./Delete" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-danger">Delete</a>
+                            <a asp-page="./Edit" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-warning w-100">Edit</a>
+                            <a asp-page="./Details" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-info w-100">Details</a>
+                            <a asp-page="./Delete" asp-route-id="@item.TreatmentId" class="btn btn-sm btn-danger w-100">Delete</a>
                         </td>
                     </tr>
                 }
