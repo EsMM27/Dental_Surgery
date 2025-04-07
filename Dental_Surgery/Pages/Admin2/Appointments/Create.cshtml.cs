@@ -9,11 +9,13 @@ using Dental.DataAccess;
 using Dental.Model;
 using Dental.Service;
 using Dental_Surgery.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
-    public class CreateModel : PageModel
+	[Authorize(Roles = "Admin,Receptionist")]
+	public class CreateModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<IndexModel> _logger;

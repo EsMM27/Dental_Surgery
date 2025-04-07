@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dental_Surgery.Pages.Shared
 {
-    [Authorize]
-    public class ScheduleModel : PageModel
+	public class ScheduleModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;

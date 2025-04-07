@@ -1,4 +1,5 @@
 using Dental_Surgery.Pages.PageViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Dental_Surgery.Pages.Admin2.Receptionist
 {
     [BindProperties]
-    public class CreateModel : PageModel
+	[Authorize(Roles = "Admin")]
+	public class CreateModel : PageModel
     {
             
             private readonly UserManager<IdentityUser> _userManager;

@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dental_Surgery.Pages.RegisterUsers
 {
-    public class IndexModel : PageModel
+	[Authorize(Roles = "Admin")]
+	public class IndexModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
 

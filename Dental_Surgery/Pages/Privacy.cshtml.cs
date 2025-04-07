@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dental_Surgery.Pages
 {
-    public class PrivacyModel : PageModel
+	[Authorize(Roles = "Admin,Receptionist,Dentist")]
+	public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;
 
