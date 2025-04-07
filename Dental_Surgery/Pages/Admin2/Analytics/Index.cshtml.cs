@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Dental_Surgery.Pages.Admin2.Analytics
 {
 	[Authorize(Roles = "Admin")]
-	public class IndexModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -29,9 +29,11 @@ namespace Dental_Surgery.Pages.Admin2.Analytics
         public List<int> TreatmentsData { get; set; }
         public List<string> TreatmentsLabels { get; set; }
 
-
         public async Task OnGetAsync()
         {
+            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
+            var allPatients = await _unitOfWork.Patients.GetAllAsync();
+
             // Sample labels for different time ranges
             TimeRangeLabels = new Dictionary<string, List<string>>
             {
@@ -42,111 +44,86 @@ namespace Dental_Surgery.Pages.Admin2.Analytics
             // Sample data for different time ranges
             TimeRangeData = new Dictionary<string, List<int>>
             {
-                { "Weekly", await GetAppointmentsCountForLastWeekAsync() },
-                { "30 Day", await GetAppointmentsCountForLast30DaysAsync() }
+                { "Weekly", GetAppointmentsCountForLastWeek(allAppointments) },
+                { "30 Day", GetAppointmentsCountForLast30Days(allAppointments) }
             };
 
             // Get today's appointments
-            TodaysAppointments = await GetTodaysAppointmentsWithTreatmentAsync();
+            TodaysAppointments = GetTodaysAppointmentsWithTreatment(allAppointments);
             // Get upcoming appointments count
-            UpcomingAppointmentsCount = await GetUpcomingAppointmentsCountAsync();
+            UpcomingAppointmentsCount = GetUpcomingAppointmentsCount(allAppointments);
             // Get top treatments
-            TopTreatments = await GetTopTreatmentsAsync();
+            TopTreatments = GetTopTreatments(allAppointments);
             // Get total number of patients
-            TotalPatientsCount = await GetTotalPatientsCountAsync();
-            TotalMoneyEarnedThisMonth = await GetTotalMoneyEarnedThisMonthAsync();
-            TotalMoneyEarnedPreviousMonth = await GetTotalMoneyEarnedPreviousMonthAsync();
+            TotalPatientsCount = allPatients.Count();
+            TotalMoneyEarnedThisMonth = GetTotalMoneyEarnedThisMonth(allAppointments);
+            TotalMoneyEarnedPreviousMonth = GetTotalMoneyEarnedPreviousMonth(allAppointments);
 
             Dictionary<string, int> treatmentCounts;
             if (DefaultTimeRange == "Weekly")
             {
-                treatmentCounts = await GetTreatmentCountsForLastWeekAsync();
+                treatmentCounts = GetTreatmentCountsForLastWeek(allAppointments);
             }
             else
             {
-                treatmentCounts = await GetTreatmentCountsForLast30DaysAsync();
+                treatmentCounts = GetTreatmentCountsForLast30Days(allAppointments);
             }
 
             TreatmentsLabels = treatmentCounts.Keys.ToList();
             TreatmentsData = treatmentCounts.Values.ToList();
         }
 
-
-        public async Task<List<(DateTime AppointmentTime, string TreatmentName)>> GetTodaysAppointmentsWithTreatmentAsync()
+        private List<(DateTime AppointmentTime, string TreatmentName)> GetTodaysAppointmentsWithTreatment(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var today = DateTime.Today;
 
-            var todaysAppointments = allAppointments
+            return allAppointments
                 .Where(a => a.AppointmentDate.Date == today)
                 .OrderBy(a => a.AppointmentDate.TimeOfDay) // Order by time
                 .Select(a => (a.AppointmentDate, a.Treatment != null ? a.Treatment.Name : "No Treatment"))
                 .ToList();
-
-            return todaysAppointments;
         }
 
-        public async Task<int> GetUpcomingAppointmentsCountAsync()
+        private int GetUpcomingAppointmentsCount(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var now = DateTime.Now;
 
-            var upcomingAppointmentsCount = allAppointments
-                .Count(a => a.AppointmentDate > now);
-
-            return upcomingAppointmentsCount;
+            return allAppointments.Count(a => a.AppointmentDate > now);
         }
 
-        public async Task<List<string>> GetTopTreatmentsAsync()
+        private List<string> GetTopTreatments(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
-
-            var topTreatments = allAppointments
+            return allAppointments
                 .Where(a => a.Treatment != null)
                 .GroupBy(a => a.Treatment.Name)
                 .OrderByDescending(g => g.Count())
                 .Take(5)
                 .Select(g => g.Key)
                 .ToList();
-
-            return topTreatments;
         }
 
-        public async Task<int> GetTotalPatientsCountAsync()
+        private decimal GetTotalMoneyEarnedThisMonth(IEnumerable<Appointment> allAppointments)
         {
-            var allPatients = await _unitOfWork.Patients.GetAllAsync();
-            return allPatients.Count();
-        }
-
-        public async Task<decimal> GetTotalMoneyEarnedThisMonthAsync()
-        {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var startOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
-            var totalMoneyEarnedThisMonth = allAppointments
+            return allAppointments
                 .Where(a => a.AppointmentDate >= startOfMonth && a.AppointmentDate <= endOfMonth && a.Treatment != null)
                 .Sum(a => a.Treatment.Cost);
-
-            return totalMoneyEarnedThisMonth;
         }
 
-        public async Task<decimal> GetTotalMoneyEarnedPreviousMonthAsync()
+        private decimal GetTotalMoneyEarnedPreviousMonth(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var startOfPreviousMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1);
             var endOfPreviousMonth = startOfPreviousMonth.AddMonths(1).AddDays(-1);
 
-            var totalMoneyEarnedPreviousMonth = allAppointments
+            return allAppointments
                 .Where(a => a.AppointmentDate >= startOfPreviousMonth && a.AppointmentDate <= endOfPreviousMonth && a.Treatment != null)
                 .Sum(a => a.Treatment.Cost);
-
-            return totalMoneyEarnedPreviousMonth;
         }
 
-        public async Task<List<int>> GetAppointmentsCountForLast30DaysAsync()
+        private List<int> GetAppointmentsCountForLast30Days(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var today = DateTime.Today.AddDays(1);
             var startDate = today.AddDays(-29);
 
@@ -167,9 +144,8 @@ namespace Dental_Surgery.Pages.Admin2.Analytics
             return result;
         }
 
-        public async Task<List<int>> GetAppointmentsCountForLastWeekAsync()
+        private List<int> GetAppointmentsCountForLastWeek(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var today = DateTime.Today;
             var startDate = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
@@ -193,35 +169,26 @@ namespace Dental_Surgery.Pages.Admin2.Analytics
             return result;
         }
 
-        public async Task<Dictionary<string, int>> GetTreatmentCountsForLastWeekAsync()
+        private Dictionary<string, int> GetTreatmentCountsForLastWeek(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
             var today = DateTime.Today;
             var startDate = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
-            var treatmentCounts = allAppointments
+            return allAppointments
                 .Where(a => a.AppointmentDate.Date >= startDate && a.AppointmentDate.Date <= startDate.AddDays(4))
                 .GroupBy(a => a.Treatment.Name)
                 .ToDictionary(g => g.Key, g => g.Count());
-
-            return treatmentCounts;
         }
 
-        public async Task<Dictionary<string, int>> GetTreatmentCountsForLast30DaysAsync()
+        private Dictionary<string, int> GetTreatmentCountsForLast30Days(IEnumerable<Appointment> allAppointments)
         {
-            var allAppointments = await _unitOfWork.Appointments.GetAllAsync();
-            var today = DateTime.Today.AddDays(1);
-            var startDate = today.AddDays(-29);
+            var today = DateTime.Today;
+            var startDate = today.AddDays(-30);
 
-            var treatmentCounts = allAppointments
+            return allAppointments
                 .Where(a => a.AppointmentDate.Date >= startDate && a.AppointmentDate.Date <= today)
                 .GroupBy(a => a.Treatment.Name)
                 .ToDictionary(g => g.Key, g => g.Count());
-
-            return treatmentCounts;
         }
-
-
-
     }
 }
