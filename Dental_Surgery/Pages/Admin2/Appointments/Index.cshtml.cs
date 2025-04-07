@@ -8,27 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using Dental.DataAccess;
 using Dental.Model;
 using Microsoft.AspNetCore.Authorization;
+using Dental.Service;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
 	[Authorize(Roles = "Admin,Receptionist,Dentist")]
-	public class IndexModel : PageModel
+    public class IndexModel : PageModel
     {
-        private readonly Dental.DataAccess.AppDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public IndexModel(Dental.DataAccess.AppDBContext context)
+        public IndexModel(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public IList<Appointment> Appointment { get;set; } = default!;
+        public List<Appointment> Appointment { get; set; }
 
         public async Task OnGetAsync()
         {
-            Appointment = await _context.Appointments
-                .Include(a => a.Dentist)
-                .Include(a => a.Patient)
-                .Include(a => a.Treatment).ToListAsync();
+            var appointments = await _unitOfWork.Appointments.GetAllAsync();
+            Appointment = appointments.OrderByDescending(a => a.AppointmentDate).ToList();
         }
     }
 }
