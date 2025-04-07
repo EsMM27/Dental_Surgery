@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
-	[Authorize(Roles = "Admin,Receptionist")]
+	[Authorize(Roles = "Admin,Receptionist,Dentist")]
 	public class DetailsModel : PageModel
     {
         private readonly Dental.DataAccess.AppDBContext _context;

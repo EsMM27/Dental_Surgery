@@ -75,6 +75,11 @@
                        required /> <!-- Stores selected patient ID -->
                 <div id="suggestions" class="suggestion-box"></div>
 
+                <!-- Treatment selection -->
+                <select asp-for="SelectedTreatmentId" asp-items="@(new SelectList(Model.Treatments, "TreatmentId", "Name"))">
+                    <option value="">Select Treatment</option>
+                </select>
+
                 <!-- Notes -->
                 <label for="notes">Notes:</label>
                 <textarea id="notes" name="Appointment.Notes" asp-for="Appointment.Notes"></textarea>
