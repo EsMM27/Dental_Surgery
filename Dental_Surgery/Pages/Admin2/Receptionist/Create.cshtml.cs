@@ -41,7 +41,7 @@ namespace Dental_Surgery.Pages.Admin2.Receptionist
 
                 var user = new IdentityUser()
                 {
-                    UserName = Register.FirstName + Register.LastName,
+                    UserName = Register.FirstName,
                     Email = Register.Email
                 };
 
