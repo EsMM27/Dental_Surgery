@@ -45,5 +45,26 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             return Page();
         }
 
+        public async Task<IActionResult> OnPostUpdateNotesAsync([FromBody] NotesUpdateModel update)
+        {
+            var appointment = await _context.Appointments.FindAsync(update.Id);
+
+            if (appointment == null)
+                return NotFound();
+
+            appointment.Notes = update.Notes;
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new { success = true });
+        }
+
+        public class NotesUpdateModel
+        {
+            public int Id { get; set; }
+            public string Notes { get; set; } = "";
+        }
+
+
+
     }
 }
