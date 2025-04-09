@@ -7,12 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\Admin2\Appointments\UpdateAttendance.cshtml.cs" />
     <Compile Remove="Pages\Admin2\Appointments\UpdateNotes.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Admin2\Appointments\UpdateAttendance.cshtml" />
     <Content Remove="Pages\Admin2\Appointments\UpdateNotes.cshtml" />
   </ItemGroup>
 
