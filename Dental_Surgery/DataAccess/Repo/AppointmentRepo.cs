@@ -38,7 +38,15 @@ namespace Dental.DataAccess.Repo
 
             return timeSlotsWithAvailability;
         }
-		public async Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date)
+        public async Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId)
+        {
+            return await _context.Appointments
+                .Where(a => a.DentistId == dentistId)
+                .Include(a => a.Patient)
+                .Include(a => a.Treatment)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date)
 		{
 			return await _context.Appointments
 				.Where(a => a.DentistId == dentistId && a.AppointmentDate.Date == date.Date)

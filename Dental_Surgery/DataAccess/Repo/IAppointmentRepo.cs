@@ -11,8 +11,8 @@ namespace Dental.DataAccess.Repo
     {
         Task<List<(string TimeSlot, bool IsBooked)>> GetTimeSlotsWithAvailabilityAsync(int dentistId, DateTime appointmentDate);
         public void Update(Appointment appointment);
-		Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date);
-
+        Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId);
+        Task<IEnumerable<Appointment>> GetAppointmentsForDentistAsync(int dentistId, DateTime date);
         Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date);
     }
 }

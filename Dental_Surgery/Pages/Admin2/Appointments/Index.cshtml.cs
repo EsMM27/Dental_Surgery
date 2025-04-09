@@ -9,6 +9,7 @@ using Dental.DataAccess;
 using Dental.Model;
 using Microsoft.AspNetCore.Authorization;
 using Dental.Service;
+using System.Security.Claims;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
@@ -26,8 +27,22 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 
         public async Task OnGetAsync()
         {
-            var appointments = await _unitOfWork.Appointments.GetAllAsync();
-            Appointment = appointments.OrderByDescending(a => a.AppointmentDate).ToList();
+            //var appointments = await _unitOfWork.Appointments.GetAllAsync();
+            //Appointment = appointments.OrderByDescending(a => a.AppointmentDate).ToList();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var dentist = await _unitOfWork.Dentists.GetAllAsync();
+            var currentDentist = dentist.FirstOrDefault(d => d.UserId == userId);
+
+            if (currentDentist != null)
+            {
+                var appointments = await _unitOfWork.Appointments.GetAppointmentsForDentistAsync(currentDentist.DentistId);
+                Appointment = appointments.OrderByDescending(a => a.AppointmentDate).ToList();
+            }
+            else
+            {
+                Appointment = new List<Appointment>();
+            }
         }
     }
 }
