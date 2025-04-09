@@ -11,17 +11,19 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
-	[Authorize(Roles = "Admin,Receptionist,Dentist")]
-	public class DetailsModel : PageModel
-    {
-        private readonly Dental.DataAccess.AppDBContext _context;
 
-        public DetailsModel(Dental.DataAccess.AppDBContext context)
+	[Authorize(Roles = "Admin,Receptionist,Dentist")]
+    [IgnoreAntiforgeryToken]
+    public class DetailsModel : PageModel
+    {
+        private readonly AppDBContext _context;
+
+        public DetailsModel(AppDBContext context)
         {
             _context = context;
         }
 
-        public Appointment Appointment { get; set; } = default!;
+        public Appointment Appointment { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {

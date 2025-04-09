@@ -34,7 +34,7 @@
         status.textContent = "Saving...";
 
         console.log("sending to server:", { id: appointmentId, notes: newNotes });
-        const response = await fetch(`/Admin2/Appointments/UpdateNotes`, {
+        const response = await fetch(`?handler=UpdateNotes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -60,7 +60,7 @@
             <dl class="row">
                 
                 <dt class="col-md-3 text-muted">Date</dt>
-                <dd class="col-md-9">@Model.Appointment.AppointmentDate</dd>
+                <dd class="col-md-9">@Model.Appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</dd>
 
                 <dt class="col-md-3 text-muted">Patient</dt>
                 <dd class="col-md-9">@Model.Appointment.Patient.FirstName @Model.Appointment.Patient.LastName</dd>
@@ -96,6 +96,10 @@
         </div>
     </div>
 </div>
+<script>
+    feather.replace();
+</script>
+
 
 
 

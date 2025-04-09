@@ -17,7 +17,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
         }
 
         //Data transfer object
-        public class AttendanceUpdateDto
+        public class NotesUpdateDto
         {
             public int Id { get; set; }
             public string Notes { get; set; }
@@ -31,7 +31,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 
             Console.WriteLine("Raw body: " + body);
 
-            var data = JsonSerializer.Deserialize<AttendanceUpdateDto>(body, new JsonSerializerOptions
+            var data = JsonSerializer.Deserialize<NotesUpdateDto>(body, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
