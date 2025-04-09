@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>Dental Appointment</h1>
+    <h1>Book Appointment</h1>
 
     <div class="appointment-container">
         <!-- Left Column: Form Inputs -->
@@ -76,8 +76,9 @@
                 <div id="suggestions" class="suggestion-box"></div>
 
                 <!-- Treatment selection -->
-                <select asp-for="SelectedTreatmentId" asp-items="@(new SelectList(Model.Treatments, "TreatmentId", "Name"))">
-                    <option value="">Select Treatment</option>
+                <label for="treatmentSelect">Treatment:</label>
+                <select id="treatmentSelect" asp-for="SelectedTreatmentId" asp-items="@(new SelectList(Model.Treatments, "TreatmentId", "Name"))">
+                    <option value="">-- Select Treatment --</option>
                 </select>
 
                 <!-- Notes -->
