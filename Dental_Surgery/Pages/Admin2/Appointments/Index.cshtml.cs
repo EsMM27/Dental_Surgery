@@ -27,7 +27,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
 
         public async Task OnGetAsync()
         {
-            //var appointments = await _unitOfWork.Appointments.GetAllAsync();
+            var Rappointments = await _unitOfWork.Appointments.GetAllAsync();
             //Appointment = appointments.OrderByDescending(a => a.AppointmentDate).ToList();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -41,7 +41,7 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             }
             else
             {
-                Appointment = new List<Appointment>();
+                Appointment = Rappointments.OrderByDescending(a => a.AppointmentDate).ToList();
             }
         }
     }
