@@ -43,6 +43,7 @@ namespace Dental.DataAccess.Repo
 			return await _context.Appointments
 				.Where(a => a.DentistId == dentistId && a.AppointmentDate.Date == date.Date)
                 .Include(a => a.Patient)
+                .Include(a => a.Treatment)
 				.ToListAsync();
 		}
         public async Task<IEnumerable<Appointment>> GetAppointmentsForDateAsync(DateTime date)
@@ -51,7 +52,8 @@ namespace Dental.DataAccess.Repo
                 .Where(a => a.AppointmentDate.Date == date.Date)
                 .Include(p => p.Patient)
                 .Include(d => d.Dentist)
-                .ToListAsync();
+				.Include(a => a.Treatment)
+				.ToListAsync();
         }
 
         public async Task<IEnumerable<Appointment>> GetAllAsync()

@@ -8,18 +8,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
-@* Greeting message & date selector *@
+@* Greeting message*@
 <div class="container mt-4">
-
-
-
 	<div class="d-flex justify-content-between align-items-end mb-1">
 		<div class="d-flex align-items-end mb-4">
 			<h1 class="mb-0 align-self-end">
 				@greeting
 			</h1>
 		</div>
-
+		@* date selector*@
 		<form method="get" class="d-flex align-items-center">
 			<div class="btn-group">
 				<a asp-page="./Index"
@@ -56,7 +53,6 @@
 	</div>
 
 	@* table headings *@
-	@* Widths of the columns is changed depending on who is logged in *@
 	<div class="table-responsive">
 		<table class="table table-bordered align-middle table-white">
 			<thead class="table-dark">
@@ -95,7 +91,7 @@
 							<td>@appt.AppointmentDate.ToString("HH:mm")</td>
 							<td>@appt.Dentist?.FirstName @appt.Dentist?.LastName</td>
 							<td>@appt.Patient?.FirstName @appt.Patient?.LastName</td>
-							<td>@appt.Treatment?.Name</td>
+							<td>@appt.Treatment.Name</td>
 							<td class="no-click">
 								<div class="form-check d-flex justify-content-center">
 									<input class="form-check-input attendance-checkbox"

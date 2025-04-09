@@ -10,29 +10,34 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <div class="text-center mb-4">
-                <img src="/@Url.Content(Model.Dentist.Image)" alt="Dentist Photo" class="img-thumbnail" style="max-height:250px; width:auto;" />
+            <div class="row align-items-left">
+                <div class="col-md-3 text-center mb-4 mb-md-0">
+                    <div style="max-width: 250px; margin: 0 auto;">
+                        <img src="/@Url.Content(Model.Dentist.Image)"
+                             alt="Dentist Photo"
+                             class="img-fluid"
+                             style="max-height: 400px; width: auto; object-fit: contain;" />
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <dl class="row">
+                        <dt class="col-md-3 text-muted">Name</dt>
+                        <dd class="col-md-9">@Model.Dentist.FirstName @Model.Dentist.LastName</dd>
+
+                        <dt class="col-md-3 text-muted">Specialisation</dt>
+                        <dd class="col-md-9">@Model.Dentist.Specialization</dd>
+
+                        <dt class="col-md-3 text-muted">Awarding Body</dt>
+                        <dd class="col-md-9">@Model.Dentist.AwardingBody</dd>
+
+                        <dt class="col-md-3 text-muted">Email</dt>
+                        <dd class="col-md-9">@Model.Dentist.Email</dd>
+
+                        <dt class="col-md-3 text-muted">Contact number</dt>
+                        <dd class="col-md-9">@Model.Dentist.ContactNumber</dd>
+                    </dl>
+                </div>
             </div>
-
-            <dl class="row">
-                <dt class="col-md-4 text-muted">First Name</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.FirstName)</dd>
-
-                <dt class="col-md-4 text-muted">Last Name</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.LastName)</dd>
-
-                <dt class="col-md-4 text-muted">Specialization</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.Specialization)</dd>
-
-                <dt class="col-md-4 text-muted">Awarding Body</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.AwardingBody)</dd>
-
-                <dt class="col-md-4 text-muted">Contact Number</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.ContactNumber)</dd>
-
-                <dt class="col-md-4 text-muted">Email</dt>
-                <dd class="col-md-8">@Html.DisplayFor(model => model.Dentist.Email)</dd>
-            </dl>
         </div>
 
         <div class="card-footer text-end">

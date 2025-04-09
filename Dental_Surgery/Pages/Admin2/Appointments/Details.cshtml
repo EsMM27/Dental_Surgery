@@ -3,7 +3,54 @@
 
 @{
     ViewData["Title"] = "Appointment Details";
+
+    var isPastAppointment = Model.Appointment.AppointmentDate < DateTime.Now;
+    var attendanceIcon = "";
+    var attendanceColor = "";
+
+    if (isPastAppointment && Model.Appointment.attend)
+    {
+        attendanceIcon = "check-square";
+        attendanceColor = "#2E7D32";
+    }
+    else if (!isPastAppointment && !Model.Appointment.attend)
+    {
+        attendanceIcon = "square";
+        attendanceColor = "#6e7174";
+    }
+    else if (isPastAppointment && !Model.Appointment.attend)
+    {
+        attendanceIcon = "x-square";
+        attendanceColor = "#C62828";
+    }
 }
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script>
+    async function updateNotes() {
+        const newNotes = document.getElementById("notesInput").value;
+        const status = document.getElementById("notesStatus");
+        const appointmentId = @Model.Appointment.AppointmentId;
+
+        status.textContent = "Saving...";
+
+        console.log("sending to server:", { id: appointmentId, notes: newNotes });
+        const response = await fetch(`?handler=UpdateNotes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Id: appointmentId, Notes: newNotes })
+        });
+
+        if (response.ok) {
+            status.textContent = "Saved!";
+        } else {
+            status.textContent = "Error saving notes.";
+        }
+
+        setTimeout(() => status.textContent = "", 3000);
+    }
+</script>
 
 <div class="container mt-5">
     <h2 class="mb-4">Appointment Details</h2>
@@ -11,48 +58,35 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <dl class="row">
-                <dt class="col-md-3 text-muted">
-                    @Html.DisplayNameFor(model => model.Appointment.AppointmentDate)
-                </dt>
+                
+                <dt class="col-md-3 text-muted">Date</dt>
+                <dd class="col-md-9">@Model.Appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-md-3 text-muted">Patient</dt>
+                <dd class="col-md-9">@Model.Appointment.Patient.FirstName @Model.Appointment.Patient.LastName</dd>
+
+                <dt class="col-md-3 text-muted">Dentist</dt>
+                <dd class="col-md-9">@Model.Appointment.Dentist.FirstName @Model.Appointment.Dentist.LastName</dd>
+
+                <dt class="col-md-3 text-muted">Treatment</dt>
+                <dd class="col-md-9">@Model.Appointment.Treatment.Name</dd>
+
+                <dt class="col-md-3 text-muted">Attended</dt>
                 <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.AppointmentDate)
+                    <i data-feather="@attendanceIcon" style="color: @attendanceColor; width: 24px; height: 24px;"></i>                
                 </dd>
 
-                <dt class="col-md-3 text-muted">
-                    @Html.DisplayNameFor(model => model.Appointment.Notes)
-                </dt>
-                <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.Notes)
-                </dd>
+                <dt class="col-md-3 text-muted">Notes</dt>
+                <dd class="col-md-6">
+                    <textarea class="form-control" id="notesInput" rows="4"
+                              data-id="@Model.Appointment.AppointmentId">@Model.Appointment.Notes</textarea>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="updateNotes()">Save</button>
+                    <div id="notesStatus" class="mt-2 text-muted small"></div>
 
-                <dt class="col-md-3 text-muted">
-                    @Html.DisplayNameFor(model => model.Appointment.attend)
-                </dt>
-                <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.attend)
-                </dd>
-
-                <dt class="col-md-3 text-muted">
-                    Dentist
-                </dt>
-                <dd class="col-md-9">
-                    Dr. @Model.Appointment.Dentist.LastName
                 </dd>
 
 
-                <dt class="col-md-3 text-muted">
-                    Patient Address
-                </dt>
-                <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.Patient.Address)
-                </dd>
 
-                <dt class="col-md-3 text-muted">
-                    Treatment
-                </dt>
-                <dd class="col-md-9">
-                    @Html.DisplayFor(model => model.Appointment.Treatment.Name)
-                </dd>
             </dl>
         </div>
 
@@ -62,3 +96,10 @@
         </div>
     </div>
 </div>
+<script>
+    feather.replace();
+</script>
+
+
+
+

@@ -11,17 +11,19 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Dental_Surgery.Pages.Admin2.Appointments
 {
-	[Authorize(Roles = "Admin,Receptionist,Dentist")]
-	public class DetailsModel : PageModel
-    {
-        private readonly Dental.DataAccess.AppDBContext _context;
 
-        public DetailsModel(Dental.DataAccess.AppDBContext context)
+	[Authorize(Roles = "Admin,Receptionist,Dentist")]
+    [IgnoreAntiforgeryToken]
+    public class DetailsModel : PageModel
+    {
+        private readonly AppDBContext _context;
+
+        public DetailsModel(AppDBContext context)
         {
             _context = context;
         }
 
-        public Appointment Appointment { get; set; } = default!;
+        public Appointment Appointment { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -44,6 +46,27 @@ namespace Dental_Surgery.Pages.Admin2.Appointments
             Appointment = appointment;
             return Page();
         }
+
+        public async Task<IActionResult> OnPostUpdateNotesAsync([FromBody] NotesUpdateModel update)
+        {
+            var appointment = await _context.Appointments.FindAsync(update.Id);
+
+            if (appointment == null)
+                return NotFound();
+
+            appointment.Notes = update.Notes;
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new { success = true });
+        }
+
+        public class NotesUpdateModel
+        {
+            public int Id { get; set; }
+            public string Notes { get; set; } = "";
+        }
+
+
 
     }
 }

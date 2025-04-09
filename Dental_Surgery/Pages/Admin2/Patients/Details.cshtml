@@ -3,56 +3,51 @@
 
 @{
     ViewData["Title"] = "Patient Details";
+
+    // Split address by commas and remove empty entries
+    var addressLines = Model.Patient.Address?
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(part => part.Trim())
+        .Where(part => !string.IsNullOrWhiteSpace(part))
+        .ToList() ?? new List<string>();
 }
 
 <div class="container mt-5">
-    <h2 class="mb-4">Patient Detials</h2>
+    <h2 class="mb-4">Patient Details</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
+            
             <dl class="row">
-            <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.PPS)
-            </dt>
-            <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.PPS)
-            </dd>
-            <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.FirstName)
-            </dt>
-            <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.FirstName)
-            </dd>
-            <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.LastName)
-            </dt>
-            <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.LastName)
-            </dd>
-            <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.ContactNumber)
-            </dt>
-                <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.ContactNumber)
-            </dd>
-                <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.Email)
-            </dt>
-                <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.Email)
-            </dd>
-                <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.Address)
-            </dt>
-                <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.Address)
-            </dd>
-                <dt class="col-md-3 text-muted">
-                @Html.DisplayNameFor(model => model.Patient.DateOfBirth)
-            </dt>
-                <dd class="col-md-9">
-                @Html.DisplayFor(model => model.Patient.DateOfBirth)
-            </dd>
+                <dt class="col-md-2 text-muted">Name</dt>
+                <dd class="col-md-10">@Model.Patient.FirstName @Model.Patient.LastName</dd>
+            
+                <dt class="col-md-2 text-muted">PPS</dt>
+                <dd class="col-md-10">@Model.Patient.PPS</dd>
+
+                <dt class="col-md-2 text-muted">Contact Number</dt>
+                <dd class="col-md-10">@Model.Patient.ContactNumber</dd>
+                
+                <dt class="col-md-2 text-muted">Email</dt>
+                <dd class="col-md-10">@Model.Patient.Email</dd>
+                
+                <dt class="col-md-2 text-muted">Address</dt>
+                <dd class="col-md-10">
+                    @if (addressLines.Any())
+                    {
+                        @foreach (var line in addressLines)
+                        {
+                            @line<br />
+                        }
+                    }
+                    else
+                    {
+                        @Model.Patient.Address //if there's no commas it'll just print as normal
+                    }
+                </dd>
+               
+                <dt class="col-md-2 text-muted">Date of birth</dt>
+                <dd class="col-md-10">@Model.Patient.DateOfBirth.ToString("d")</dd>
             </dl>
 
         </div>

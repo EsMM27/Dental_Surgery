@@ -55,7 +55,12 @@ namespace Dental_Surgery.Pages.DentistView
 			{
 				Dentist = (await _unitOfWork.Dentists.GetAllAsync())
 							  .FirstOrDefault(d => d.UserId == user.Id);
-				if (Dentist != null)
+				if (Dentist == null)
+				{
+					// Handle the case where no dentist was found
+					throw new InvalidOperationException($"No dentist record found for user {user.Id}");
+				}
+				else if (Dentist != null)
 				{
 					DailyAppointments = (await _unitOfWork.Appointments
 						.GetAppointmentsForDentistAsync(Dentist.DentistId, ScheduleDate))
