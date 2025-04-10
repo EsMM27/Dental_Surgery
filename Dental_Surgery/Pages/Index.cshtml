@@ -14,12 +14,7 @@
     <script src="~/js/schedule.js"></script>
 }
 
-<h2 class="mb-4">
-    @greeting@if (!string.IsNullOrEmpty(Model.DisplayName))
-    {
-        <text>, @Model.DisplayName</text>
-    }
-</h2>
+
 
 @if (User.IsInRole("Receptionist"))
 {
@@ -36,7 +31,7 @@
             <div class="col-lg-4 d-flex flex-column gap-3 ps-lg-4 mt-4 mt-lg-0">
                 <!-- Buttons -->
                 <a class="btn btn-primary btn-lg w-100" asp-page="/Admin2/Patients/Create">➕ Add New Patient</a>
-                <a class="btn btn-info btn-lg w-100" asp-page="/Admin2/Patients/Index">👥 View Patients</a>
+                <a class="btn btn-primary btn-lg w-100" asp-page="/Shared/Schedule">📅 View Full Schedule</a>
 
                 <!-- Available Slots Card -->
                 <div class="card p-3 shadow-sm">
@@ -48,10 +43,7 @@
                         }
                     </ul>
 
-                    <!--  Moved Button HERE -->
-                    <a class="btn btn-outline-success w-100 mt-2" asp-page="/Admin2/Appointments/AvailableSlots">
-                        📖 View All Available Slots
-                    </a>
+                    
                 </div>
 
                 <!-- Summary Card -->
