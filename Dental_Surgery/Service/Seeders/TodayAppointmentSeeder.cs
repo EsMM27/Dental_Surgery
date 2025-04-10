@@ -26,7 +26,7 @@ namespace Dental.Service.Seeders
 
             if (!patientIds.Any() || !dentistIds.Any() || !treatmentIds.Any())
             {
-                Console.WriteLine("⚠ Cannot seed today's appointments — missing patients, dentists, or treatments.");
+                Console.WriteLine(" Cannot seed today's appointments — missing patients, dentists, or treatments.");
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace Dental.Service.Seeders
 
             //if (existingAppointments.Any())
             //{
-            //    Console.WriteLine("⚠ Appointments already exist for today. Skipping.");
+            //    Console.WriteLine(" Appointments already exist for today. Skipping.");
             //    return;
             //}
 
@@ -60,10 +60,10 @@ namespace Dental.Service.Seeders
                 });
             }
 
-            Console.WriteLine($"✅ Seeding {appointments.Count} appointments for today...");
+            Console.WriteLine($" Seeding {appointments.Count} appointments for today...");
             await unitOfWork.Appointments.AddRangeAsync(appointments);
             await unitOfWork.SaveAsync();
-            Console.WriteLine("🎉 Today's appointments seeded successfully!");
+            Console.WriteLine(" Today's appointments seeded successfully!");
         }
     }
 }

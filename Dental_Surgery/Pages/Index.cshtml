@@ -25,14 +25,14 @@
 {
     <div class="container-fluid">
         <div class="row justify-content-start">
-            <!-- 📅 Schedule (Wider & Left-Aligned) -->
+            <!--  Schedule (Wider & Left-Aligned) -->
             <div class="col-lg-8">
                 <div class="table-responsive pe-3">
                     @await Html.PartialAsync("/Pages/Shared/_SchedulePartial.cshtml", Model)
                 </div>
             </div>
 
-            <!-- 👉 Right Column: Buttons + Stats -->
+            <!--  Right Column: Buttons + Stats -->
             <div class="col-lg-4 d-flex flex-column gap-3 ps-lg-4 mt-4 mt-lg-0">
                 <!-- Buttons -->
                 <a class="btn btn-primary btn-lg w-100" asp-page="/Admin2/Patients/Create">➕ Add New Patient</a>
@@ -48,7 +48,7 @@
                         }
                     </ul>
 
-                    <!-- 👉 Moved Button HERE -->
+                    <!--  Moved Button HERE -->
                     <a class="btn btn-outline-success w-100 mt-2" asp-page="/Admin2/Appointments/AvailableSlots">
                         📖 View All Available Slots
                     </a>

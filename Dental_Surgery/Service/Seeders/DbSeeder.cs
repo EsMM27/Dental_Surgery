@@ -27,7 +27,7 @@ namespace Dental.Service.Seeders
 
             if (!existingPatientIds.Any() || !existingDentistIds.Any() || !existingTreatmentIds.Any())
             {
-                Console.WriteLine("⚠ Cannot seed appointments — missing patients, dentists, or treatments.");
+                Console.WriteLine(" Cannot seed appointments — missing patients, dentists, or treatments.");
                 return;
             }
 
@@ -40,17 +40,17 @@ namespace Dental.Service.Seeders
                 var startOfDay = date.Date;
                 var endOfDay = startOfDay.AddDays(1);
 
-                // 🛑 Skip if appointments already exist for this date
+                //  Skip if appointments already exist for this date
                 var existingAppointments = await unitOfWork.Appointments.GetByConditionAsync(a =>
                     a.AppointmentDate >= startOfDay && a.AppointmentDate < endOfDay);
 
                 if (existingAppointments.Any())
                 {
-                    Console.WriteLine($"⚠ Skipping {date:yyyy-MM-dd} (already has appointments)");
+                    Console.WriteLine($" Skipping {date:yyyy-MM-dd} (already has appointments)");
                     continue;
                 }
 
-                // 📅 Fully book 3 days in the future
+                //  Fully book 3 days in the future
                 bool fullyBooked = dayOffset == 2 || dayOffset == 4 || dayOffset == 6;
 
                 int slotsToFill = fullyBooked ? validTimes.Length : rng.Next(2, 5);
@@ -74,10 +74,10 @@ namespace Dental.Service.Seeders
                 }
             }
 
-            Console.WriteLine($"✅ Seeding {appointments.Count} appointments...");
+            Console.WriteLine($" Seeding {appointments.Count} appointments...");
             await unitOfWork.Appointments.AddRangeAsync(appointments);
             await unitOfWork.SaveAsync();
-            Console.WriteLine("🎉 Appointments seeded successfully!");
+            Console.WriteLine(" Appointments seeded successfully!");
         }
 
     }
